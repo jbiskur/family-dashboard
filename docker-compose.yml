@@ -1,0 +1,25 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: heima
+      POSTGRES_PASSWORD: ${TEST_DATABASE_PASSWORD:?Run bun run test:setup first}
+      POSTGRES_DB: heima
+    ports: ["127.0.0.1:55437:5432"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U heima -d heima"]
+      interval: 2s
+      retries: 30
+    volumes: ["heima-test-postgres:/var/lib/postgresql/data"]
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.3
+    command: ["start-dev", "--http-port=8080"]
+    environment:
+      JAVA_OPTS_KC_HEAP: "-Xms128m -Xmx512m -XX:MetaspaceSize=64M -XX:MaxMetaspaceSize=192m"
+      JAVA_OPTS_APPEND: "-XX:ActiveProcessorCount=2"
+      KC_BOOTSTRAP_ADMIN_USERNAME: admin
+      KC_BOOTSTRAP_ADMIN_PASSWORD: ${TEST_KEYCLOAK_PASSWORD:?Run bun run test:setup first}
+    ports: ["127.0.0.1:8187:8080"]
+    mem_limit: 1g
+volumes:
+  heima-test-postgres:
