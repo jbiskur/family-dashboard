@@ -1,0 +1,17 @@
+node_modules/
+.env
+.env.*
+!.env.example
+.next/
+dist/
+coverage/
+test-results/
+playwright-report/
+.playwright-cli/
+.agents/skills/klokkan/
+.DS_Store
+*.tsbuildinfo
+*.log
+.wayfind/
+mobile*.png
+family-dashboard.html
