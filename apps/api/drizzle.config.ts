@@ -1,0 +1,17 @@
+import { defineConfig } from "drizzle-kit";
+export default defineConfig({
+  dialect: "postgresql",
+  schema: "./src/db/schema.ts",
+  out: "./drizzle",
+  tablesFilter: [
+    "households",
+    "bootstrap_state",
+    "members",
+    "invitations",
+    "commands",
+    "auth_sessions",
+    "resources",
+    "resource_history",
+    "activity",
+  ],
+});
