@@ -34,14 +34,14 @@ if (!(await file.exists())) {
     PATHWAYS_ENCRYPTION_KEY: secret(),
   };
   await Bun.write(
-    file,
+    ".env.test.local",
     Object.entries(values)
       .map(([key, value]) => `${key}=${value}`)
       .join("\n") + "\n",
   );
-  await chmod(file.name!, 0o600);
+  await chmod(".env.test.local", 0o600);
 }
-for (const line of (await file.text()).split("\n")) {
+for (const line of (await Bun.file(".env.test.local").text()).split("\n")) {
   const at = line.indexOf("=");
   if (at > 0) process.env[line.slice(0, at)] = line.slice(at + 1);
 }
@@ -54,8 +54,8 @@ if (!process.env.VAPID_PRIVATE_KEY) {
     VAPID_SUBJECT: "mailto:test@heima.test",
   };
   await Bun.write(
-    file,
-    (await file.text()) +
+    ".env.test.local",
+    (await Bun.file(".env.test.local").text()) +
       Object.entries(keys)
         .map(([key, value]) => `${key}=${value}`)
         .join("\n") +
