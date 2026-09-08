@@ -223,6 +223,7 @@ for (const width of [1440, 320]) {
         ids.workScope,
       );
       await page.keyboard.press("Escape");
+      await expect(page).toHaveURL("http://localhost:3010/work");
       await visit("/finance", "finance-overview", ids.finance);
       await visit("/finance/spending", "finance-spending", ids.spending);
       await visit("/finance/accounts", "finance-accounts", ids.accounts);

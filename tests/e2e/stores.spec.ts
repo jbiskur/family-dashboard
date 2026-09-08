@@ -100,6 +100,23 @@ for (const width of [1440, 320]) {
     );
     expect(savedStore.latitude).toBe(latitude);
     expect(savedStore.radius).toBe(100);
+    await page
+      .getByRole("textbox", { name: "Find a store", exact: true })
+      .fill(store);
+    await page.getByRole("button", { name: "Edit", exact: true }).click();
+    await page
+      .getByRole("spinbutton", {
+        name: "Detection radius (metres)",
+        exact: true,
+      })
+      .fill("120");
+    await page.getByRole("button", { name: "Save", exact: true }).click();
+    await expect(
+      page.getByRole("dialog", { name: "Edit store", exact: true }),
+    ).toBeHidden();
+    const editedStore = await read(`shopping/stores/${savedStore.id}`);
+    expect(editedStore.id).toBe(savedStore.id);
+    expect(editedStore.radius).toBe(120);
     await page.goto("/shopping");
     await page.getByRole("button", { name: "New list", exact: true }).click();
     await page
@@ -129,6 +146,25 @@ for (const width of [1440, 320]) {
     await expect(
       page.getByText(`Offer · ${store}`, { exact: true }),
     ).toBeVisible();
+    for (const offer of ["", savedStore.id]) {
+      await page
+        .getByRole("button", { name: `Edit ${name}`, exact: true })
+        .click();
+      await page
+        .getByRole("combobox", { name: "Store offer", exact: true })
+        .selectOption(offer);
+      await page
+        .getByRole("button", { name: "Save changes", exact: true })
+        .click();
+      await expect(
+        page.getByRole("dialog", { name: "Edit item", exact: true }),
+      ).toBeHidden();
+      const updated = (await read("shopping/items")).items.find(
+        (row: { name: string }) => row.name === name,
+      );
+      expect(updated.offerStoreId).toBe(offer || null);
+      expect(updated.completed).toBe(false);
+    }
     await page
       .getByRole("button", { name: `Complete ${name}`, exact: true })
       .click();
@@ -154,6 +190,7 @@ for (const width of [1440, 320]) {
     await purchase
       .getByRole("button", { name: "Save store", exact: true })
       .click();
+    await expect(purchase).toBeHidden();
     item = await read(`shopping/items/${itemId}`);
     expect(item.purchaseStoreId).toBe(savedStore.id);
     expect(item.purchaseId).toBe(purchaseId);
@@ -170,11 +207,15 @@ for (const width of [1440, 320]) {
       .getByRole("combobox", { name: "Store", exact: true })
       .selectOption("");
     await page.getByRole("button", { name: "Save store", exact: true }).click();
+    await expect(purchase).toBeHidden();
     item = await read(`shopping/items/${itemId}`);
     expect(item.purchaseStoreId).toBeNull();
     expect(item.purchaseId).toBe(purchaseId);
     expect(item.completed).toBe(true);
     await context.setGeolocation({ latitude: 89, longitude: 179 });
+    await page
+      .getByRole("button", { name: `Edit ${name}`, exact: true })
+      .click();
     await page
       .getByRole("button", { name: "Purchase store", exact: true })
       .click();
@@ -191,6 +232,7 @@ for (const width of [1440, 320]) {
       .selectOption(savedStore.id);
     await capture("manual-store-after-no-location-match");
     await page.getByRole("button", { name: "Save store", exact: true }).click();
+    await expect(purchase).toBeHidden();
     expect((await read(`shopping/items/${itemId}`)).purchaseId).toBe(
       purchaseId,
     );

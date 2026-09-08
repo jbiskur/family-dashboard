@@ -38,6 +38,22 @@ const schema = z.object({
   PATHWAYS_CLUSTER_PORT: z.coerce.number().int().default(9091),
   PATHWAYS_CLUSTER_ADVERTISED_ADDRESS: z.string().default("127.0.0.1"),
   TEST_TRANSFORMER_SECRET: z.string().optional(),
+  TEST_MAINTENANCE_CLOCK_URL: z
+    .string()
+    .url()
+    .refine((value) => {
+      const url = new URL(value);
+      return (
+        url.protocol === "http:" &&
+        ["localhost", "127.0.0.1"].includes(url.hostname) &&
+        url.pathname === "/__maintenance-clock" &&
+        !url.username &&
+        !url.password &&
+        !url.search &&
+        !url.hash
+      );
+    }, "Maintenance clock fixture must be a local test dependency")
+    .optional(),
   AUTH_SECRET: z.string().min(32).optional(),
   USABLE_CLIENT_SECRET: z.string().optional(),
   VAPID_PUBLIC_KEY: z.string().optional(),
@@ -46,6 +62,8 @@ const schema = z.object({
 });
 
 export const config = schema.parse(process.env);
+if (config.NODE_ENV !== "test" && config.TEST_MAINTENANCE_CLOCK_URL)
+  throw new Error("Maintenance clock fixture is test-only");
 if (
   config.NODE_ENV !== "test" &&
   (config.USABLE_API_BASE_URL !== "https://usable.dev" ||
