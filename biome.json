@@ -29,5 +29,11 @@
     "parser": {
       "tailwindDirectives": true
     }
-  }
+  },
+  "overrides": [
+    {
+      "includes": [".release-please-manifest.json"],
+      "formatter": { "enabled": false }
+    }
+  ]
 }
