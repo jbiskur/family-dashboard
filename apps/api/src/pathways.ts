@@ -14,6 +14,7 @@ import {
 } from "@heima/contracts";
 import { eq } from "drizzle-orm";
 import { projectAccess } from "./access-projection";
+import { createLocalClusterTransport } from "./cluster-transport";
 import { config } from "./config";
 import { db } from "./db/client";
 import { commands } from "./db/schema";
@@ -89,6 +90,7 @@ export async function startRuntime() {
     );
     await pathways.startCluster({
       coordinator,
+      transport: createLocalClusterTransport(),
       advertisedAddress: config.PATHWAYS_CLUSTER_ADVERTISED_ADDRESS,
       port: config.PATHWAYS_CLUSTER_PORT,
     });

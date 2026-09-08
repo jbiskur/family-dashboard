@@ -36,7 +36,9 @@ const schema = z.object({
     .default("https://webhook.api.flowcore.io"),
   PATHWAYS_ENCRYPTION_KEY: z.string().min(32),
   PATHWAYS_CLUSTER_PORT: z.coerce.number().int().default(9091),
-  PATHWAYS_CLUSTER_ADVERTISED_ADDRESS: z.string().default("127.0.0.1"),
+  PATHWAYS_CLUSTER_ADVERTISED_ADDRESS: z
+    .literal("127.0.0.1")
+    .default("127.0.0.1"),
   TEST_TRANSFORMER_SECRET: z.string().optional(),
   TEST_MAINTENANCE_CLOCK_URL: z
     .string()

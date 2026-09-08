@@ -1,0 +1,64 @@
+diff --git a/esm/pathways/cluster/node-transport.d.ts b/esm/pathways/cluster/node-transport.d.ts
+index 698c4bea042d9a177326474a122caabcd0d59dd6..dff458f438df38ca083472212137db98c0eb9450 100644
+--- a/esm/pathways/cluster/node-transport.d.ts
++++ b/esm/pathways/cluster/node-transport.d.ts
+@@ -3,5 +3,5 @@ import type { ClusterTransport } from "./types.js";
+  * Creates a cluster transport for Node.js/Bun using the `ws` package.
+  * The `ws` import is deferred to `startServer()` to avoid loading it in Deno.
+  */
+-export declare function createNodeTransport(): ClusterTransport;
++export declare function createNodeTransport(host?: string): ClusterTransport;
+ //# sourceMappingURL=node-transport.d.ts.map
+\ No newline at end of file
+diff --git a/esm/pathways/cluster/node-transport.js b/esm/pathways/cluster/node-transport.js
+index 51b8f22f340c3995656860d505d3b4e663b8f3be..5ba1740854977db48afe6236503b7d4d6e16d2a8 100644
+--- a/esm/pathways/cluster/node-transport.js
++++ b/esm/pathways/cluster/node-transport.js
+@@ -3,13 +3,13 @@ import * as dntShim from "../../_dnt.shims.js";
+  * Creates a cluster transport for Node.js/Bun using the `ws` package.
+  * The `ws` import is deferred to `startServer()` to avoid loading it in Deno.
+  */
+-export function createNodeTransport() {
++export function createNodeTransport(host = "0.0.0.0") {
+     return {
+         async startServer(port, onConnection) {
+             // deno-lint-ignore no-explicit-any
+             const ws = await import("ws");
+             const WebSocketServer = ws.WebSocketServer ?? ws.default?.WebSocketServer;
+-            const wss = new WebSocketServer({ port, host: "0.0.0.0" });
++            const wss = new WebSocketServer({ port, host });
+             return new Promise((resolve) => {
+                 wss.on("listening", () => {
+                     resolve({
+diff --git a/script/pathways/cluster/node-transport.d.ts b/script/pathways/cluster/node-transport.d.ts
+index 698c4bea042d9a177326474a122caabcd0d59dd6..dff458f438df38ca083472212137db98c0eb9450 100644
+--- a/script/pathways/cluster/node-transport.d.ts
++++ b/script/pathways/cluster/node-transport.d.ts
+@@ -3,5 +3,5 @@ import type { ClusterTransport } from "./types.js";
+  * Creates a cluster transport for Node.js/Bun using the `ws` package.
+  * The `ws` import is deferred to `startServer()` to avoid loading it in Deno.
+  */
+-export declare function createNodeTransport(): ClusterTransport;
++export declare function createNodeTransport(host?: string): ClusterTransport;
+ //# sourceMappingURL=node-transport.d.ts.map
+\ No newline at end of file
+diff --git a/script/pathways/cluster/node-transport.js b/script/pathways/cluster/node-transport.js
+index 59f7a762a1032afd29115bf674855bd91822a82e..c126229800e7cd0da952b85b4a5b5a6039390931 100644
+--- a/script/pathways/cluster/node-transport.js
++++ b/script/pathways/cluster/node-transport.js
+@@ -29,13 +29,13 @@ const dntShim = __importStar(require("../../_dnt.shims.js"));
+  * Creates a cluster transport for Node.js/Bun using the `ws` package.
+  * The `ws` import is deferred to `startServer()` to avoid loading it in Deno.
+  */
+-function createNodeTransport() {
++function createNodeTransport(host = "0.0.0.0") {
+     return {
+         async startServer(port, onConnection) {
+             // deno-lint-ignore no-explicit-any
+             const ws = await Promise.resolve().then(() => __importStar(require("ws")));
+             const WebSocketServer = ws.WebSocketServer ?? ws.default?.WebSocketServer;
+-            const wss = new WebSocketServer({ port, host: "0.0.0.0" });
++            const wss = new WebSocketServer({ port, host });
+             return new Promise((resolve) => {
+                 wss.on("listening", () => {
+                     resolve({

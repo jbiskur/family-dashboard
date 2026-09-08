@@ -1,4 +1,6 @@
 import { expect, test } from "bun:test";
+import { connect } from "node:net";
+import { networkInterfaces } from "node:os";
 
 type Mode = "empty" | "denied" | "missing" | "malformed" | "slow";
 const tenantId = "9ae80348-25b1-4c97-a2eb-654fedc6b327";
@@ -204,6 +206,7 @@ async function isolated(initial: Mode = "empty", selected = 0) {
     await Bun.sleep(40);
   }
   return {
+    clusterPort,
     origin,
     receipts,
     eventIds,
@@ -292,3 +295,43 @@ test("R4 deadline aborts a stalled fetch, late success stays unready, and a late
     await fixture.stop();
   }
 }, 60000);
+
+test("R5 running API cluster accepts loopback WebSocket and refuses non-loopback TCP", async () => {
+  const external = Object.values(networkInterfaces())
+    .flat()
+    .find((address) => address?.family === "IPv4" && !address.internal);
+  expect(external).toBeDefined();
+  const fixture = await isolated();
+  const port = fixture.clusterPort;
+  const sockets: WebSocket[] = [];
+  try {
+    expect((await fetch(`${fixture.origin}/health/ready`)).status).toBe(200);
+    const response = await new Promise<string>((resolve, reject) => {
+      const socket = new WebSocket(`ws://127.0.0.1:${port}`);
+      sockets.push(socket);
+      socket.onopen = () => socket.send(JSON.stringify({ type: "ping" }));
+      socket.onmessage = (event) => resolve(String(event.data));
+      socket.onerror = () =>
+        reject(new Error("Loopback cluster connection failed"));
+    });
+    expect(JSON.parse(response)).toEqual({ type: "pong" });
+    const externalResult = await new Promise<string>((resolve) => {
+      const socket = connect({ host: external?.address, port });
+      socket.once("connect", () => {
+        socket.destroy();
+        resolve("accepted");
+      });
+      socket.once("error", (error: NodeJS.ErrnoException) =>
+        resolve(error.code ?? "unknown"),
+      );
+      socket.setTimeout(2_000, () => {
+        socket.destroy();
+        resolve("timeout");
+      });
+    });
+    expect(externalResult).toBe("ECONNREFUSED");
+  } finally {
+    for (const socket of sockets) socket.close();
+    await fixture.stop();
+  }
+}, 30000);
