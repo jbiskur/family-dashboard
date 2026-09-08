@@ -1,8 +1,8 @@
 import { readFileSync } from "node:fs";
 import { expect, type Page, test } from "@playwright/test";
 import {
-  macWebKitOfflineNavigationUnsupported,
   offlineNavigationLimitation,
+  webKitOfflineNavigationUnsupported,
 } from "../fixtures/browser-capabilities";
 
 const env = Object.fromEntries(
@@ -120,7 +120,7 @@ test("Shopping offline reorder, complete, reopen and remove preserve the command
     ).toBeHidden();
     await expect.poll(() => queued(page)).toBeGreaterThanOrEqual(5);
     test.skip(
-      macWebKitOfflineNavigationUnsupported(browserName),
+      webKitOfflineNavigationUnsupported(browserName),
       offlineNavigationLimitation,
     );
     await page.reload();
@@ -223,7 +223,7 @@ test("Work offline assignment, due date and status chain survives reload and syn
     ).toBeVisible();
     await page.keyboard.press("Escape");
     test.skip(
-      macWebKitOfflineNavigationUnsupported(browserName),
+      webKitOfflineNavigationUnsupported(browserName),
       offlineNavigationLimitation,
     );
     await page.reload();

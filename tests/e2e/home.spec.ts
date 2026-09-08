@@ -27,8 +27,11 @@ test("Home quick capture connects to the owning list and Work without duplicate 
     .getByRole("textbox", { name: "List name", exact: true })
     .fill(list);
   await page.getByRole("button", { name: "Create list", exact: true }).click();
+  await expect(page).toHaveURL(
+    /^http:\/\/localhost:3010\/shopping\/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/,
+  );
   await expect(
-    page.getByRole("heading", { name: list, exact: true }),
+    page.getByRole("heading", { name: list, exact: true, level: 1 }),
   ).toBeVisible();
   const listPath = new URL(page.url()).pathname;
   await page.goto("/");

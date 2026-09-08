@@ -105,6 +105,19 @@ export function HouseholdSettings({
                   <hr className="separator" />
                   <h3 style={{ marginBottom: 9 }}>Invite your spouse</h3>
                   {pending &&
+                    (pending.status === "cancelled" ||
+                      pending.status === "expired") && (
+                      <p
+                        className="notice"
+                        role="status"
+                        style={{ marginBottom: 16 }}
+                      >
+                        {pending.status === "expired"
+                          ? "The previous invitation expired. Request a new invitation below."
+                          : "The previous invitation was cancelled. You can request access again below."}
+                      </p>
+                    )}
+                  {pending &&
                   ["requesting", "pending", "request-failed"].includes(
                     pending.status,
                   ) ? (
