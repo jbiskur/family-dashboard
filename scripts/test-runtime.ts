@@ -11,6 +11,7 @@ for (const line of (
 const denied = new Set<string>();
 let upstreamFailure = false;
 let inviteStatus = 201;
+let maintenanceClock: string | null = null;
 const pushFixture = new PushServiceFixture();
 const fixture = new WebhookTestFixture({
   port: 3212,
@@ -25,6 +26,12 @@ const fixture = new WebhookTestFixture({
       response.writeHead(status, { "content-type": "application/json" });
       response.end(JSON.stringify(body));
     };
+    if (url.pathname === "/__maintenance-clock") {
+      send(process.env.NODE_ENV === "test" ? 200 : 404, {
+        now: maintenanceClock ?? new Date().toISOString(),
+      });
+      return true;
+    }
     if (url.pathname === "/__controls") {
       const chunks: Buffer[] = [];
       for await (const chunk of request) chunks.push(Buffer.from(chunk));
@@ -33,8 +40,21 @@ const fixture = new WebhookTestFixture({
         denied.clear();
         upstreamFailure = false;
         inviteStatus = 201;
+        maintenanceClock = null;
         fixture.setInboundStatus(200);
         fixture.releaseWrites();
+      }
+      if ("maintenanceClock" in body) {
+        if (
+          process.env.NODE_ENV !== "test" ||
+          (body.maintenanceClock !== null &&
+            (typeof body.maintenanceClock !== "string" ||
+              !Number.isFinite(Date.parse(body.maintenanceClock))))
+        ) {
+          send(400, { error: "Invalid test scheduler instant" });
+          return true;
+        }
+        maintenanceClock = body.maintenanceClock;
       }
       if (typeof body.inviteStatus === "number")
         inviteStatus = body.inviteStatus;
@@ -108,7 +128,15 @@ const api = Bun.spawn(
     "./apps/api/src/index.ts",
   ],
   {
-    env: process.env,
+    env: {
+      ...process.env,
+      ...(process.env.NODE_ENV === "test"
+        ? {
+            TEST_MAINTENANCE_CLOCK_URL:
+              "http://127.0.0.1:3212/__maintenance-clock",
+          }
+        : {}),
+    },
     stdout: "inherit",
     stderr: "inherit",
   },
