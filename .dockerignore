@@ -12,3 +12,4 @@ playwright-report
 *.png
 family-dashboard.html
 !apps/web/public/**/*.png
+browser-capabilities/

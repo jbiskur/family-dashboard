@@ -2,8 +2,8 @@ import { readFileSync } from "node:fs";
 import AxeBuilder from "@axe-core/playwright";
 import { expect, type Page, test } from "@playwright/test";
 import {
-  macWebKitOfflineNavigationUnsupported,
   offlineNavigationLimitation,
+  webKitOfflineNavigationUnsupported,
 } from "../fixtures/browser-capabilities";
 
 const env = Object.fromEntries(
@@ -79,7 +79,7 @@ test("Work survives an offline create, hard reload and idempotent reconnect", as
     });
     await page.keyboard.press("Escape");
     test.skip(
-      macWebKitOfflineNavigationUnsupported(browserName),
+      webKitOfflineNavigationUnsupported(browserName),
       offlineNavigationLimitation,
     );
     await page.reload();
@@ -145,7 +145,7 @@ test("Shopping survives an offline item create, hard reload and reconnect", asyn
     });
     await page.keyboard.press("Escape");
     test.skip(
-      macWebKitOfflineNavigationUnsupported(browserName),
+      webKitOfflineNavigationUnsupported(browserName),
       offlineNavigationLimitation,
     );
     await page.reload();
@@ -354,7 +354,7 @@ test("Revoked eligibility purges private offline data before disconnected naviga
       .toBe(false);
     await context.setOffline(true);
     test.skip(
-      macWebKitOfflineNavigationUnsupported(browserName),
+      webKitOfflineNavigationUnsupported(browserName),
       offlineNavigationLimitation,
     );
     await page.goto("/work");
@@ -608,7 +608,7 @@ test("Observed list permission loss cannot reappear from offline cache", async (
       .toBe(false);
     await spouseContext.setOffline(true);
     test.skip(
-      macWebKitOfflineNavigationUnsupported(browserName),
+      webKitOfflineNavigationUnsupported(browserName),
       offlineNavigationLimitation,
     );
     await spouse.reload();

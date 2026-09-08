@@ -1,8 +1,8 @@
 import { readFileSync } from "node:fs";
 import { expect, type Page, test } from "@playwright/test";
 import {
-  macWebKitOfflineNavigationUnsupported,
   offlineNavigationLimitation,
+  webKitOfflineNavigationUnsupported,
 } from "../fixtures/browser-capabilities";
 
 const settings = Object.fromEntries(
@@ -97,7 +97,7 @@ test("a real rejected offline assignment creates one private generic sync activi
     await context.setOffline(true);
     // Keep the complete producer journey on macOS WebKit; the independent control
     // excludes only its unsupported offline hard navigation. Other engines prove reload.
-    if (macWebKitOfflineNavigationUnsupported(browserName)) {
+    if (webKitOfflineNavigationUnsupported(browserName)) {
       info.annotations.push({
         type: "offline-navigation-limitation",
         description: offlineNavigationLimitation,

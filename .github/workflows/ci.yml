@@ -45,9 +45,13 @@ jobs:
           cat /tmp/heima-runtime.log
           exit 1
       - run: bun test tests/http
+      - name: Probe independent WebKit offline navigation
+        if: matrix.project == 'webkit'
+        run: node tests/manual/webkit-offline-control.mjs --report browser-capabilities/webkit-offline.json
       - name: Verify browser journeys
         env:
           BROWSER_PROJECT: ${{ matrix.project }}
+          HEIMA_BROWSER_CAPABILITY_REPORT: ${{ github.workspace }}/browser-capabilities/webkit-offline.json
         run: bunx playwright test --project="$BROWSER_PROJECT"
       - uses: actions/upload-artifact@v4
         if: always()
@@ -56,4 +60,5 @@ jobs:
           path: |
             test-results/
             playwright-report/
+            browser-capabilities/
           retention-days: 14

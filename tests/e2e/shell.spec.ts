@@ -5,8 +5,8 @@ import { join } from "node:path";
 import AxeBuilder from "@axe-core/playwright";
 import { chromium, expect, test } from "@playwright/test";
 import {
-  macWebKitOfflineNavigationUnsupported,
   offlineNavigationLimitation,
+  webKitOfflineNavigationUnsupported,
 } from "../fixtures/browser-capabilities";
 
 const env = Object.fromEntries(
@@ -134,7 +134,7 @@ test("Reduced motion and 200-percent equivalent layout retain usable navigation"
       ),
     ).toBe(false);
     await context.setOffline(true);
-    if (macWebKitOfflineNavigationUnsupported(browserName))
+    if (webKitOfflineNavigationUnsupported(browserName))
       info.annotations.push({
         type: "engine limitation",
         description: offlineNavigationLimitation,
