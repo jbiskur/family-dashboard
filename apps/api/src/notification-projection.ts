@@ -1,6 +1,7 @@
 import type { FlowcoreEvent } from "@flowcore/pathways";
 import type { NotificationEvent } from "@heima/contracts";
 import { and, eq, sql } from "drizzle-orm";
+import { syncTarget } from "./activity-links";
 import { db } from "./db/client";
 import { activity, commands, members, resources } from "./db/schema";
 import { canRead } from "./domain";
@@ -63,6 +64,45 @@ export async function projectNotification(
             eq(resources.kind, "settings/devices"),
           ),
         );
+    } else if (p.action === "sync-failure") {
+      if (p.actorId !== p.recipientId || !p.syncFailure) return;
+      const original = (
+        await tx
+          .select()
+          .from(commands)
+          .where(eq(commands.id, p.syncFailure.failedCommandId))
+          .limit(1)
+      )[0];
+      if (
+        original &&
+        (original.householdId !== p.householdId ||
+          original.actorId !== p.actorId)
+      )
+        return;
+      if (original?.status !== "completed") {
+        const all = await tx
+          .select()
+          .from(resources)
+          .where(eq(resources.householdId, p.householdId));
+        const target = syncTarget(
+          p.syncFailure.area,
+          p.syncFailure.resourceId,
+          p.actorId,
+          all,
+        );
+        await tx
+          .insert(activity)
+          .values({
+            id: semanticId(`${p.commandId}:activity`),
+            householdId: p.householdId,
+            recipientId: p.actorId,
+            ...target,
+            category: "syncFailures",
+            title: "A queued change needs review",
+            occurredAt: now,
+          })
+          .onConflictDoNothing();
+      }
     } else {
       const all = await tx
         .select()

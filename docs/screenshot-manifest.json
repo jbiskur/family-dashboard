@@ -1,0 +1,1131 @@
+{
+  "capturedAt": "2026-09-08",
+  "environment": "Local real Keycloak / API / Postgres / Flowcore webhook fixture",
+  "receipts": [
+    {
+      "feature": "356f3e15-0c04-4aac-a838-55352310e95c",
+      "path": "/",
+      "screenshot": "docs/screenshots/feature-paths/login-1440.png",
+      "state": "login",
+      "evidence": "Fresh fictional household; optimized app; Chromium route/dialog WCAG A/AA and viewport checks passed at 1440px and 320px. Scenario proof in verification.md."
+    },
+    {
+      "feature": "075fefa3-1232-4a15-80d3-a6520e500fd1",
+      "path": "/",
+      "screenshot": "docs/screenshots/feature-paths/home-1440.png",
+      "state": "home",
+      "evidence": "Fresh fictional household; optimized app; Chromium route/dialog WCAG A/AA and viewport checks passed at 1440px and 320px. Scenario proof in verification.md."
+    },
+    {
+      "feature": "1795cf35-a5ca-4290-a526-5bcbecad9a27",
+      "path": "/",
+      "screenshot": "docs/screenshots/feature-paths/home-1440.png",
+      "state": "home",
+      "evidence": "Fresh fictional household; optimized app; Chromium route/dialog WCAG A/AA and viewport checks passed at 1440px and 320px. Scenario proof in verification.md."
+    },
+    {
+      "feature": "fc1b28d5-86d1-45bc-9be4-8011d3e96393",
+      "path": "/",
+      "screenshot": "docs/screenshots/feature-paths/home-1440.png",
+      "state": "home",
+      "evidence": "Fresh fictional household; optimized app; Chromium route/dialog WCAG A/AA and viewport checks passed at 1440px and 320px. Scenario proof in verification.md."
+    },
+    {
+      "feature": "075fefa3-1232-4a15-80d3-a6520e500fd1",
+      "path": "/",
+      "screenshot": "docs/screenshots/feature-paths/home-quick-add-1440.png",
+      "state": "home-quick-add",
+      "evidence": "Fresh fictional household; optimized app; Chromium route/dialog WCAG A/AA and viewport checks passed at 1440px and 320px. Scenario proof in verification.md."
+    },
+    {
+      "feature": "a0c751ca-1dbe-4d54-905e-c741ad852345",
+      "path": "/shopping",
+      "screenshot": "docs/screenshots/feature-paths/shopping-directory-1440.png",
+      "state": "shopping-directory",
+      "evidence": "Fresh fictional household; optimized app; Chromium route/dialog WCAG A/AA and viewport checks passed at 1440px and 320px. Scenario proof in verification.md."
+    },
+    {
+      "feature": "a0c751ca-1dbe-4d54-905e-c741ad852345",
+      "path": "/shopping",
+      "screenshot": "docs/screenshots/feature-paths/shopping-create-list-1440.png",
+      "state": "shopping-create-list",
+      "evidence": "Fresh fictional household; optimized app; Chromium route/dialog WCAG A/AA and viewport checks passed at 1440px and 320px. Scenario proof in verification.md."
+    },
+    {
+      "feature": "95e4fc63-efc0-4496-b9f9-c575eae1fd15",
+      "path": "/shopping/2ec548b9-41a2-5660-9cd9-f5edf9ea8c65",
+      "screenshot": "docs/screenshots/feature-paths/shopping-list-detail-1440.png",
+      "state": "shopping-list-detail",
+      "evidence": "Fresh fictional household; optimized app; Chromium route/dialog WCAG A/AA and viewport checks passed at 1440px and 320px. Scenario proof in verification.md."
+    },
+    {
+      "feature": "85e60f20-ca21-4fa1-95cb-ec507c56e3c2",
+      "path": "/shopping/2ec548b9-41a2-5660-9cd9-f5edf9ea8c65",
+      "screenshot": "docs/screenshots/feature-paths/shopping-list-detail-1440.png",
+      "state": "shopping-list-detail",
+      "evidence": "Fresh fictional household; optimized app; Chromium route/dialog WCAG A/AA and viewport checks passed at 1440px and 320px. Scenario proof in verification.md."
+    },
+    {
+      "feature": "06485852-13f5-474a-b30f-e75fe82cf7d0",
+      "path": "/shopping/2ec548b9-41a2-5660-9cd9-f5edf9ea8c65",
+      "screenshot": "docs/screenshots/feature-paths/shopping-list-detail-1440.png",
+      "state": "shopping-list-detail",
+      "evidence": "Fresh fictional household; optimized app; Chromium route/dialog WCAG A/AA and viewport checks passed at 1440px and 320px. Scenario proof in verification.md."
+    },
+    {
+      "feature": "95e4fc63-efc0-4496-b9f9-c575eae1fd15",
+      "path": "/shopping/2ec548b9-41a2-5660-9cd9-f5edf9ea8c65",
+      "screenshot": "docs/screenshots/feature-paths/shopping-add-item-offer-1440.png",
+      "state": "shopping-add-item-offer",
+      "evidence": "Fresh fictional household; optimized app; Chromium route/dialog WCAG A/AA and viewport checks passed at 1440px and 320px. Scenario proof in verification.md."
+    },
+    {
+      "feature": "85e60f20-ca21-4fa1-95cb-ec507c56e3c2",
+      "path": "/shopping/2ec548b9-41a2-5660-9cd9-f5edf9ea8c65",
+      "screenshot": "docs/screenshots/feature-paths/shopping-add-item-offer-1440.png",
+      "state": "shopping-add-item-offer",
+      "evidence": "Fresh fictional household; optimized app; Chromium route/dialog WCAG A/AA and viewport checks passed at 1440px and 320px. Scenario proof in verification.md."
+    },
+    {
+      "feature": "1154e9d2-f333-41fb-a6f6-a93653fbefc8",
+      "path": "/shopping/2ec548b9-41a2-5660-9cd9-f5edf9ea8c65",
+      "screenshot": "docs/screenshots/feature-paths/shopping-list-visibility-confirmation-1440.png",
+      "state": "shopping-list-visibility-confirmation",
+      "evidence": "Fresh fictional household; optimized app; Chromium route/dialog WCAG A/AA and viewport checks passed at 1440px and 320px. Scenario proof in verification.md."
+    },
+    {
+      "feature": "06485852-13f5-474a-b30f-e75fe82cf7d0",
+      "path": "/shopping/216e4666-e8e3-50bf-9292-b20979901c5c",
+      "screenshot": "docs/screenshots/feature-paths/shopping-purchase-store-1440.png",
+      "state": "shopping-purchase-store",
+      "evidence": "UI rendered and WCAG A/AA scan passed; full scenario proof separate"
+    },
+    {
+      "feature": "748622b5-4c53-4f89-a62e-c6ffdcf81509",
+      "path": "/shopping/stores",
+      "screenshot": "docs/screenshots/feature-paths/stores-1440.png",
+      "state": "stores",
+      "evidence": "Fresh fictional household; optimized app; Chromium route/dialog WCAG A/AA and viewport checks passed at 1440px and 320px. Scenario proof in verification.md."
+    },
+    {
+      "feature": "748622b5-4c53-4f89-a62e-c6ffdcf81509",
+      "path": "/shopping/stores",
+      "screenshot": "docs/screenshots/feature-paths/store-create-location-1440.png",
+      "state": "store-create-location",
+      "evidence": "Fresh fictional household; optimized app; Chromium route/dialog WCAG A/AA and viewport checks passed at 1440px and 320px. Scenario proof in verification.md."
+    },
+    {
+      "feature": "91af72df-8407-49ea-ab25-738aa02b6bc4",
+      "path": "/work",
+      "screenshot": "docs/screenshots/feature-paths/work-board-1440.png",
+      "state": "work-board",
+      "evidence": "Fresh fictional household; optimized app; Chromium route/dialog WCAG A/AA and viewport checks passed at 1440px and 320px. Scenario proof in verification.md."
+    },
+    {
+      "feature": "91af72df-8407-49ea-ab25-738aa02b6bc4",
+      "path": "/work",
+      "screenshot": "docs/screenshots/feature-paths/work-create-assignment-recurrence-1440.png",
+      "state": "work-create-assignment-recurrence",
+      "evidence": "Fresh fictional household; optimized app; Chromium route/dialog WCAG A/AA and viewport checks passed at 1440px and 320px. Scenario proof in verification.md."
+    },
+    {
+      "feature": "a83f1ed2-d88b-44a1-87b6-119ab2ef8053",
+      "path": "/work",
+      "screenshot": "docs/screenshots/feature-paths/work-create-assignment-recurrence-1440.png",
+      "state": "work-create-assignment-recurrence",
+      "evidence": "Fresh fictional household; optimized app; Chromium route/dialog WCAG A/AA and viewport checks passed at 1440px and 320px. Scenario proof in verification.md."
+    },
+    {
+      "feature": "64e88dcf-cfa7-4882-8863-4ef8dccc7391",
+      "path": "/work",
+      "screenshot": "docs/screenshots/feature-paths/work-create-assignment-recurrence-1440.png",
+      "state": "work-create-assignment-recurrence",
+      "evidence": "Fresh fictional household; optimized app; Chromium route/dialog WCAG A/AA and viewport checks passed at 1440px and 320px. Scenario proof in verification.md."
+    },
+    {
+      "feature": "91af72df-8407-49ea-ab25-738aa02b6bc4",
+      "path": "/work",
+      "screenshot": "docs/screenshots/feature-paths/work-detail-1440.png",
+      "state": "work-detail",
+      "evidence": "Fresh fictional household; optimized app; Chromium route/dialog WCAG A/AA and viewport checks passed at 1440px and 320px. Scenario proof in verification.md.",
+      "interaction": "Open the first Work card; screenshot state identifies its dialog."
+    },
+    {
+      "feature": "a83f1ed2-d88b-44a1-87b6-119ab2ef8053",
+      "path": "/work",
+      "screenshot": "docs/screenshots/feature-paths/work-detail-1440.png",
+      "state": "work-detail",
+      "evidence": "Fresh fictional household; optimized app; Chromium route/dialog WCAG A/AA and viewport checks passed at 1440px and 320px. Scenario proof in verification.md.",
+      "interaction": "Open the first Work card; screenshot state identifies its dialog."
+    },
+    {
+      "feature": "64e88dcf-cfa7-4882-8863-4ef8dccc7391",
+      "path": "/work",
+      "screenshot": "docs/screenshots/feature-paths/work-detail-1440.png",
+      "state": "work-detail",
+      "evidence": "Fresh fictional household; optimized app; Chromium route/dialog WCAG A/AA and viewport checks passed at 1440px and 320px. Scenario proof in verification.md.",
+      "interaction": "Open the first Work card; screenshot state identifies its dialog."
+    },
+    {
+      "feature": "2e58d7da-a071-4cb3-9d13-8ac8a8d4af6e",
+      "path": "/work",
+      "screenshot": "docs/screenshots/feature-paths/work-history-1440.png",
+      "state": "work-history",
+      "evidence": "Fresh fictional household; optimized app; Chromium route/dialog WCAG A/AA and viewport checks passed at 1440px and 320px. Scenario proof in verification.md.",
+      "interaction": "Open the first Work card; screenshot state identifies its dialog."
+    },
+    {
+      "feature": "4e2d9ae3-ef97-4a6f-9c8f-dc5c514f7d1f",
+      "path": "/work",
+      "screenshot": "docs/screenshots/feature-paths/work-scope-confirmation-1440.png",
+      "state": "work-scope-confirmation",
+      "evidence": "Fresh fictional household; optimized app; Chromium route/dialog WCAG A/AA and viewport checks passed at 1440px and 320px. Scenario proof in verification.md.",
+      "interaction": "Open the first Work card; screenshot state identifies its dialog."
+    },
+    {
+      "feature": "5acb0582-b26c-4d24-9454-883b84e286f5",
+      "path": "/finance",
+      "screenshot": "docs/screenshots/feature-paths/finance-overview-1440.png",
+      "state": "finance-overview",
+      "evidence": "Fresh fictional household; optimized app; Chromium route/dialog WCAG A/AA and viewport checks passed at 1440px and 320px. Scenario proof in verification.md."
+    },
+    {
+      "feature": "0230cd86-af8c-437a-9a01-afb4839ddb25",
+      "path": "/finance/spending",
+      "screenshot": "docs/screenshots/feature-paths/finance-spending-1440.png",
+      "state": "finance-spending",
+      "evidence": "Fresh fictional household; optimized app; Chromium route/dialog WCAG A/AA and viewport checks passed at 1440px and 320px. Scenario proof in verification.md."
+    },
+    {
+      "feature": "69595cdd-68c2-4884-9ae9-ff929df200ce",
+      "path": "/finance/accounts",
+      "screenshot": "docs/screenshots/feature-paths/finance-accounts-1440.png",
+      "state": "finance-accounts",
+      "evidence": "Fresh fictional household; optimized app; Chromium route/dialog WCAG A/AA and viewport checks passed at 1440px and 320px. Scenario proof in verification.md."
+    },
+    {
+      "feature": "69595cdd-68c2-4884-9ae9-ff929df200ce",
+      "path": "/finance/accounts",
+      "screenshot": "docs/screenshots/feature-paths/finance-account-create-1440.png",
+      "state": "finance-account-create",
+      "evidence": "Fresh fictional household; optimized app; Chromium route/dialog WCAG A/AA and viewport checks passed at 1440px and 320px. Scenario proof in verification.md."
+    },
+    {
+      "feature": "4309c82f-f717-4d56-8faa-cc5d492fad75",
+      "path": "/finance/accounts/2b392c22-ce7f-53ae-a4a2-43baee84f789",
+      "screenshot": "docs/screenshots/feature-paths/finance-account-detail-1440.png",
+      "state": "finance-account-detail",
+      "evidence": "Fresh fictional household; optimized app; Chromium route/dialog WCAG A/AA and viewport checks passed at 1440px and 320px. Scenario proof in verification.md."
+    },
+    {
+      "feature": "7f3e4bf3-6659-4010-8c57-b1be2f9f12c9",
+      "path": "/finance/transactions",
+      "screenshot": "docs/screenshots/feature-paths/finance-transactions-1440.png",
+      "state": "finance-transactions",
+      "evidence": "Fresh fictional household; optimized app; Chromium route/dialog WCAG A/AA and viewport checks passed at 1440px and 320px. Scenario proof in verification.md."
+    },
+    {
+      "feature": "10c22d2d-b275-4042-a5e2-3409a8a006d5",
+      "path": "/finance/transactions",
+      "screenshot": "docs/screenshots/feature-paths/finance-manual-exception-1440.png",
+      "state": "finance-manual-exception",
+      "evidence": "Fresh fictional household; optimized app; Chromium route/dialog WCAG A/AA and viewport checks passed at 1440px and 320px. Scenario proof in verification.md."
+    },
+    {
+      "feature": "f972dec6-6666-4338-b2ec-3e246e3ff2d2",
+      "path": "/finance/budgets",
+      "screenshot": "docs/screenshots/feature-paths/finance-budgets-1440.png",
+      "state": "finance-budgets",
+      "evidence": "Fresh fictional household; optimized app; Chromium route/dialog WCAG A/AA and viewport checks passed at 1440px and 320px. Scenario proof in verification.md."
+    },
+    {
+      "feature": "f972dec6-6666-4338-b2ec-3e246e3ff2d2",
+      "path": "/finance/budgets",
+      "screenshot": "docs/screenshots/feature-paths/finance-budget-create-1440.png",
+      "state": "finance-budget-create",
+      "evidence": "Fresh fictional household; optimized app; Chromium route/dialog WCAG A/AA and viewport checks passed at 1440px and 320px. Scenario proof in verification.md."
+    },
+    {
+      "feature": "1ac0abfd-e7f7-4d7f-8b06-c1256f0eb680",
+      "path": "/finance/budgets",
+      "screenshot": "docs/screenshots/feature-paths/finance-category-tree-1440.png",
+      "state": "finance-category-tree",
+      "evidence": "Fresh fictional household; optimized app; Chromium route/dialog WCAG A/AA and viewport checks passed at 1440px and 320px. Scenario proof in verification.md."
+    },
+    {
+      "feature": "d1712d7f-af94-4946-8629-c065fb780a23",
+      "path": "/finance/imports",
+      "screenshot": "docs/screenshots/feature-paths/finance-imports-1440.png",
+      "state": "finance-imports",
+      "evidence": "Fresh fictional household; optimized app; Chromium route/dialog WCAG A/AA and viewport checks passed at 1440px and 320px. Scenario proof in verification.md."
+    },
+    {
+      "feature": "e1664e78-0689-48fa-a609-3c7e2d467772",
+      "path": "/finance/imports",
+      "screenshot": "docs/screenshots/feature-paths/finance-imports-1440.png",
+      "state": "finance-imports",
+      "evidence": "Fresh fictional household; optimized app; Chromium route/dialog WCAG A/AA and viewport checks passed at 1440px and 320px. Scenario proof in verification.md."
+    },
+    {
+      "feature": "356f3e15-0c04-4aac-a838-55352310e95c",
+      "path": "/settings/household",
+      "screenshot": "docs/screenshots/feature-paths/household-members-profiles-1440.png",
+      "state": "household-members-profiles",
+      "evidence": "Fresh fictional household; optimized app; Chromium route/dialog WCAG A/AA and viewport checks passed at 1440px and 320px. Scenario proof in verification.md."
+    },
+    {
+      "feature": "7025de7c-5fb5-4e08-939b-eff542fb1dc3",
+      "path": "/settings/household",
+      "screenshot": "docs/screenshots/feature-paths/household-members-profiles-1440.png",
+      "state": "household-members-profiles",
+      "evidence": "Fresh fictional household; optimized app; Chromium route/dialog WCAG A/AA and viewport checks passed at 1440px and 320px. Scenario proof in verification.md."
+    },
+    {
+      "feature": "eb2cefa6-5a47-481e-b430-89960338ed72",
+      "path": "/settings/notifications",
+      "screenshot": "docs/screenshots/feature-paths/notification-preferences-1440.png",
+      "state": "notification-preferences",
+      "evidence": "Fresh fictional household; optimized app; Chromium route/dialog WCAG A/AA and viewport checks passed at 1440px and 320px. Scenario proof in verification.md."
+    },
+    {
+      "feature": "356f3e15-0c04-4aac-a838-55352310e95c",
+      "path": "/",
+      "screenshot": "docs/screenshots/feature-paths/login-320.png",
+      "state": "login",
+      "evidence": "Fresh fictional household; optimized app; Chromium route/dialog WCAG A/AA and viewport checks passed at 1440px and 320px. Scenario proof in verification.md."
+    },
+    {
+      "feature": "075fefa3-1232-4a15-80d3-a6520e500fd1",
+      "path": "/",
+      "screenshot": "docs/screenshots/feature-paths/home-320.png",
+      "state": "home",
+      "evidence": "Fresh fictional household; optimized app; Chromium route/dialog WCAG A/AA and viewport checks passed at 1440px and 320px. Scenario proof in verification.md."
+    },
+    {
+      "feature": "1795cf35-a5ca-4290-a526-5bcbecad9a27",
+      "path": "/",
+      "screenshot": "docs/screenshots/feature-paths/home-320.png",
+      "state": "home",
+      "evidence": "Fresh fictional household; optimized app; Chromium route/dialog WCAG A/AA and viewport checks passed at 1440px and 320px. Scenario proof in verification.md."
+    },
+    {
+      "feature": "fc1b28d5-86d1-45bc-9be4-8011d3e96393",
+      "path": "/",
+      "screenshot": "docs/screenshots/feature-paths/home-320.png",
+      "state": "home",
+      "evidence": "Fresh fictional household; optimized app; Chromium route/dialog WCAG A/AA and viewport checks passed at 1440px and 320px. Scenario proof in verification.md."
+    },
+    {
+      "feature": "075fefa3-1232-4a15-80d3-a6520e500fd1",
+      "path": "/",
+      "screenshot": "docs/screenshots/feature-paths/home-quick-add-320.png",
+      "state": "home-quick-add",
+      "evidence": "Fresh fictional household; optimized app; Chromium route/dialog WCAG A/AA and viewport checks passed at 1440px and 320px. Scenario proof in verification.md."
+    },
+    {
+      "feature": "a0c751ca-1dbe-4d54-905e-c741ad852345",
+      "path": "/shopping",
+      "screenshot": "docs/screenshots/feature-paths/shopping-directory-320.png",
+      "state": "shopping-directory",
+      "evidence": "Fresh fictional household; optimized app; Chromium route/dialog WCAG A/AA and viewport checks passed at 1440px and 320px. Scenario proof in verification.md."
+    },
+    {
+      "feature": "a0c751ca-1dbe-4d54-905e-c741ad852345",
+      "path": "/shopping",
+      "screenshot": "docs/screenshots/feature-paths/shopping-create-list-320.png",
+      "state": "shopping-create-list",
+      "evidence": "Fresh fictional household; optimized app; Chromium route/dialog WCAG A/AA and viewport checks passed at 1440px and 320px. Scenario proof in verification.md."
+    },
+    {
+      "feature": "95e4fc63-efc0-4496-b9f9-c575eae1fd15",
+      "path": "/shopping/2ec548b9-41a2-5660-9cd9-f5edf9ea8c65",
+      "screenshot": "docs/screenshots/feature-paths/shopping-list-detail-320.png",
+      "state": "shopping-list-detail",
+      "evidence": "Fresh fictional household; optimized app; Chromium route/dialog WCAG A/AA and viewport checks passed at 1440px and 320px. Scenario proof in verification.md."
+    },
+    {
+      "feature": "85e60f20-ca21-4fa1-95cb-ec507c56e3c2",
+      "path": "/shopping/2ec548b9-41a2-5660-9cd9-f5edf9ea8c65",
+      "screenshot": "docs/screenshots/feature-paths/shopping-list-detail-320.png",
+      "state": "shopping-list-detail",
+      "evidence": "Fresh fictional household; optimized app; Chromium route/dialog WCAG A/AA and viewport checks passed at 1440px and 320px. Scenario proof in verification.md."
+    },
+    {
+      "feature": "06485852-13f5-474a-b30f-e75fe82cf7d0",
+      "path": "/shopping/2ec548b9-41a2-5660-9cd9-f5edf9ea8c65",
+      "screenshot": "docs/screenshots/feature-paths/shopping-list-detail-320.png",
+      "state": "shopping-list-detail",
+      "evidence": "Fresh fictional household; optimized app; Chromium route/dialog WCAG A/AA and viewport checks passed at 1440px and 320px. Scenario proof in verification.md."
+    },
+    {
+      "feature": "95e4fc63-efc0-4496-b9f9-c575eae1fd15",
+      "path": "/shopping/2ec548b9-41a2-5660-9cd9-f5edf9ea8c65",
+      "screenshot": "docs/screenshots/feature-paths/shopping-add-item-offer-320.png",
+      "state": "shopping-add-item-offer",
+      "evidence": "Fresh fictional household; optimized app; Chromium route/dialog WCAG A/AA and viewport checks passed at 1440px and 320px. Scenario proof in verification.md."
+    },
+    {
+      "feature": "85e60f20-ca21-4fa1-95cb-ec507c56e3c2",
+      "path": "/shopping/2ec548b9-41a2-5660-9cd9-f5edf9ea8c65",
+      "screenshot": "docs/screenshots/feature-paths/shopping-add-item-offer-320.png",
+      "state": "shopping-add-item-offer",
+      "evidence": "Fresh fictional household; optimized app; Chromium route/dialog WCAG A/AA and viewport checks passed at 1440px and 320px. Scenario proof in verification.md."
+    },
+    {
+      "feature": "1154e9d2-f333-41fb-a6f6-a93653fbefc8",
+      "path": "/shopping/2ec548b9-41a2-5660-9cd9-f5edf9ea8c65",
+      "screenshot": "docs/screenshots/feature-paths/shopping-list-visibility-confirmation-320.png",
+      "state": "shopping-list-visibility-confirmation",
+      "evidence": "Fresh fictional household; optimized app; Chromium route/dialog WCAG A/AA and viewport checks passed at 1440px and 320px. Scenario proof in verification.md."
+    },
+    {
+      "feature": "06485852-13f5-474a-b30f-e75fe82cf7d0",
+      "path": "/shopping/216e4666-e8e3-50bf-9292-b20979901c5c",
+      "screenshot": "docs/screenshots/feature-paths/shopping-purchase-store-320.png",
+      "state": "shopping-purchase-store",
+      "evidence": "UI rendered and WCAG A/AA scan passed; full scenario proof separate"
+    },
+    {
+      "feature": "748622b5-4c53-4f89-a62e-c6ffdcf81509",
+      "path": "/shopping/stores",
+      "screenshot": "docs/screenshots/feature-paths/stores-320.png",
+      "state": "stores",
+      "evidence": "Fresh fictional household; optimized app; Chromium route/dialog WCAG A/AA and viewport checks passed at 1440px and 320px. Scenario proof in verification.md."
+    },
+    {
+      "feature": "748622b5-4c53-4f89-a62e-c6ffdcf81509",
+      "path": "/shopping/stores",
+      "screenshot": "docs/screenshots/feature-paths/store-create-location-320.png",
+      "state": "store-create-location",
+      "evidence": "Fresh fictional household; optimized app; Chromium route/dialog WCAG A/AA and viewport checks passed at 1440px and 320px. Scenario proof in verification.md."
+    },
+    {
+      "feature": "91af72df-8407-49ea-ab25-738aa02b6bc4",
+      "path": "/work",
+      "screenshot": "docs/screenshots/feature-paths/work-board-320.png",
+      "state": "work-board",
+      "evidence": "Fresh fictional household; optimized app; Chromium route/dialog WCAG A/AA and viewport checks passed at 1440px and 320px. Scenario proof in verification.md."
+    },
+    {
+      "feature": "91af72df-8407-49ea-ab25-738aa02b6bc4",
+      "path": "/work",
+      "screenshot": "docs/screenshots/feature-paths/work-create-assignment-recurrence-320.png",
+      "state": "work-create-assignment-recurrence",
+      "evidence": "Fresh fictional household; optimized app; Chromium route/dialog WCAG A/AA and viewport checks passed at 1440px and 320px. Scenario proof in verification.md."
+    },
+    {
+      "feature": "a83f1ed2-d88b-44a1-87b6-119ab2ef8053",
+      "path": "/work",
+      "screenshot": "docs/screenshots/feature-paths/work-create-assignment-recurrence-320.png",
+      "state": "work-create-assignment-recurrence",
+      "evidence": "Fresh fictional household; optimized app; Chromium route/dialog WCAG A/AA and viewport checks passed at 1440px and 320px. Scenario proof in verification.md."
+    },
+    {
+      "feature": "64e88dcf-cfa7-4882-8863-4ef8dccc7391",
+      "path": "/work",
+      "screenshot": "docs/screenshots/feature-paths/work-create-assignment-recurrence-320.png",
+      "state": "work-create-assignment-recurrence",
+      "evidence": "Fresh fictional household; optimized app; Chromium route/dialog WCAG A/AA and viewport checks passed at 1440px and 320px. Scenario proof in verification.md."
+    },
+    {
+      "feature": "91af72df-8407-49ea-ab25-738aa02b6bc4",
+      "path": "/work",
+      "screenshot": "docs/screenshots/feature-paths/work-detail-320.png",
+      "state": "work-detail",
+      "evidence": "Fresh fictional household; optimized app; Chromium route/dialog WCAG A/AA and viewport checks passed at 1440px and 320px. Scenario proof in verification.md.",
+      "interaction": "Open the first Work card; screenshot state identifies its dialog."
+    },
+    {
+      "feature": "a83f1ed2-d88b-44a1-87b6-119ab2ef8053",
+      "path": "/work",
+      "screenshot": "docs/screenshots/feature-paths/work-detail-320.png",
+      "state": "work-detail",
+      "evidence": "Fresh fictional household; optimized app; Chromium route/dialog WCAG A/AA and viewport checks passed at 1440px and 320px. Scenario proof in verification.md.",
+      "interaction": "Open the first Work card; screenshot state identifies its dialog."
+    },
+    {
+      "feature": "64e88dcf-cfa7-4882-8863-4ef8dccc7391",
+      "path": "/work",
+      "screenshot": "docs/screenshots/feature-paths/work-detail-320.png",
+      "state": "work-detail",
+      "evidence": "Fresh fictional household; optimized app; Chromium route/dialog WCAG A/AA and viewport checks passed at 1440px and 320px. Scenario proof in verification.md.",
+      "interaction": "Open the first Work card; screenshot state identifies its dialog."
+    },
+    {
+      "feature": "2e58d7da-a071-4cb3-9d13-8ac8a8d4af6e",
+      "path": "/work",
+      "screenshot": "docs/screenshots/feature-paths/work-history-320.png",
+      "state": "work-history",
+      "evidence": "Fresh fictional household; optimized app; Chromium route/dialog WCAG A/AA and viewport checks passed at 1440px and 320px. Scenario proof in verification.md.",
+      "interaction": "Open the first Work card; screenshot state identifies its dialog."
+    },
+    {
+      "feature": "4e2d9ae3-ef97-4a6f-9c8f-dc5c514f7d1f",
+      "path": "/work",
+      "screenshot": "docs/screenshots/feature-paths/work-scope-confirmation-320.png",
+      "state": "work-scope-confirmation",
+      "evidence": "Fresh fictional household; optimized app; Chromium route/dialog WCAG A/AA and viewport checks passed at 1440px and 320px. Scenario proof in verification.md.",
+      "interaction": "Open the first Work card; screenshot state identifies its dialog."
+    },
+    {
+      "feature": "5acb0582-b26c-4d24-9454-883b84e286f5",
+      "path": "/finance",
+      "screenshot": "docs/screenshots/feature-paths/finance-overview-320.png",
+      "state": "finance-overview",
+      "evidence": "Fresh fictional household; optimized app; Chromium route/dialog WCAG A/AA and viewport checks passed at 1440px and 320px. Scenario proof in verification.md."
+    },
+    {
+      "feature": "0230cd86-af8c-437a-9a01-afb4839ddb25",
+      "path": "/finance/spending",
+      "screenshot": "docs/screenshots/feature-paths/finance-spending-320.png",
+      "state": "finance-spending",
+      "evidence": "Fresh fictional household; optimized app; Chromium route/dialog WCAG A/AA and viewport checks passed at 1440px and 320px. Scenario proof in verification.md."
+    },
+    {
+      "feature": "69595cdd-68c2-4884-9ae9-ff929df200ce",
+      "path": "/finance/accounts",
+      "screenshot": "docs/screenshots/feature-paths/finance-accounts-320.png",
+      "state": "finance-accounts",
+      "evidence": "Fresh fictional household; optimized app; Chromium route/dialog WCAG A/AA and viewport checks passed at 1440px and 320px. Scenario proof in verification.md."
+    },
+    {
+      "feature": "69595cdd-68c2-4884-9ae9-ff929df200ce",
+      "path": "/finance/accounts",
+      "screenshot": "docs/screenshots/feature-paths/finance-account-create-320.png",
+      "state": "finance-account-create",
+      "evidence": "Fresh fictional household; optimized app; Chromium route/dialog WCAG A/AA and viewport checks passed at 1440px and 320px. Scenario proof in verification.md."
+    },
+    {
+      "feature": "4309c82f-f717-4d56-8faa-cc5d492fad75",
+      "path": "/finance/accounts/2b392c22-ce7f-53ae-a4a2-43baee84f789",
+      "screenshot": "docs/screenshots/feature-paths/finance-account-detail-320.png",
+      "state": "finance-account-detail",
+      "evidence": "Fresh fictional household; optimized app; Chromium route/dialog WCAG A/AA and viewport checks passed at 1440px and 320px. Scenario proof in verification.md."
+    },
+    {
+      "feature": "7f3e4bf3-6659-4010-8c57-b1be2f9f12c9",
+      "path": "/finance/transactions",
+      "screenshot": "docs/screenshots/feature-paths/finance-transactions-320.png",
+      "state": "finance-transactions",
+      "evidence": "Fresh fictional household; optimized app; Chromium route/dialog WCAG A/AA and viewport checks passed at 1440px and 320px. Scenario proof in verification.md."
+    },
+    {
+      "feature": "10c22d2d-b275-4042-a5e2-3409a8a006d5",
+      "path": "/finance/transactions",
+      "screenshot": "docs/screenshots/feature-paths/finance-manual-exception-320.png",
+      "state": "finance-manual-exception",
+      "evidence": "Fresh fictional household; optimized app; Chromium route/dialog WCAG A/AA and viewport checks passed at 1440px and 320px. Scenario proof in verification.md."
+    },
+    {
+      "feature": "f972dec6-6666-4338-b2ec-3e246e3ff2d2",
+      "path": "/finance/budgets",
+      "screenshot": "docs/screenshots/feature-paths/finance-budgets-320.png",
+      "state": "finance-budgets",
+      "evidence": "Fresh fictional household; optimized app; Chromium route/dialog WCAG A/AA and viewport checks passed at 1440px and 320px. Scenario proof in verification.md."
+    },
+    {
+      "feature": "f972dec6-6666-4338-b2ec-3e246e3ff2d2",
+      "path": "/finance/budgets",
+      "screenshot": "docs/screenshots/feature-paths/finance-budget-create-320.png",
+      "state": "finance-budget-create",
+      "evidence": "Fresh fictional household; optimized app; Chromium route/dialog WCAG A/AA and viewport checks passed at 1440px and 320px. Scenario proof in verification.md."
+    },
+    {
+      "feature": "1ac0abfd-e7f7-4d7f-8b06-c1256f0eb680",
+      "path": "/finance/budgets",
+      "screenshot": "docs/screenshots/feature-paths/finance-category-tree-320.png",
+      "state": "finance-category-tree",
+      "evidence": "Fresh fictional household; optimized app; Chromium route/dialog WCAG A/AA and viewport checks passed at 1440px and 320px. Scenario proof in verification.md."
+    },
+    {
+      "feature": "d1712d7f-af94-4946-8629-c065fb780a23",
+      "path": "/finance/imports",
+      "screenshot": "docs/screenshots/feature-paths/finance-imports-320.png",
+      "state": "finance-imports",
+      "evidence": "Fresh fictional household; optimized app; Chromium route/dialog WCAG A/AA and viewport checks passed at 1440px and 320px. Scenario proof in verification.md."
+    },
+    {
+      "feature": "e1664e78-0689-48fa-a609-3c7e2d467772",
+      "path": "/finance/imports",
+      "screenshot": "docs/screenshots/feature-paths/finance-imports-320.png",
+      "state": "finance-imports",
+      "evidence": "Fresh fictional household; optimized app; Chromium route/dialog WCAG A/AA and viewport checks passed at 1440px and 320px. Scenario proof in verification.md."
+    },
+    {
+      "feature": "356f3e15-0c04-4aac-a838-55352310e95c",
+      "path": "/settings/household",
+      "screenshot": "docs/screenshots/feature-paths/household-members-profiles-320.png",
+      "state": "household-members-profiles",
+      "evidence": "Fresh fictional household; optimized app; Chromium route/dialog WCAG A/AA and viewport checks passed at 1440px and 320px. Scenario proof in verification.md."
+    },
+    {
+      "feature": "7025de7c-5fb5-4e08-939b-eff542fb1dc3",
+      "path": "/settings/household",
+      "screenshot": "docs/screenshots/feature-paths/household-members-profiles-320.png",
+      "state": "household-members-profiles",
+      "evidence": "Fresh fictional household; optimized app; Chromium route/dialog WCAG A/AA and viewport checks passed at 1440px and 320px. Scenario proof in verification.md."
+    },
+    {
+      "feature": "eb2cefa6-5a47-481e-b430-89960338ed72",
+      "path": "/settings/notifications",
+      "screenshot": "docs/screenshots/feature-paths/notification-preferences-320.png",
+      "state": "notification-preferences",
+      "evidence": "Fresh fictional household; optimized app; Chromium route/dialog WCAG A/AA and viewport checks passed at 1440px and 320px. Scenario proof in verification.md."
+    },
+    {
+      "feature": "6ecad9b5-c30d-47ce-8027-38de44563a51",
+      "path": "/work",
+      "screenshot": "docs/screenshots/offline/work-offline-reloaded.png",
+      "state": "work-offline-reloaded",
+      "evidence": "Optimized local app: offline create, hard reload and reconnect passed; Work readback proves one server fact."
+    },
+    {
+      "feature": "6ecad9b5-c30d-47ce-8027-38de44563a51",
+      "path": "/work",
+      "screenshot": "docs/screenshots/offline/work-offline-queue.png",
+      "state": "work-offline-queue",
+      "evidence": "Optimized local app: offline create, hard reload and reconnect passed; Work readback proves one server fact."
+    },
+    {
+      "feature": "33a70ce3-c483-4fa3-bf65-726a942c80fd",
+      "path": "/shopping/{listId}",
+      "screenshot": "docs/screenshots/offline/shopping-offline-queue.png",
+      "state": "shopping-offline-queue",
+      "evidence": "Optimized local app: offline create, hard reload and reconnect passed; Work readback proves one server fact."
+    },
+    {
+      "feature": "33a70ce3-c483-4fa3-bf65-726a942c80fd",
+      "path": "/shopping/{listId}",
+      "screenshot": "docs/screenshots/offline/shopping-offline-reloaded.png",
+      "state": "shopping-offline-reloaded",
+      "evidence": "Optimized local app: offline create, hard reload and reconnect passed; Work readback proves one server fact."
+    },
+    {
+      "feature": "6ecad9b5-c30d-47ce-8027-38de44563a51",
+      "path": "/work \u2192 Review sync \u2192 Compare changes",
+      "screenshot": "docs/screenshots/offline/work-conflict-discard.png",
+      "state": "work-conflict-discard",
+      "evidence": "Two real browser contexts: original/local/current compared, explicit discard preserved server edit; settled WCAG A/AA scan passed. Reapply also passed separately."
+    },
+    {
+      "feature": "6ecad9b5-c30d-47ce-8027-38de44563a51",
+      "path": "/work after eligibility denial \u2192 offline reload",
+      "screenshot": "docs/screenshots/offline/revoked-offline-private-cache-purged.png",
+      "state": "private-cache-purged",
+      "evidence": "Private lease, queue, stored data and private shell cache absent; offline navigation reveals no household work."
+    },
+    {
+      "feature": "33a70ce3-c483-4fa3-bf65-726a942c80fd",
+      "path": "/work after eligibility denial \u2192 offline reload",
+      "screenshot": "docs/screenshots/offline/revoked-offline-private-cache-purged.png",
+      "state": "private-cache-purged",
+      "evidence": "Private lease, queue, stored data and private shell cache absent; offline navigation reveals no household work."
+    },
+    {
+      "feature": "356f3e15-0c04-4aac-a838-55352310e95c",
+      "path": "/work after eligibility denial \u2192 offline reload",
+      "screenshot": "docs/screenshots/offline/revoked-offline-private-cache-purged.png",
+      "state": "private-cache-purged",
+      "evidence": "Private lease, queue, stored data and private shell cache absent; offline navigation reveals no household work."
+    },
+    {
+      "feature": "1795cf35-a5ca-4290-a526-5bcbecad9a27",
+      "path": "/work",
+      "screenshot": "docs/screenshots/offline/work-offline-reloaded.png",
+      "state": "work-offline-reloaded",
+      "evidence": "Optimized local app: offline create, hard reload and reconnect passed; Work readback proves one server fact."
+    },
+    {
+      "feature": "1795cf35-a5ca-4290-a526-5bcbecad9a27",
+      "path": "/work after eligibility denial \u2192 offline reload",
+      "screenshot": "docs/screenshots/offline/revoked-offline-private-cache-purged.png",
+      "state": "private-cache-purged",
+      "evidence": "Private lease, queue, stored data and private shell cache absent; offline navigation reveals no household work."
+    },
+    {
+      "feature": "356f3e15-0c04-4aac-a838-55352310e95c",
+      "path": "/work + second tab /settings/household \u2192 Sign out \u2192 spouse sign-in",
+      "screenshot": "docs/screenshots/offline/old-tab-private-data-removed.png",
+      "state": "old-tab-private-data-removed",
+      "evidence": "Owner private work removed from old tab immediately; spouse cannot see it; old actor header returns403 with new spouse session."
+    },
+    {
+      "feature": "1795cf35-a5ca-4290-a526-5bcbecad9a27",
+      "path": "/work + second tab /settings/household \u2192 Sign out \u2192 spouse sign-in",
+      "screenshot": "docs/screenshots/offline/old-tab-private-data-removed.png",
+      "state": "old-tab-private-data-removed",
+      "evidence": "Owner private work removed from old tab immediately; spouse cannot see it; old actor header returns403 with new spouse session."
+    },
+    {
+      "feature": "6ecad9b5-c30d-47ce-8027-38de44563a51",
+      "path": "/work + second tab /settings/household \u2192 Sign out \u2192 spouse sign-in",
+      "screenshot": "docs/screenshots/offline/old-tab-private-data-removed.png",
+      "state": "old-tab-private-data-removed",
+      "evidence": "Owner private work removed from old tab immediately; spouse cannot see it; old actor header returns403 with new spouse session."
+    },
+    {
+      "feature": "33a70ce3-c483-4fa3-bf65-726a942c80fd",
+      "path": "/work + second tab /settings/household \u2192 Sign out \u2192 spouse sign-in",
+      "screenshot": "docs/screenshots/offline/old-tab-private-data-removed.png",
+      "state": "old-tab-private-data-removed",
+      "evidence": "Owner private work removed from old tab immediately; spouse cannot see it; old actor header returns403 with new spouse session."
+    },
+    {
+      "feature": "eb2cefa6-5a47-481e-b430-89960338ed72",
+      "path": "/settings/notifications \u2192 Enable notifications",
+      "screenshot": "docs/screenshots/verification/native-chrome-push-enabled.png",
+      "state": "real native subscription registered",
+      "evidence": "Actual native browser permission and public app registration checks; see docs/verification.md and tests/manual/browser-push.mjs."
+    },
+    {
+      "feature": "eb2cefa6-5a47-481e-b430-89960338ed72",
+      "path": "/settings/notifications \u2192 Enable notifications",
+      "screenshot": "docs/screenshots/verification/notification-permission-denied.png",
+      "state": "native permission denied, no device created",
+      "evidence": "Actual native browser permission and public app registration checks; see docs/verification.md and tests/manual/browser-push.mjs."
+    },
+    {
+      "feature": "4e2d9ae3-ef97-4a6f-9c8f-dc5c514f7d1f",
+      "path": "/work \u2192 work reader access removed",
+      "screenshot": "docs/screenshots/verification/work-reader-access-removed.png",
+      "state": "work-reader-access-removed",
+      "evidence": "Executed local browser interaction; exact scenario evidence in docs/verification.md."
+    },
+    {
+      "feature": "7025de7c-5fb5-4e08-939b-eff542fb1dc3",
+      "path": "/settings/household \u2192 archived profile assignment retained",
+      "screenshot": "docs/screenshots/verification/archived-profile-assignment-retained.png",
+      "state": "archived-profile-assignment-retained",
+      "evidence": "Executed local browser interaction; exact scenario evidence in docs/verification.md."
+    },
+    {
+      "feature": "1795cf35-a5ca-4290-a526-5bcbecad9a27",
+      "path": "/ \u2192 installed standalone login",
+      "screenshot": "docs/screenshots/verification/installed-standalone-login.png",
+      "state": "installed-standalone-login",
+      "evidence": "Executed local browser interaction; exact scenario evidence in docs/verification.md."
+    },
+    {
+      "feature": "356f3e15-0c04-4aac-a838-55352310e95c",
+      "path": "/ \u2192 installed standalone login",
+      "screenshot": "docs/screenshots/verification/installed-standalone-login.png",
+      "state": "installed-standalone-login",
+      "evidence": "Executed local browser interaction; exact scenario evidence in docs/verification.md."
+    },
+    {
+      "feature": "85e60f20-ca21-4fa1-95cb-ec507c56e3c2",
+      "path": "/shopping/[listId] \u2192 archived offer history preserved 320",
+      "screenshot": "docs/screenshots/verification/archived-offer-history-preserved-320.png",
+      "state": "archived-offer-history-preserved-320",
+      "evidence": "Executed local browser interaction; exact scenario evidence in docs/verification.md."
+    },
+    {
+      "feature": "748622b5-4c53-4f89-a62e-c6ffdcf81509",
+      "path": "/shopping/[listId] \u2192 archived offer history preserved 320",
+      "screenshot": "docs/screenshots/verification/archived-offer-history-preserved-320.png",
+      "state": "archived-offer-history-preserved-320",
+      "evidence": "Executed local browser interaction; exact scenario evidence in docs/verification.md."
+    },
+    {
+      "feature": "fc1b28d5-86d1-45bc-9be4-8011d3e96393",
+      "path": "/settings/notifications \u2192 rejected assignment saved",
+      "screenshot": "docs/screenshots/verification/rejected-assignment-saved.png",
+      "state": "rejected-assignment-saved",
+      "evidence": "Executed local browser interaction; exact scenario evidence in docs/verification.md."
+    },
+    {
+      "feature": "1154e9d2-f333-41fb-a6f6-a93653fbefc8",
+      "path": "/shopping/[listId] \u2192 shopping private consequences",
+      "screenshot": "docs/screenshots/verification/shopping-private-consequences.png",
+      "state": "shopping-private-consequences",
+      "evidence": "Executed local browser interaction; exact scenario evidence in docs/verification.md."
+    },
+    {
+      "feature": "4e2d9ae3-ef97-4a6f-9c8f-dc5c514f7d1f",
+      "path": "/work \u2192 work share consequences",
+      "screenshot": "docs/screenshots/verification/work-share-consequences.png",
+      "state": "work-share-consequences",
+      "evidence": "Executed local browser interaction; exact scenario evidence in docs/verification.md."
+    },
+    {
+      "feature": "4e2d9ae3-ef97-4a6f-9c8f-dc5c514f7d1f",
+      "path": "/work \u2192 work private consequences",
+      "screenshot": "docs/screenshots/verification/work-private-consequences.png",
+      "state": "work-private-consequences",
+      "evidence": "Executed local browser interaction; exact scenario evidence in docs/verification.md."
+    },
+    {
+      "feature": "2e58d7da-a071-4cb3-9d13-8ac8a8d4af6e",
+      "path": "/work \u2192 work conflict discard",
+      "screenshot": "docs/screenshots/verification/work-conflict-discard.png",
+      "state": "work-conflict-discard",
+      "evidence": "Executed local browser interaction; exact scenario evidence in docs/verification.md."
+    },
+    {
+      "feature": "6ecad9b5-c30d-47ce-8027-38de44563a51",
+      "path": "/work \u2192 work conflict discard",
+      "screenshot": "docs/screenshots/verification/work-conflict-discard.png",
+      "state": "work-conflict-discard",
+      "evidence": "Executed local browser interaction; exact scenario evidence in docs/verification.md."
+    },
+    {
+      "feature": "85e60f20-ca21-4fa1-95cb-ec507c56e3c2",
+      "path": "/shopping/[listId] \u2192 archived offer history preserved 1440",
+      "screenshot": "docs/screenshots/verification/archived-offer-history-preserved-1440.png",
+      "state": "archived-offer-history-preserved-1440",
+      "evidence": "Executed local browser interaction; exact scenario evidence in docs/verification.md."
+    },
+    {
+      "feature": "748622b5-4c53-4f89-a62e-c6ffdcf81509",
+      "path": "/shopping/[listId] \u2192 archived offer history preserved 1440",
+      "screenshot": "docs/screenshots/verification/archived-offer-history-preserved-1440.png",
+      "state": "archived-offer-history-preserved-1440",
+      "evidence": "Executed local browser interaction; exact scenario evidence in docs/verification.md."
+    },
+    {
+      "feature": "1154e9d2-f333-41fb-a6f6-a93653fbefc8",
+      "path": "/shopping/[listId] \u2192 shopping reader access removed",
+      "screenshot": "docs/screenshots/verification/shopping-reader-access-removed.png",
+      "state": "shopping-reader-access-removed",
+      "evidence": "Executed local browser interaction; exact scenario evidence in docs/verification.md."
+    },
+    {
+      "feature": "06485852-13f5-474a-b30f-e75fe82cf7d0",
+      "path": "/shopping/[listId] \u2192 foreground store suggestion 320",
+      "screenshot": "docs/screenshots/verification/foreground-store-suggestion-320.png",
+      "state": "foreground-store-suggestion-320",
+      "evidence": "Executed local browser interaction; exact scenario evidence in docs/verification.md."
+    },
+    {
+      "feature": "fc1b28d5-86d1-45bc-9be4-8011d3e96393",
+      "path": "/settings/notifications \u2192 private sync activity",
+      "screenshot": "docs/screenshots/verification/private-sync-activity.png",
+      "state": "private-sync-activity",
+      "evidence": "Executed local browser interaction; exact scenario evidence in docs/verification.md."
+    },
+    {
+      "feature": "eb2cefa6-5a47-481e-b430-89960338ed72",
+      "path": "/settings/notifications \u2192 private preferences quiet hours",
+      "screenshot": "docs/screenshots/verification/private-preferences-quiet-hours.png",
+      "state": "private-preferences-quiet-hours",
+      "evidence": "Executed local browser interaction; exact scenario evidence in docs/verification.md."
+    },
+    {
+      "feature": "85e60f20-ca21-4fa1-95cb-ec507c56e3c2",
+      "path": "/shopping/[listId] \u2192 searchable store offer 1440",
+      "screenshot": "docs/screenshots/verification/searchable-store-offer-1440.png",
+      "state": "searchable-store-offer-1440",
+      "evidence": "Executed local browser interaction; exact scenario evidence in docs/verification.md."
+    },
+    {
+      "feature": "748622b5-4c53-4f89-a62e-c6ffdcf81509",
+      "path": "/shopping/[listId] \u2192 searchable store offer 1440",
+      "screenshot": "docs/screenshots/verification/searchable-store-offer-1440.png",
+      "state": "searchable-store-offer-1440",
+      "evidence": "Executed local browser interaction; exact scenario evidence in docs/verification.md."
+    },
+    {
+      "feature": "06485852-13f5-474a-b30f-e75fe82cf7d0",
+      "path": "/shopping/[listId] \u2192 manual store after no location match 320",
+      "screenshot": "docs/screenshots/verification/manual-store-after-no-location-match-320.png",
+      "state": "manual-store-after-no-location-match-320",
+      "evidence": "Executed local browser interaction; exact scenario evidence in docs/verification.md."
+    },
+    {
+      "feature": "1795cf35-a5ca-4290-a526-5bcbecad9a27",
+      "path": "/work \u2192 work long title 320",
+      "screenshot": "docs/screenshots/verification/work-long-title-320.png",
+      "state": "work-long-title-320",
+      "evidence": "Executed local browser interaction; exact scenario evidence in docs/verification.md."
+    },
+    {
+      "feature": "7025de7c-5fb5-4e08-939b-eff542fb1dc3",
+      "path": "/settings/household \u2192 profile renamed no login",
+      "screenshot": "docs/screenshots/verification/profile-renamed-no-login.png",
+      "state": "profile-renamed-no-login",
+      "evidence": "Executed local browser interaction; exact scenario evidence in docs/verification.md."
+    },
+    {
+      "feature": "06485852-13f5-474a-b30f-e75fe82cf7d0",
+      "path": "/shopping/[listId] \u2192 manual store after no location match 1440",
+      "screenshot": "docs/screenshots/verification/manual-store-after-no-location-match-1440.png",
+      "state": "manual-store-after-no-location-match-1440",
+      "evidence": "Executed local browser interaction; exact scenario evidence in docs/verification.md."
+    },
+    {
+      "feature": "85e60f20-ca21-4fa1-95cb-ec507c56e3c2",
+      "path": "/shopping/[listId] \u2192 searchable store offer 320",
+      "screenshot": "docs/screenshots/verification/searchable-store-offer-320.png",
+      "state": "searchable-store-offer-320",
+      "evidence": "Executed local browser interaction; exact scenario evidence in docs/verification.md."
+    },
+    {
+      "feature": "748622b5-4c53-4f89-a62e-c6ffdcf81509",
+      "path": "/shopping/[listId] \u2192 searchable store offer 320",
+      "screenshot": "docs/screenshots/verification/searchable-store-offer-320.png",
+      "state": "searchable-store-offer-320",
+      "evidence": "Executed local browser interaction; exact scenario evidence in docs/verification.md."
+    },
+    {
+      "feature": "1795cf35-a5ca-4290-a526-5bcbecad9a27",
+      "path": "/ \u2192 home long title 320",
+      "screenshot": "docs/screenshots/verification/home-long-title-320.png",
+      "state": "home-long-title-320",
+      "evidence": "Executed local browser interaction; exact scenario evidence in docs/verification.md."
+    },
+    {
+      "feature": "06485852-13f5-474a-b30f-e75fe82cf7d0",
+      "path": "/shopping/[listId] \u2192 foreground store suggestion 1440",
+      "screenshot": "docs/screenshots/verification/foreground-store-suggestion-1440.png",
+      "state": "foreground-store-suggestion-1440",
+      "evidence": "Executed local browser interaction; exact scenario evidence in docs/verification.md."
+    },
+    {
+      "feature": "2e58d7da-a071-4cb3-9d13-8ac8a8d4af6e",
+      "path": "/work \u2192 work conflict reapply",
+      "screenshot": "docs/screenshots/verification/work-conflict-reapply.png",
+      "state": "work-conflict-reapply",
+      "evidence": "Executed local browser interaction; exact scenario evidence in docs/verification.md."
+    },
+    {
+      "feature": "6ecad9b5-c30d-47ce-8027-38de44563a51",
+      "path": "/work \u2192 work conflict reapply",
+      "screenshot": "docs/screenshots/verification/work-conflict-reapply.png",
+      "state": "work-conflict-reapply",
+      "evidence": "Executed local browser interaction; exact scenario evidence in docs/verification.md."
+    },
+    {
+      "feature": "1154e9d2-f333-41fb-a6f6-a93653fbefc8",
+      "path": "/shopping/[listId] \u2192 shopping share consequences",
+      "screenshot": "docs/screenshots/verification/shopping-share-consequences.png",
+      "state": "shopping-share-consequences",
+      "evidence": "Executed local browser interaction; exact scenario evidence in docs/verification.md."
+    },
+    {
+      "feature": "356f3e15-0c04-4aac-a838-55352310e95c",
+      "path": "/settings/household \u2192 access-loading-1440",
+      "screenshot": "docs/screenshots/access-states/access-loading-1440.png",
+      "state": "access-loading-1440",
+      "evidence": "Actual real-OIDC/public-API invitation lifecycle state; AA,44px targets,no overflow and secret absence checked at320/1440."
+    },
+    {
+      "feature": "356f3e15-0c04-4aac-a838-55352310e95c",
+      "path": "/settings/household \u2192 access-mismatched-320",
+      "screenshot": "docs/screenshots/access-states/access-mismatched-320.png",
+      "state": "access-mismatched-320",
+      "evidence": "Actual real-OIDC/public-API invitation lifecycle state; AA,44px targets,no overflow and secret absence checked at320/1440."
+    },
+    {
+      "feature": "356f3e15-0c04-4aac-a838-55352310e95c",
+      "path": "/settings/household \u2192 access-revoked-empty-320",
+      "screenshot": "docs/screenshots/access-states/access-revoked-empty-320.png",
+      "state": "access-revoked-empty-320",
+      "evidence": "Actual real-OIDC/public-API invitation lifecycle state; AA,44px targets,no overflow and secret absence checked at320/1440."
+    },
+    {
+      "feature": "356f3e15-0c04-4aac-a838-55352310e95c",
+      "path": "/settings/household \u2192 access-cancelled-1440",
+      "screenshot": "docs/screenshots/access-states/access-cancelled-1440.png",
+      "state": "access-cancelled-1440",
+      "evidence": "Actual real-OIDC/public-API invitation lifecycle state; AA,44px targets,no overflow and secret absence checked at320/1440."
+    },
+    {
+      "feature": "356f3e15-0c04-4aac-a838-55352310e95c",
+      "path": "/settings/household \u2192 access-restored-consumed-320",
+      "screenshot": "docs/screenshots/access-states/access-restored-consumed-320.png",
+      "state": "access-restored-consumed-320",
+      "evidence": "Actual real-OIDC/public-API invitation lifecycle state; AA,44px targets,no overflow and secret absence checked at320/1440."
+    },
+    {
+      "feature": "356f3e15-0c04-4aac-a838-55352310e95c",
+      "path": "/auth/error \u2192 access-ineligible-320",
+      "screenshot": "docs/screenshots/access-states/access-ineligible-320.png",
+      "state": "access-ineligible-320",
+      "evidence": "Actual real-OIDC/public-API invitation lifecycle state; AA,44px targets,no overflow and secret absence checked at320/1440."
+    },
+    {
+      "feature": "356f3e15-0c04-4aac-a838-55352310e95c",
+      "path": "/ \u2192 access-unauthenticated-1440",
+      "screenshot": "docs/screenshots/access-states/access-unauthenticated-1440.png",
+      "state": "access-unauthenticated-1440",
+      "evidence": "Actual real-OIDC/public-API invitation lifecycle state; AA,44px targets,no overflow and secret absence checked at320/1440."
+    },
+    {
+      "feature": "356f3e15-0c04-4aac-a838-55352310e95c",
+      "path": "/settings/household \u2192 access-unavailable-1440",
+      "screenshot": "docs/screenshots/access-states/access-unavailable-1440.png",
+      "state": "access-unavailable-1440",
+      "evidence": "Actual real-OIDC/public-API invitation lifecycle state; AA,44px targets,no overflow and secret absence checked at320/1440."
+    },
+    {
+      "feature": "356f3e15-0c04-4aac-a838-55352310e95c",
+      "path": "/settings/household \u2192 access-expired-1440",
+      "screenshot": "docs/screenshots/access-states/access-expired-1440.png",
+      "state": "access-expired-1440",
+      "evidence": "Actual real-OIDC/public-API invitation lifecycle state; AA,44px targets,no overflow and secret absence checked at320/1440."
+    },
+    {
+      "feature": "356f3e15-0c04-4aac-a838-55352310e95c",
+      "path": "/settings/household \u2192 access-expired-320",
+      "screenshot": "docs/screenshots/access-states/access-expired-320.png",
+      "state": "access-expired-320",
+      "evidence": "Actual real-OIDC/public-API invitation lifecycle state; AA,44px targets,no overflow and secret absence checked at320/1440."
+    },
+    {
+      "feature": "356f3e15-0c04-4aac-a838-55352310e95c",
+      "path": "/settings/household \u2192 access-success-consumed-320",
+      "screenshot": "docs/screenshots/access-states/access-success-consumed-320.png",
+      "state": "access-success-consumed-320",
+      "evidence": "Actual real-OIDC/public-API invitation lifecycle state; AA,44px targets,no overflow and secret absence checked at320/1440."
+    },
+    {
+      "feature": "356f3e15-0c04-4aac-a838-55352310e95c",
+      "path": "/ \u2192 access-logout-320",
+      "screenshot": "docs/screenshots/access-states/access-logout-320.png",
+      "state": "access-logout-320",
+      "evidence": "Actual real-OIDC/public-API invitation lifecycle state; AA,44px targets,no overflow and secret absence checked at320/1440."
+    },
+    {
+      "feature": "356f3e15-0c04-4aac-a838-55352310e95c",
+      "path": "/settings/household \u2192 access-revoked-denied-320",
+      "screenshot": "docs/screenshots/access-states/access-revoked-denied-320.png",
+      "state": "access-revoked-denied-320",
+      "evidence": "Actual real-OIDC/public-API invitation lifecycle state; AA,44px targets,no overflow and secret absence checked at320/1440."
+    },
+    {
+      "feature": "356f3e15-0c04-4aac-a838-55352310e95c",
+      "path": "/settings/household \u2192 access-conflict-320",
+      "screenshot": "docs/screenshots/access-states/access-conflict-320.png",
+      "state": "access-conflict-320",
+      "evidence": "Actual real-OIDC/public-API invitation lifecycle state; AA,44px targets,no overflow and secret absence checked at320/1440."
+    },
+    {
+      "feature": "356f3e15-0c04-4aac-a838-55352310e95c",
+      "path": "/settings/household \u2192 access-validating-320",
+      "screenshot": "docs/screenshots/access-states/access-validating-320.png",
+      "state": "access-validating-320",
+      "evidence": "Actual real-OIDC/public-API invitation lifecycle state; AA,44px targets,no overflow and secret absence checked at320/1440."
+    },
+    {
+      "feature": "356f3e15-0c04-4aac-a838-55352310e95c",
+      "path": "/settings/household \u2192 access-request-failed-320",
+      "screenshot": "docs/screenshots/access-states/access-request-failed-320.png",
+      "state": "access-request-failed-320",
+      "evidence": "Actual real-OIDC/public-API invitation lifecycle state; AA,44px targets,no overflow and secret absence checked at320/1440."
+    },
+    {
+      "feature": "356f3e15-0c04-4aac-a838-55352310e95c",
+      "path": "/settings/household \u2192 access-validating-1440",
+      "screenshot": "docs/screenshots/access-states/access-validating-1440.png",
+      "state": "access-validating-1440",
+      "evidence": "Actual real-OIDC/public-API invitation lifecycle state; AA,44px targets,no overflow and secret absence checked at320/1440."
+    },
+    {
+      "feature": "356f3e15-0c04-4aac-a838-55352310e95c",
+      "path": "/auth/error \u2192 access-ineligible-1440",
+      "screenshot": "docs/screenshots/access-states/access-ineligible-1440.png",
+      "state": "access-ineligible-1440",
+      "evidence": "Actual real-OIDC/public-API invitation lifecycle state; AA,44px targets,no overflow and secret absence checked at320/1440."
+    },
+    {
+      "feature": "356f3e15-0c04-4aac-a838-55352310e95c",
+      "path": "/settings/household \u2192 access-conflict-1440",
+      "screenshot": "docs/screenshots/access-states/access-conflict-1440.png",
+      "state": "access-conflict-1440",
+      "evidence": "Actual real-OIDC/public-API invitation lifecycle state; AA,44px targets,no overflow and secret absence checked at320/1440."
+    },
+    {
+      "feature": "356f3e15-0c04-4aac-a838-55352310e95c",
+      "path": "/settings/household \u2192 access-revoked-empty-1440",
+      "screenshot": "docs/screenshots/access-states/access-revoked-empty-1440.png",
+      "state": "access-revoked-empty-1440",
+      "evidence": "Actual real-OIDC/public-API invitation lifecycle state; AA,44px targets,no overflow and secret absence checked at320/1440."
+    },
+    {
+      "feature": "356f3e15-0c04-4aac-a838-55352310e95c",
+      "path": "/settings/household \u2192 access-access-requested-pending-1440",
+      "screenshot": "docs/screenshots/access-states/access-access-requested-pending-1440.png",
+      "state": "access-access-requested-pending-1440",
+      "evidence": "Actual real-OIDC/public-API invitation lifecycle state; AA,44px targets,no overflow and secret absence checked at320/1440."
+    },
+    {
+      "feature": "356f3e15-0c04-4aac-a838-55352310e95c",
+      "path": "/settings/household \u2192 access-mismatched-1440",
+      "screenshot": "docs/screenshots/access-states/access-mismatched-1440.png",
+      "state": "access-mismatched-1440",
+      "evidence": "Actual real-OIDC/public-API invitation lifecycle state; AA,44px targets,no overflow and secret absence checked at320/1440."
+    },
+    {
+      "feature": "356f3e15-0c04-4aac-a838-55352310e95c",
+      "path": "/settings/household \u2192 access-access-requested-pending-320",
+      "screenshot": "docs/screenshots/access-states/access-access-requested-pending-320.png",
+      "state": "access-access-requested-pending-320",
+      "evidence": "Actual real-OIDC/public-API invitation lifecycle state; AA,44px targets,no overflow and secret absence checked at320/1440."
+    },
+    {
+      "feature": "356f3e15-0c04-4aac-a838-55352310e95c",
+      "path": "/settings/household \u2192 access-loading-320",
+      "screenshot": "docs/screenshots/access-states/access-loading-320.png",
+      "state": "access-loading-320",
+      "evidence": "Actual real-OIDC/public-API invitation lifecycle state; AA,44px targets,no overflow and secret absence checked at320/1440."
+    },
+    {
+      "feature": "356f3e15-0c04-4aac-a838-55352310e95c",
+      "path": "/settings/household \u2192 access-revoked-denied-1440",
+      "screenshot": "docs/screenshots/access-states/access-revoked-denied-1440.png",
+      "state": "access-revoked-denied-1440",
+      "evidence": "Actual real-OIDC/public-API invitation lifecycle state; AA,44px targets,no overflow and secret absence checked at320/1440."
+    },
+    {
+      "feature": "356f3e15-0c04-4aac-a838-55352310e95c",
+      "path": "/ \u2192 access-unauthenticated-320",
+      "screenshot": "docs/screenshots/access-states/access-unauthenticated-320.png",
+      "state": "access-unauthenticated-320",
+      "evidence": "Actual real-OIDC/public-API invitation lifecycle state; AA,44px targets,no overflow and secret absence checked at320/1440."
+    },
+    {
+      "feature": "356f3e15-0c04-4aac-a838-55352310e95c",
+      "path": "/settings/household \u2192 access-unavailable-320",
+      "screenshot": "docs/screenshots/access-states/access-unavailable-320.png",
+      "state": "access-unavailable-320",
+      "evidence": "Actual real-OIDC/public-API invitation lifecycle state; AA,44px targets,no overflow and secret absence checked at320/1440."
+    },
+    {
+      "feature": "356f3e15-0c04-4aac-a838-55352310e95c",
+      "path": "/settings/household \u2192 access-cancelled-320",
+      "screenshot": "docs/screenshots/access-states/access-cancelled-320.png",
+      "state": "access-cancelled-320",
+      "evidence": "Actual real-OIDC/public-API invitation lifecycle state; AA,44px targets,no overflow and secret absence checked at320/1440."
+    },
+    {
+      "feature": "356f3e15-0c04-4aac-a838-55352310e95c",
+      "path": "/settings/household \u2192 access-success-consumed-1440",
+      "screenshot": "docs/screenshots/access-states/access-success-consumed-1440.png",
+      "state": "access-success-consumed-1440",
+      "evidence": "Actual real-OIDC/public-API invitation lifecycle state; AA,44px targets,no overflow and secret absence checked at320/1440."
+    },
+    {
+      "feature": "356f3e15-0c04-4aac-a838-55352310e95c",
+      "path": "/settings/household \u2192 access-request-failed-1440",
+      "screenshot": "docs/screenshots/access-states/access-request-failed-1440.png",
+      "state": "access-request-failed-1440",
+      "evidence": "Actual real-OIDC/public-API invitation lifecycle state; AA,44px targets,no overflow and secret absence checked at320/1440."
+    },
+    {
+      "feature": "356f3e15-0c04-4aac-a838-55352310e95c",
+      "path": "/settings/household \u2192 access-restored-consumed-1440",
+      "screenshot": "docs/screenshots/access-states/access-restored-consumed-1440.png",
+      "state": "access-restored-consumed-1440",
+      "evidence": "Actual real-OIDC/public-API invitation lifecycle state; AA,44px targets,no overflow and secret absence checked at320/1440."
+    },
+    {
+      "feature": "356f3e15-0c04-4aac-a838-55352310e95c",
+      "path": "/ \u2192 access-logout-1440",
+      "screenshot": "docs/screenshots/access-states/access-logout-1440.png",
+      "state": "access-logout-1440",
+      "evidence": "Actual real-OIDC/public-API invitation lifecycle state; AA,44px targets,no overflow and secret absence checked at320/1440."
+    }
+  ],
+  "captureSource": "Passing fresh-household feature-paths run, 2026-09-08; offline receipts retain their original evidence.",
+  "overview": "docs/screenshots/overview/manifest.json"
+}

@@ -2,6 +2,13 @@ import { z } from "zod";
 
 export const uuidSchema = z.string().uuid();
 export const commandSchema = z.object({ commandId: uuidSchema }).strict();
+export const syncFailureSchema = z
+  .object({
+    failedCommandId: uuidSchema,
+    area: z.enum(["shopping", "work"]),
+    resourceId: uuidSchema.optional(),
+  })
+  .strict();
 export const invitationRequestSchema = commandSchema.extend({
   email: z.string().trim().toLowerCase().email().max(254),
 });
@@ -306,8 +313,15 @@ export const notificationEventSchema = z.object({
   householdId: uuidSchema,
   actorId: uuidSchema,
   occurredAt: z.string().datetime(),
-  action: z.enum(["read", "reminder", "delivered", "device-expired"]),
+  action: z.enum([
+    "read",
+    "reminder",
+    "delivered",
+    "device-expired",
+    "sync-failure",
+  ]),
   targetId: uuidSchema,
   recipientId: uuidSchema,
+  syncFailure: syncFailureSchema.optional(),
 });
 export type NotificationEvent = z.infer<typeof notificationEventSchema>;

@@ -1,0 +1,146 @@
+[
+  {
+    "path": "/",
+    "screenshot": "home-desktop.png",
+    "viewport": {
+      "width": 1440,
+      "height": 1000
+    },
+    "fixture": "Fictional local household; real application routes"
+  },
+  {
+    "path": "/shopping",
+    "screenshot": "shopping-desktop.png",
+    "viewport": {
+      "width": 1440,
+      "height": 1000
+    },
+    "fixture": "Fictional local household; real application routes"
+  },
+  {
+    "path": "/shopping/2ec548b9-41a2-5660-9cd9-f5edf9ea8c65",
+    "screenshot": "shopping-list-desktop.png",
+    "viewport": {
+      "width": 1440,
+      "height": 1000
+    },
+    "fixture": "Fictional local household; real application routes"
+  },
+  {
+    "path": "/work",
+    "screenshot": "work-desktop.png",
+    "viewport": {
+      "width": 1440,
+      "height": 1000
+    },
+    "fixture": "Fictional local household; real application routes"
+  },
+  {
+    "path": "/finance",
+    "screenshot": "finance-desktop.png",
+    "viewport": {
+      "width": 1440,
+      "height": 1000
+    },
+    "fixture": "Fictional local household; real application routes"
+  },
+  {
+    "path": "/finance/accounts/2b392c22-ce7f-53ae-a4a2-43baee84f789",
+    "screenshot": "account-desktop.png",
+    "viewport": {
+      "width": 1440,
+      "height": 1000
+    },
+    "fixture": "Fictional local household; real application routes"
+  },
+  {
+    "path": "/finance/budgets",
+    "screenshot": "budgets-desktop.png",
+    "viewport": {
+      "width": 1440,
+      "height": 1000
+    },
+    "fixture": "Fictional local household; real application routes"
+  },
+  {
+    "path": "/settings/household",
+    "screenshot": "household-desktop.png",
+    "viewport": {
+      "width": 1440,
+      "height": 1000
+    },
+    "fixture": "Fictional local household; real application routes"
+  },
+  {
+    "path": "/",
+    "screenshot": "home-phone.png",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "fixture": "Fictional local household; real application routes"
+  },
+  {
+    "path": "/shopping",
+    "screenshot": "shopping-phone.png",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "fixture": "Fictional local household; real application routes"
+  },
+  {
+    "path": "/shopping/2ec548b9-41a2-5660-9cd9-f5edf9ea8c65",
+    "screenshot": "shopping-list-phone.png",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "fixture": "Fictional local household; real application routes"
+  },
+  {
+    "path": "/work",
+    "screenshot": "work-phone.png",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "fixture": "Fictional local household; real application routes"
+  },
+  {
+    "path": "/finance",
+    "screenshot": "finance-phone.png",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "fixture": "Fictional local household; real application routes"
+  },
+  {
+    "path": "/finance/accounts/2b392c22-ce7f-53ae-a4a2-43baee84f789",
+    "screenshot": "account-phone.png",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "fixture": "Fictional local household; real application routes"
+  },
+  {
+    "path": "/finance/budgets",
+    "screenshot": "budgets-phone.png",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "fixture": "Fictional local household; real application routes"
+  },
+  {
+    "path": "/settings/household",
+    "screenshot": "household-phone.png",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "fixture": "Fictional local household; real application routes"
+  }
+]

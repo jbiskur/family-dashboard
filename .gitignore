@@ -15,3 +15,4 @@ playwright-report/
 .wayfind/
 mobile*.png
 family-dashboard.html
+browser-capabilities/

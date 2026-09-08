@@ -1,0 +1,4 @@
+import { ShoppingPage } from "@/components/shopping/shopping-pages";
+export default function Page() {
+  return <ShoppingPage />;
+}

@@ -220,8 +220,40 @@ export async function emitNotification(event: NotificationEvent) {
       .where(eq(commands.id, event.commandId))
       .limit(1)
   )[0];
-  if (!previous)
-    await pathways.write("heima.notifications.0/notification.changed.0", {
-      data: event,
-    });
+  if (
+    previous &&
+    (previous.actorId !== event.actorId ||
+      previous.householdId !== event.householdId)
+  )
+    throw new ApiFailure(
+      "command-conflict",
+      409,
+      "This change could not be applied.",
+    );
+  if (!previous) {
+    try {
+      await pathways.write("heima.notifications.0/notification.changed.0", {
+        data: event,
+      });
+    } catch {
+      throw new ApiFailure(
+        "event-unavailable",
+        503,
+        "The change could not be confirmed. Try again when connected.",
+      );
+    }
+    const confirmed = (
+      await db
+        .select()
+        .from(commands)
+        .where(eq(commands.id, event.commandId))
+        .limit(1)
+    )[0];
+    if (!confirmed)
+      throw new ApiFailure(
+        "processing-pending",
+        503,
+        "The change is still being confirmed. Try again when connected.",
+      );
+  }
 }

@@ -12,6 +12,7 @@ import { config } from "./config";
 import { db } from "./db/client";
 import { bootstrapState, invitations, members } from "./db/schema";
 import { ApiFailure, denied } from "./errors";
+import { maintenanceNow } from "./maintenance-clock";
 import { emitAccess } from "./pathways";
 import { decryptPrivate, semanticId } from "./security";
 
@@ -169,10 +170,17 @@ accessRoutes.post("/admit", async (c) => {
       )
       .limit(1)
   )[0];
-  if (existing) {
+  if (existing?.status === "active") {
     await requireMember(identity);
     return c.json(await accessView(identity));
   }
+  if (
+    existing &&
+    (existing.role !== "spouse" ||
+      existing.status !== "revoked" ||
+      existing.subject !== identity.subject)
+  )
+    throw denied();
   const claim = (
     await db
       .select()
@@ -290,6 +298,7 @@ accessRoutes.post("/members/:id/revoke", async (c) => {
 });
 
 export async function expireInvitations() {
+  const now = await maintenanceNow();
   const expired = await db
     .select()
     .from(invitations)
@@ -301,7 +310,7 @@ export async function expireInvitations() {
           "pending",
           "request-failed",
         ]),
-        lte(invitations.expiresAt, new Date()),
+        lte(invitations.expiresAt, now),
       ),
     );
   const owner = (
@@ -323,7 +332,7 @@ export async function expireInvitations() {
       commandId: semanticId(`${invitation.id}:expire`),
       householdId: config.HOUSEHOLD_ID,
       actorId: owner.userId,
-      occurredAt: new Date().toISOString(),
+      occurredAt: now.toISOString(),
       change: { kind: "invitation-expired", invitationId: invitation.id },
     });
 }

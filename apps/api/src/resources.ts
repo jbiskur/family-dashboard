@@ -10,6 +10,7 @@ import { and, desc, eq } from "drizzle-orm";
 import { type Context, Hono } from "hono";
 import { z } from "zod";
 import { type ApiVariables, requireMember } from "./access";
+import { activityHref } from "./activity-links";
 import { config } from "./config";
 import { db } from "./db/client";
 import { activity, commands, history, resources } from "./db/schema";
@@ -104,16 +105,20 @@ function present(row: ResourceRow, all: ResourceRow[]) {
   return value;
 }
 
-import { decimal, minor } from "./domain";
+import { decimal, matchedAmount, minor } from "./domain";
 
 function importDifference(row: ResourceRow) {
   const code = String(row.data.currency);
   return decimal(
     minor(String(row.data.closingBalance), code) -
       minor(String(row.data.openingBalance), code) -
-      (row.data.rows as { amount: string }[]).reduce(
-        (n, r) => n + minor(r.amount, code),
-        0n,
+      matchedAmount(
+        row.data.rows as {
+          status: string;
+          transactionId: string | null;
+          amount: string;
+        }[],
+        code,
       ),
     code,
   );
@@ -157,12 +162,13 @@ resourceRoutes.get("/home", async (c) => {
       return !!row && canRead(row, identity.userId, all);
     })
     .slice(0, 8);
+  const now = Date.now();
   const attention = work
     .filter(
       (r) =>
         r.data.status !== "done" &&
-        r.data.dueDate &&
-        String(r.data.dueDate) < today,
+        r.data.dueAt &&
+        Date.parse(String(r.data.dueAt)) <= now,
     )
     .map((r) => ({
       id: r.id,
@@ -234,14 +240,11 @@ resourceRoutes.get("/activity", async (c) => {
     .limit(200);
   return c.json({
     items: entries
-      .filter((e) => {
-        const row = all.find((r) => r.id === e.resourceId);
-        return !!row && canRead(row, userId, all);
-      })
+      .filter((e) => activityHref(e, userId, all))
       .map((e) => ({
         id: e.id,
         title: e.title,
-        href: e.href,
+        href: activityHref(e, userId, all)!,
         occurredAt: e.occurredAt.toISOString(),
         read: e.isRead === "true",
         category: e.category,

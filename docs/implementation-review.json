@@ -1,0 +1,218 @@
+{
+  "reviewedAt": "2026-09-08T01:25:50Z",
+  "reviewer": "independent ux_critic",
+  "sourceCommit": "1307f48ebb4cecc261eb3b74f857cb1eaabcc171",
+  "implementationAccepted": 29,
+  "scenariosPassed": 145,
+  "localHttp": {
+    "tests": 37,
+    "assertions": 703,
+    "failed": 0
+  },
+  "scope": "Observed local implementation. Final-commit CI, merge, published release and production verification remain separate P07 gates.",
+  "verdicts": [
+    {
+      "unitId": "0230cd86-af8c-437a-9a01-afb4839ddb25",
+      "planId": "914a2251-cde8-45e0-bc00-bc2b698fcf95",
+      "result": "ACCEPT",
+      "readbackVerified": true,
+      "url": "https://usable.dev/dashboard/workspaces/e8f2a1ae-02bb-4b39-bb28-269ea33a60ab/fragments/914a2251-cde8-45e0-bc00-bc2b698fcf95"
+    },
+    {
+      "unitId": "7f3e4bf3-6659-4010-8c57-b1be2f9f12c9",
+      "planId": "527a10d5-91b4-4e0a-a630-eeac8366a31f",
+      "result": "ACCEPT",
+      "readbackVerified": true,
+      "url": "https://usable.dev/dashboard/workspaces/e8f2a1ae-02bb-4b39-bb28-269ea33a60ab/fragments/527a10d5-91b4-4e0a-a630-eeac8366a31f"
+    },
+    {
+      "unitId": "4309c82f-f717-4d56-8faa-cc5d492fad75",
+      "planId": "e3189b5c-11e6-44e4-8b2a-40c017ff8b3b",
+      "result": "ACCEPT",
+      "readbackVerified": true,
+      "url": "https://usable.dev/dashboard/workspaces/e8f2a1ae-02bb-4b39-bb28-269ea33a60ab/fragments/e3189b5c-11e6-44e4-8b2a-40c017ff8b3b"
+    },
+    {
+      "unitId": "69595cdd-68c2-4884-9ae9-ff929df200ce",
+      "planId": "f3339a27-cd4a-438d-9117-3b02c2d69a88",
+      "result": "ACCEPT",
+      "readbackVerified": true,
+      "url": "https://usable.dev/dashboard/workspaces/e8f2a1ae-02bb-4b39-bb28-269ea33a60ab/fragments/f3339a27-cd4a-438d-9117-3b02c2d69a88"
+    },
+    {
+      "unitId": "356f3e15-0c04-4aac-a838-55352310e95c",
+      "planId": "2f3b5b6d-b038-43a0-8115-5839d85a59ce",
+      "result": "ACCEPT",
+      "readbackVerified": true,
+      "url": "https://usable.dev/dashboard/workspaces/e8f2a1ae-02bb-4b39-bb28-269ea33a60ab/fragments/2f3b5b6d-b038-43a0-8115-5839d85a59ce"
+    },
+    {
+      "unitId": "4e2d9ae3-ef97-4a6f-9c8f-dc5c514f7d1f",
+      "planId": "58dbdd56-a980-4d84-be4b-a144a4300ff3",
+      "result": "ACCEPT",
+      "readbackVerified": true,
+      "url": "https://usable.dev/dashboard/workspaces/e8f2a1ae-02bb-4b39-bb28-269ea33a60ab/fragments/58dbdd56-a980-4d84-be4b-a144a4300ff3"
+    },
+    {
+      "unitId": "2e58d7da-a071-4cb3-9d13-8ac8a8d4af6e",
+      "planId": "3a80fc45-f1e6-4617-87c2-0163a67464cf",
+      "result": "ACCEPT",
+      "readbackVerified": true,
+      "url": "https://usable.dev/dashboard/workspaces/e8f2a1ae-02bb-4b39-bb28-269ea33a60ab/fragments/3a80fc45-f1e6-4617-87c2-0163a67464cf"
+    },
+    {
+      "unitId": "64e88dcf-cfa7-4882-8863-4ef8dccc7391",
+      "planId": "58240156-09d6-4891-a8bb-9b435cbda206",
+      "result": "ACCEPT",
+      "readbackVerified": true,
+      "url": "https://usable.dev/dashboard/workspaces/e8f2a1ae-02bb-4b39-bb28-269ea33a60ab/fragments/58240156-09d6-4891-a8bb-9b435cbda206"
+    },
+    {
+      "unitId": "a83f1ed2-d88b-44a1-87b6-119ab2ef8053",
+      "planId": "c7da57aa-b0e2-4a7b-b506-2498120e04de",
+      "result": "ACCEPT",
+      "readbackVerified": true,
+      "url": "https://usable.dev/dashboard/workspaces/e8f2a1ae-02bb-4b39-bb28-269ea33a60ab/fragments/c7da57aa-b0e2-4a7b-b506-2498120e04de"
+    },
+    {
+      "unitId": "7025de7c-5fb5-4e08-939b-eff542fb1dc3",
+      "planId": "39c90dc2-dde1-4362-aa06-09798acfb72f",
+      "result": "ACCEPT",
+      "readbackVerified": true,
+      "url": "https://usable.dev/dashboard/workspaces/e8f2a1ae-02bb-4b39-bb28-269ea33a60ab/fragments/39c90dc2-dde1-4362-aa06-09798acfb72f"
+    },
+    {
+      "unitId": "91af72df-8407-49ea-ab25-738aa02b6bc4",
+      "planId": "480ca976-dd0d-4f3e-bc6d-28516cf6c08e",
+      "result": "ACCEPT",
+      "readbackVerified": true,
+      "url": "https://usable.dev/dashboard/workspaces/e8f2a1ae-02bb-4b39-bb28-269ea33a60ab/fragments/480ca976-dd0d-4f3e-bc6d-28516cf6c08e"
+    },
+    {
+      "unitId": "1154e9d2-f333-41fb-a6f6-a93653fbefc8",
+      "planId": "c7b71ca0-7c76-4110-8a04-48b9a48c512b",
+      "result": "ACCEPT",
+      "readbackVerified": true,
+      "url": "https://usable.dev/dashboard/workspaces/e8f2a1ae-02bb-4b39-bb28-269ea33a60ab/fragments/c7b71ca0-7c76-4110-8a04-48b9a48c512b"
+    },
+    {
+      "unitId": "85e60f20-ca21-4fa1-95cb-ec507c56e3c2",
+      "planId": "1c7058e6-326c-488f-9728-0938e90f577e",
+      "result": "ACCEPT",
+      "readbackVerified": true,
+      "url": "https://usable.dev/dashboard/workspaces/e8f2a1ae-02bb-4b39-bb28-269ea33a60ab/fragments/1c7058e6-326c-488f-9728-0938e90f577e"
+    },
+    {
+      "unitId": "06485852-13f5-474a-b30f-e75fe82cf7d0",
+      "planId": "8bd71831-7315-41a5-bf3d-b51ed759c830",
+      "result": "ACCEPT",
+      "readbackVerified": true,
+      "url": "https://usable.dev/dashboard/workspaces/e8f2a1ae-02bb-4b39-bb28-269ea33a60ab/fragments/8bd71831-7315-41a5-bf3d-b51ed759c830"
+    },
+    {
+      "unitId": "748622b5-4c53-4f89-a62e-c6ffdcf81509",
+      "planId": "0347eb28-ce71-4767-abee-647acd18c6f7",
+      "result": "ACCEPT",
+      "readbackVerified": true,
+      "url": "https://usable.dev/dashboard/workspaces/e8f2a1ae-02bb-4b39-bb28-269ea33a60ab/fragments/0347eb28-ce71-4767-abee-647acd18c6f7"
+    },
+    {
+      "unitId": "95e4fc63-efc0-4496-b9f9-c575eae1fd15",
+      "planId": "f4f6e775-5bf6-4496-846c-77012cab8b11",
+      "result": "ACCEPT",
+      "readbackVerified": true,
+      "url": "https://usable.dev/dashboard/workspaces/e8f2a1ae-02bb-4b39-bb28-269ea33a60ab/fragments/f4f6e775-5bf6-4496-846c-77012cab8b11"
+    },
+    {
+      "unitId": "a0c751ca-1dbe-4d54-905e-c741ad852345",
+      "planId": "7db864aa-27be-4649-9445-264521c58cb7",
+      "result": "ACCEPT",
+      "readbackVerified": true,
+      "url": "https://usable.dev/dashboard/workspaces/e8f2a1ae-02bb-4b39-bb28-269ea33a60ab/fragments/7db864aa-27be-4649-9445-264521c58cb7"
+    },
+    {
+      "unitId": "075fefa3-1232-4a15-80d3-a6520e500fd1",
+      "planId": "25097f22-150a-4466-bcc6-f02d4bd2a6e0",
+      "result": "ACCEPT",
+      "readbackVerified": true,
+      "url": "https://usable.dev/dashboard/workspaces/e8f2a1ae-02bb-4b39-bb28-269ea33a60ab/fragments/25097f22-150a-4466-bcc6-f02d4bd2a6e0"
+    },
+    {
+      "unitId": "1795cf35-a5ca-4290-a526-5bcbecad9a27",
+      "planId": "59765575-107c-41ef-972a-e2db01776d6d",
+      "result": "ACCEPT",
+      "readbackVerified": true,
+      "url": "https://usable.dev/dashboard/workspaces/e8f2a1ae-02bb-4b39-bb28-269ea33a60ab/fragments/59765575-107c-41ef-972a-e2db01776d6d"
+    },
+    {
+      "unitId": "5acb0582-b26c-4d24-9454-883b84e286f5",
+      "planId": "24278368-2203-4420-9c74-37dc35c4b8d4",
+      "result": "ACCEPT",
+      "readbackVerified": true,
+      "url": "https://usable.dev/dashboard/workspaces/e8f2a1ae-02bb-4b39-bb28-269ea33a60ab/fragments/24278368-2203-4420-9c74-37dc35c4b8d4"
+    },
+    {
+      "unitId": "1ac0abfd-e7f7-4d7f-8b06-c1256f0eb680",
+      "planId": "f4c9ba54-b4c6-47be-894e-6081217e05d6",
+      "result": "ACCEPT",
+      "readbackVerified": true,
+      "url": "https://usable.dev/dashboard/workspaces/e8f2a1ae-02bb-4b39-bb28-269ea33a60ab/fragments/f4c9ba54-b4c6-47be-894e-6081217e05d6"
+    },
+    {
+      "unitId": "f972dec6-6666-4338-b2ec-3e246e3ff2d2",
+      "planId": "a5a463db-639e-412e-85c7-d4079f2e8075",
+      "result": "ACCEPT",
+      "readbackVerified": true,
+      "url": "https://usable.dev/dashboard/workspaces/e8f2a1ae-02bb-4b39-bb28-269ea33a60ab/fragments/a5a463db-639e-412e-85c7-d4079f2e8075"
+    },
+    {
+      "unitId": "d1712d7f-af94-4946-8629-c065fb780a23",
+      "planId": "b8fed7c7-d6ea-40b3-bdca-b0e0bc461e04",
+      "result": "ACCEPT",
+      "readbackVerified": true,
+      "url": "https://usable.dev/dashboard/workspaces/e8f2a1ae-02bb-4b39-bb28-269ea33a60ab/fragments/b8fed7c7-d6ea-40b3-bdca-b0e0bc461e04"
+    },
+    {
+      "unitId": "e1664e78-0689-48fa-a609-3c7e2d467772",
+      "planId": "5b9572fc-903e-46d7-99f1-101a1301dac5",
+      "result": "ACCEPT",
+      "readbackVerified": true,
+      "url": "https://usable.dev/dashboard/workspaces/e8f2a1ae-02bb-4b39-bb28-269ea33a60ab/fragments/5b9572fc-903e-46d7-99f1-101a1301dac5"
+    },
+    {
+      "unitId": "10c22d2d-b275-4042-a5e2-3409a8a006d5",
+      "planId": "4da56705-f562-4b1f-9638-efd05f74f52c",
+      "result": "ACCEPT",
+      "readbackVerified": true,
+      "url": "https://usable.dev/dashboard/workspaces/e8f2a1ae-02bb-4b39-bb28-269ea33a60ab/fragments/4da56705-f562-4b1f-9638-efd05f74f52c"
+    },
+    {
+      "unitId": "eb2cefa6-5a47-481e-b430-89960338ed72",
+      "planId": "8936e153-2dea-4f11-9eb3-49ab69801c54",
+      "result": "ACCEPT",
+      "readbackVerified": true,
+      "url": "https://usable.dev/dashboard/workspaces/e8f2a1ae-02bb-4b39-bb28-269ea33a60ab/fragments/8936e153-2dea-4f11-9eb3-49ab69801c54"
+    },
+    {
+      "unitId": "fc1b28d5-86d1-45bc-9be4-8011d3e96393",
+      "planId": "fb28f85f-eb25-4a5b-a2bd-0d4ee1748134",
+      "result": "ACCEPT",
+      "readbackVerified": true,
+      "url": "https://usable.dev/dashboard/workspaces/e8f2a1ae-02bb-4b39-bb28-269ea33a60ab/fragments/fb28f85f-eb25-4a5b-a2bd-0d4ee1748134"
+    },
+    {
+      "unitId": "33a70ce3-c483-4fa3-bf65-726a942c80fd",
+      "planId": "b586e954-008d-4eb7-88bc-4b8ea2b3cba9",
+      "result": "ACCEPT",
+      "readbackVerified": true,
+      "url": "https://usable.dev/dashboard/workspaces/e8f2a1ae-02bb-4b39-bb28-269ea33a60ab/fragments/b586e954-008d-4eb7-88bc-4b8ea2b3cba9"
+    },
+    {
+      "unitId": "6ecad9b5-c30d-47ce-8027-38de44563a51",
+      "planId": "dd911176-72b4-4d9b-96e0-c829c0c4ef73",
+      "result": "ACCEPT",
+      "readbackVerified": true,
+      "url": "https://usable.dev/dashboard/workspaces/e8f2a1ae-02bb-4b39-bb28-269ea33a60ab/fragments/dd911176-72b4-4d9b-96e0-c829c0c4ef73"
+    }
+  ]
+}
