@@ -1,0 +1,59 @@
+name: Verify released API
+on:
+  pull_request:
+    paths:
+      - .github/workflows/verify-release-api.yml
+      - scripts/verify-release-api.py
+      - tests/fixtures/release-api/**
+      - docs/release-api-verification.md
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: Published stable release tag
+        type: string
+        required: true
+      api_digest:
+        description: Published API sha256 digest, including sha256 prefix
+        type: string
+        required: true
+permissions:
+  contents: read
+  packages: read
+concurrency:
+  group: verify-released-api
+  cancel-in-progress: false
+jobs:
+  verify:
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Verify exact published image on native AMD64
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REQUEST_RELEASE_TAG: ${{ inputs.release_tag }}
+          REQUEST_API_DIGEST: ${{ inputs.api_digest }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ "$GITHUB_EVENT_NAME" = pull_request ]; then
+            release_tag=v0.2.1
+            api_digest=sha256:8feb51af367a8b49111c4ff2adcf86743a81ac8efcc5c1059a091d9b8559d3a6
+          else
+            release_tag="$REQUEST_RELEASE_TAG"
+            api_digest="$REQUEST_API_DIGEST"
+          fi
+          [[ "$release_tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]
+          [[ "$api_digest" =~ ^sha256:[0-9a-f]{64}$ ]]
+          python3 scripts/verify-release-api.py \
+            --release-tag "$release_tag" --api-digest "$api_digest" \
+            --output test-results/released-api
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: heima-released-api-evidence
+          path: test-results/released-api/
+          retention-days: 14

@@ -1,5 +1,5 @@
 import { readFileSync } from "node:fs";
-import { expect, type Page, test } from "@playwright/test";
+import { expect, type Page, type Route, test } from "@playwright/test";
 
 const settings = Object.fromEntries(
   readFileSync(".env.test.local", "utf8")
@@ -92,6 +92,412 @@ type Import = {
   rows: { description: string; explanation: string; status: string }[];
   difference?: string;
 };
+
+function statementFile(label: string) {
+  const date = new Date().toISOString().slice(0, 10);
+  return {
+    name: `${label}-${crypto.randomUUID()}.csv`,
+    mimeType: "text/csv",
+    buffer: Buffer.from(
+      `Booked,Amount,Memo,Source,Occurred,Valued,Reference\n${date},12.34,${label},${crypto.randomUUID()},${date},${date},BANK\n`,
+    ),
+  };
+}
+
+// Hold the real Server Action response at the browser's network boundary.
+// No application imports, invented preview body, or custom backend fixture.
+async function holdPreview(page: Page, fileName: string, mapped = false) {
+  let captured = false;
+  let released = false;
+  let failed = false;
+  let finished = false;
+  let resume = () => {};
+  const held = new Promise<void>((resolve) => {
+    resume = resolve;
+  });
+  const handler = async (route: Route) => {
+    const request = route.request();
+    const body = request.postData() ?? "";
+    if (
+      request.method() !== "POST" ||
+      !body.includes("/v1/finance/imports/preview") ||
+      !body.includes(fileName) ||
+      body.includes('"mapping"') !== mapped ||
+      captured
+    ) {
+      await route.fallback();
+      return;
+    }
+    const response = await route.fetch();
+    expect(response.status()).toBe(200);
+    captured = true;
+    await held;
+    if (failed) await route.abort("failed");
+    else await route.fulfill({ response });
+    finished = true;
+  };
+  await page.route("**/finance/imports**", handler);
+  return {
+    wait: () => expect.poll(() => captured).toBe(true),
+    async release(fail = false) {
+      failed = fail;
+      released = true;
+      resume();
+      await expect.poll(() => finished).toBe(true);
+    },
+    async cleanup() {
+      if (!released) {
+        resume();
+        if (captured) await expect.poll(() => finished).toBe(true);
+      }
+      await page.unroute("**/finance/imports**", handler);
+    },
+  };
+}
+
+test.describe("statement replacement timing", () => {
+  // Playwright cannot route service-worker-owned requests. These six timing
+  // tests hold real HTTP responses; the remaining journeys retain the PWA.
+  test.use({ serviceWorkers: "block" });
+
+  test("statement replacement immediately removes the previous confirmation while loading", async ({
+    page,
+  }, info) => {
+    await login(page);
+    const accountId = await createAccount(
+      page,
+      `Replacement ${crypto.randomUUID()}`,
+    );
+    const previous = statementFile("Previous statement");
+    const replacement = statementFile("Current statement");
+    await page.goto(`/finance/imports?accountId=${accountId}`);
+    const upload = page.getByLabel("Choose a statement file");
+    await upload.setInputFiles(previous);
+    await mapStatement(page);
+    await expect(
+      page.getByRole("heading", { name: "Ready for your confirmation" }),
+    ).toBeVisible();
+    const checking = await holdPreview(page, previous.name, true);
+    try {
+      await mapStatement(page);
+      await checking.wait();
+      await expect(
+        page.getByRole("button", { name: "Confirm import", exact: true }),
+      ).toHaveCount(0);
+      await expect(
+        page.getByText("Checking your mapping…", { exact: true }),
+      ).toBeVisible();
+      await page.screenshot({
+        path: info.outputPath("mapping-check-pending.png"),
+        fullPage: true,
+      });
+      await checking.release();
+      await expect(
+        page.getByRole("heading", { name: "Ready for your confirmation" }),
+      ).toBeVisible();
+    } finally {
+      await checking.cleanup();
+    }
+    const delayed = await holdPreview(page, replacement.name);
+    try {
+      await upload.setInputFiles(replacement);
+      await delayed.wait();
+      await expect(
+        page.getByRole("button", { name: "Confirm import", exact: true }),
+      ).toHaveCount(0);
+      await expect(
+        page.getByRole("button", {
+          name: "Validate this mapping",
+          exact: true,
+        }),
+      ).toHaveCount(0);
+      await expect(
+        page.getByText("Reading your statement…", { exact: true }),
+      ).toBeVisible();
+      await page.screenshot({
+        path: info.outputPath("replacement-loading.png"),
+        fullPage: true,
+      });
+      await delayed.release();
+      await expect(
+        page.getByRole("heading", { name: "Map your columns first" }),
+      ).toBeVisible();
+      await expect(
+        page.getByRole("combobox", { name: "Booking date", exact: true }),
+      ).toHaveValue("");
+      await page.screenshot({
+        path: info.outputPath("replacement-needs-mapping.png"),
+        fullPage: true,
+      });
+    } finally {
+      await delayed.cleanup();
+    }
+  });
+
+  for (const pending of ["read", "mapping"] as const) {
+    for (const outcome of ["success", "failure"] as const) {
+      test(`statement replacement ignores an older ${pending} ${outcome} without ending current loading`, async ({
+        page,
+      }, info) => {
+        const actorId = await login(page);
+        const accountId = await createAccount(
+          page,
+          `Ordered ${crypto.randomUUID()}`,
+        );
+        const previous = statementFile("Older source");
+        const current = statementFile("Current source");
+        await page.goto(`/finance/imports?accountId=${accountId}`);
+        const upload = page.getByLabel("Choose a statement file");
+        if (pending === "mapping") {
+          await upload.setInputFiles(previous);
+          await expect(
+            page.getByRole("combobox", { name: "Booking date", exact: true }),
+          ).toBeVisible();
+        }
+        const older = await holdPreview(
+          page,
+          previous.name,
+          pending === "mapping",
+        );
+        const newer = await holdPreview(page, current.name);
+        try {
+          if (pending === "mapping") await mapStatement(page);
+          else await upload.setInputFiles(previous);
+          await older.wait();
+          await upload.setInputFiles(current);
+          await expect(
+            page.getByText("Reading your statement…", { exact: true }),
+          ).toBeVisible();
+          await expect(
+            page.getByRole("button", {
+              name: "Validate this mapping",
+              exact: true,
+            }),
+          ).toHaveCount(0);
+          // Server Actions dispatch sequentially: the current intent precedes
+          // the older completion, while its request waits in the client queue.
+          await older.release(outcome === "failure");
+          await newer.wait();
+          await expect(
+            page.getByText("Reading your statement…", { exact: true }),
+          ).toBeVisible();
+          await expect(
+            page.getByRole("button", { name: "Confirm import", exact: true }),
+          ).toHaveCount(0);
+          await expect(
+            page.getByRole("button", {
+              name: "Validate this mapping",
+              exact: true,
+            }),
+          ).toHaveCount(0);
+          await expect(
+            page.locator("#main-content").getByRole("alert"),
+          ).toHaveCount(0);
+          await page.screenshot({
+            path: info.outputPath(`late-${pending}-${outcome}-ignored.png`),
+            fullPage: true,
+          });
+          await newer.release();
+          await expect(
+            page.getByRole("heading", { name: current.name, exact: true }),
+          ).toBeVisible();
+          await expect(
+            page.getByRole("cell", { name: "Current source", exact: true }),
+          ).toBeVisible();
+          await expect(
+            page.getByRole("cell", { name: "Older source", exact: true }),
+          ).toHaveCount(0);
+          await expect(
+            page.getByRole("combobox", { name: "Booking date", exact: true }),
+          ).toHaveValue("");
+          await mapStatement(page);
+          await expect(
+            page.getByRole("heading", { name: "Ready for your confirmation" }),
+          ).toBeVisible();
+          expect(
+            (
+              await read<{ items: Import[] }>(
+                page,
+                actorId,
+                `finance/imports?accountId=${accountId}`,
+              )
+            ).items,
+          ).toHaveLength(0);
+          expect(
+            (
+              await read<{ items: Transaction[] }>(
+                page,
+                actorId,
+                `finance/transactions?accountId=${accountId}`,
+              )
+            ).items,
+          ).toHaveLength(0);
+          await page.screenshot({
+            path: info.outputPath(`current-after-${pending}-${outcome}.png`),
+            fullPage: true,
+          });
+        } finally {
+          await older.cleanup();
+          await newer.cleanup();
+        }
+      });
+    }
+  }
+
+  test("statement replacement rejects files safely and invalidates pending work on account change", async ({
+    page,
+  }, info) => {
+    const actorId = await login(page);
+    const firstAccount = await createAccount(
+      page,
+      `First account ${crypto.randomUUID()}`,
+    );
+    const secondAccount = await createAccount(
+      page,
+      `Second account ${crypto.randomUUID()}`,
+    );
+    await page.goto(`/finance/imports?accountId=${firstAccount}`);
+    const upload = page.getByLabel("Choose a statement file");
+    for (const rejected of [
+      {
+        name: "unsupported.txt",
+        mimeType: "text/plain",
+        buffer: Buffer.from("not a statement"),
+        message: "Choose a CSV, XLS or XLSX statement.",
+      },
+      {
+        name: "oversized.csv",
+        mimeType: "text/csv",
+        buffer: Buffer.alloc(10 * 1024 * 1024 + 1),
+        message: "Choose a statement smaller than 10 MB.",
+      },
+    ]) {
+      await upload.setInputFiles(statementFile("Reviewed source"));
+      await mapStatement(page);
+      await expect(
+        page.getByRole("heading", { name: "Ready for your confirmation" }),
+      ).toBeVisible();
+      await upload.setInputFiles({
+        name: rejected.name,
+        mimeType: rejected.mimeType,
+        buffer: rejected.buffer,
+      });
+      await expect(
+        page.locator("#main-content").getByRole("alert"),
+      ).toContainText(rejected.message);
+      await expect(
+        page.getByRole("button", { name: "Confirm import", exact: true }),
+      ).toHaveCount(0);
+      await expect(
+        page.getByRole("button", {
+          name: "Validate this mapping",
+          exact: true,
+        }),
+      ).toHaveCount(0);
+      await page.screenshot({
+        path: info.outputPath(`rejected-${rejected.name}.png`),
+        fullPage: true,
+      });
+    }
+    for (const pending of ["read", "mapping"] as const) {
+      const file = statementFile(`Account ${pending}`);
+      if (pending === "mapping") {
+        await upload.setInputFiles(file);
+        await expect(
+          page.getByRole("combobox", { name: "Booking date", exact: true }),
+        ).toBeVisible();
+      }
+      const delayed = await holdPreview(page, file.name, pending === "mapping");
+      try {
+        if (pending === "mapping") await mapStatement(page);
+        else await upload.setInputFiles(file);
+        await delayed.wait();
+        await page
+          .getByRole("combobox", {
+            name: "Account for this statement",
+            exact: true,
+          })
+          .selectOption(pending === "read" ? secondAccount : firstAccount);
+        await delayed.release();
+        await expect(
+          page.getByRole("heading", { name: "Your statement has a home here" }),
+        ).toBeVisible();
+        await expect(
+          page.getByText("Reading your statement…", { exact: true }),
+        ).toHaveCount(0);
+        await expect(
+          page.getByRole("button", {
+            name: "Validate this mapping",
+            exact: true,
+          }),
+        ).toHaveCount(0);
+        await expect(
+          page.getByRole("button", { name: "Confirm import", exact: true }),
+        ).toHaveCount(0);
+        await page.screenshot({
+          path: info.outputPath(`account-change-${pending}.png`),
+          fullPage: true,
+        });
+      } finally {
+        await delayed.cleanup();
+      }
+    }
+    const failedFile = statementFile("Unavailable preview");
+    const failed = await holdPreview(page, failedFile.name);
+    try {
+      await upload.setInputFiles(failedFile);
+      await failed.wait();
+      await failed.release(true);
+      await expect(
+        page.locator("#main-content").getByRole("alert"),
+      ).toBeVisible();
+      await expect(
+        page.getByText("Reading your statement…", { exact: true }),
+      ).toHaveCount(0);
+      await expect(
+        page.getByRole("button", { name: "Confirm import", exact: true }),
+      ).toHaveCount(0);
+      await page.screenshot({
+        path: info.outputPath("current-preview-failed.png"),
+        fullPage: true,
+      });
+    } finally {
+      await failed.cleanup();
+    }
+    await upload.setInputFiles(statementFile("Recovered source"));
+    await mapStatement(page);
+    await expect(
+      page.getByRole("heading", { name: "Ready for your confirmation" }),
+    ).toBeVisible();
+    await expect(page.locator("#main-content").getByRole("alert")).toHaveCount(
+      0,
+    );
+    for (const accountId of [firstAccount, secondAccount]) {
+      expect(
+        (
+          await read<{ items: Import[] }>(
+            page,
+            actorId,
+            `finance/imports?accountId=${accountId}`,
+          )
+        ).items,
+      ).toHaveLength(0);
+      expect(
+        (
+          await read<{ items: Transaction[] }>(
+            page,
+            actorId,
+            `finance/transactions?accountId=${accountId}`,
+          )
+        ).items,
+      ).toHaveLength(0);
+    }
+    await page.screenshot({
+      path: info.outputPath("preview-recovered.png"),
+      fullPage: true,
+    });
+  });
+});
 
 test("statement preview writes nothing, invalid mapping stays blocked, and reviewed rows require an exact zero reconciliation", async ({
   page,
@@ -201,6 +607,10 @@ test("statement preview writes nothing, invalid mapping stays blocked, and revie
   const batch = batches[0];
   if (!batch) throw new Error("Confirmed import is missing");
   expect(batch.status).toBe("needs-review");
+  expect(batch.rows.map((item) => item.description)).toEqual([
+    "Household deposit",
+    "Market receipt",
+  ]);
   expect(
     (
       await read<{ balance: string | null }>(

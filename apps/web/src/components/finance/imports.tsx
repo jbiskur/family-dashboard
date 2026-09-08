@@ -16,7 +16,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useCommand, useHeima } from "@/lib/client";
 import { EntityForm, type FormField } from "../shared/form";
 import {
@@ -68,15 +68,28 @@ export function ImportsPage() {
   const [preview, setPreview] = useState<Preview | null>(null);
   const [error, setError] = useState<unknown>(null);
   const [reading, setReading] = useState(false);
+  const [validating, setValidating] = useState(false);
+  const requestVersion = useRef(0);
+  const renderedVersion = requestVersion.current;
   const [selected, setSelected] = useState<FinanceImport | null>(null);
   const [success, setSuccess] = useState("");
   const manageable = (accounts.data?.items ?? []).filter(
     (a) => a.visibility === "household" || a.ownerId === access.member.userId,
   );
   const chosen = accountId || manageable[0]?.id || "";
-  async function read(file: File) {
+  function clearStatement() {
+    const version = ++requestVersion.current;
+    setSource(null);
+    setPreview(null);
     setError(null);
     setSuccess("");
+    setReading(false);
+    setValidating(false);
+    return version;
+  }
+  async function read(file: File) {
+    // A replacement is new intent even when the chosen file is rejected.
+    const version = clearStatement();
     if (!chosen) {
       setError(new Error("Choose an account before selecting a statement."));
       return;
@@ -99,6 +112,7 @@ export function ImportsPage() {
           reject(new Error("This file could not be read."));
         reader.readAsDataURL(file);
       });
+      if (version !== requestVersion.current) return;
       const input = {
         accountId: chosen,
         fileName: file.name,
@@ -108,20 +122,32 @@ export function ImportsPage() {
         dateFormat: "yyyy-MM-dd",
       };
       setSource(input);
-      setPreview(
-        (await command.execute(
-          "/v1/finance/imports/preview",
-          input,
-        )) as Preview,
-      );
+      const result = (await command.execute(
+        "/v1/finance/imports/preview",
+        input,
+      )) as Preview;
+      if (version === requestVersion.current) setPreview(result);
     } catch (e) {
-      setError(e);
+      if (version === requestVersion.current) setError(e);
     } finally {
-      setReading(false);
+      if (version === requestVersion.current) setReading(false);
     }
   }
   async function map(values: Record<string, string>) {
-    if (!source) return;
+    if (
+      !source ||
+      reading ||
+      validating ||
+      source.accountId !== chosen ||
+      renderedVersion !== requestVersion.current
+    )
+      return;
+    const version = ++requestVersion.current;
+    setError(null);
+    setValidating(true);
+    setPreview((current) =>
+      current ? { ...current, valid: false, errors: [] } : null,
+    );
     const mapping = Object.fromEntries(
       Object.entries(values).filter(
         ([k, v]) =>
@@ -144,12 +170,17 @@ export function ImportsPage() {
       dateFormat: values.dateFormat ?? source.dateFormat,
     };
     setSource(next);
-    setPreview(
-      (await command.execute("/v1/finance/imports/preview", {
+    try {
+      const result = (await command.execute("/v1/finance/imports/preview", {
         ...next,
         mapping,
-      })) as Preview,
-    );
+      })) as Preview;
+      if (version === requestVersion.current) setPreview(result);
+    } catch (e) {
+      if (version === requestVersion.current) setError(e);
+    } finally {
+      if (version === requestVersion.current) setValidating(false);
+    }
   }
   const mappingFields: FormField[] = preview
     ? [
@@ -260,8 +291,7 @@ export function ImportsPage() {
                 value={chosen}
                 onChange={(e) => {
                   setAccountId(e.target.value);
-                  setSource(null);
-                  setPreview(null);
+                  clearStatement();
                 }}
               >
                 {manageable.map((a) => (
@@ -296,7 +326,7 @@ export function ImportsPage() {
               type="file"
               accept=".csv,.xls,.xlsx"
               style={{ maxWidth: 280, margin: "12px auto 0" }}
-              disabled={!chosen || reading}
+              disabled={!chosen}
               onChange={(e) => {
                 const file = e.target.files?.[0];
                 if (file) void read(file);
@@ -347,7 +377,9 @@ export function ImportsPage() {
               </Card>
               <Card className="card-pad">
                 <SectionTitle title="The review" />
-                {preview.errors.length ? (
+                {validating ? (
+                  <LoadingState label="Checking your mapping…" />
+                ) : preview.errors.length ? (
                   <>
                     <div className="notice warning" role="alert">
                       {preview.errors.length} validation{" "}
@@ -391,6 +423,16 @@ export function ImportsPage() {
                       submitLabel="Confirm import"
                       footer="This records validated facts as needing review. Reconciliation is a separate, explicit step."
                       onSubmit={async (values) => {
+                        if (
+                          !source ||
+                          reading ||
+                          validating ||
+                          !preview.valid ||
+                          preview.accountId !== chosen ||
+                          renderedVersion !== requestVersion.current
+                        )
+                          return;
+                        const version = requestVersion.current;
                         const result = (await command.execute(
                           "/v1/finance/imports",
                           {
@@ -404,9 +446,9 @@ export function ImportsPage() {
                             closingBalance: values.closingBalance || null,
                           },
                         )) as FinanceImport;
+                        if (version !== requestVersion.current) return;
                         setSelected(result);
-                        setSource(null);
-                        setPreview(null);
+                        clearStatement();
                         setSuccess(
                           "Statement imported. Review its rows and balances to finish reconciliation.",
                         );

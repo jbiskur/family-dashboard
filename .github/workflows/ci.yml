@@ -81,5 +81,23 @@ jobs:
           context: .
           file: Dockerfile.${{ matrix.app }}
           push: false
+          load: ${{ matrix.app == 'web' }}
+          tags: heima-${{ matrix.app }}:ci
           cache-from: type=gha,scope=${{ matrix.app }}
           cache-to: type=gha,mode=max,scope=${{ matrix.app }}
+      - uses: oven-sh/setup-bun@v2
+        if: matrix.app == 'web'
+        with:
+          bun-version: 1.3.10
+      - name: Install host image decoder
+        if: matrix.app == 'web'
+        run: bun install --frozen-lockfile
+      - name: Verify web image with a read-only filesystem
+        if: matrix.app == 'web'
+        run: node scripts/test-web-container.mjs heima-web:ci
+      - uses: actions/upload-artifact@v4
+        if: always() && matrix.app == 'web'
+        with:
+          name: heima-container-evidence-web
+          path: test-results/container/
+          retention-days: 14

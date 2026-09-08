@@ -11,6 +11,58 @@ const settings = Object.fromEntries(
     ]),
 );
 
+test("entry and Home keep their optimized illustration at mobile and desktop widths", async ({
+  page,
+}, info) => {
+  await page.goto("/");
+  const inspect = async (state: string, alt: string) => {
+    for (const width of [390, 1440]) {
+      await page.setViewportSize({ width, height: 900 });
+      const illustration = page.getByRole("img", { name: alt, exact: true });
+      await expect(illustration).toBeVisible();
+      const image = await illustration.evaluate(
+        async (element: HTMLImageElement) => {
+          await element.decode();
+          return {
+            src: element.currentSrc,
+            width: element.naturalWidth,
+            height: element.naturalHeight,
+          };
+        },
+      );
+      expect(image.src).toContain("/_next/image?");
+      expect(image.width).toBeGreaterThan(0);
+      expect(image.height).toBeGreaterThan(0);
+      const response = await page.request.get(image.src);
+      expect(response.status()).toBe(200);
+      expect(response.headers()["content-type"]).toMatch(/^image\//);
+      await expect
+        .poll(() => page.evaluate(() => document.documentElement.scrollWidth))
+        .toBeLessThanOrEqual(width + 1);
+      await page.screenshot({
+        path: info.outputPath(`image-${state}-${width}.png`),
+        fullPage: true,
+      });
+    }
+  };
+  await inspect(
+    "entry",
+    "A welcoming Scandinavian home surrounded by hills and trees",
+  );
+  await page.getByRole("button", { name: "Continue with Usable" }).click();
+  await page.locator("#username").fill("owner@heima.test");
+  await page.locator("#password").fill(settings.TEST_USER_PASSWORD ?? "");
+  await page.locator("#kc-login").click();
+  await expect(page).toHaveURL("http://localhost:3010/", { timeout: 30000 });
+  await expect(
+    page.getByRole("heading", { name: "Welcome home.", exact: true }),
+  ).toBeVisible();
+  await inspect(
+    "home",
+    "A warm kitchen with groceries and green hills outside",
+  );
+});
+
 test("Home quick capture connects to the owning list and Work without duplicate entries", async ({
   page,
 }, info) => {

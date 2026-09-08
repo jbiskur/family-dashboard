@@ -29,6 +29,10 @@ test("long unbroken titles and full UUIDs wrap within Home and Work at 320px", a
     .getByLabel("Due date (optional)", { exact: true })
     .fill("2024-01-01");
   await page.getByRole("button", { name: "Add to-do", exact: true }).click();
+  await expect(page.getByRole("dialog", { name: "New to-do" })).toBeHidden();
+  await expect(
+    page.getByRole("heading", { name: title, exact: true }),
+  ).toBeVisible();
   for (const path of ["/work", "/"]) {
     await page.goto(path);
     const heading = page.getByRole("heading", { name: title, exact: true });
