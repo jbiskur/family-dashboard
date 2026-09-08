@@ -34,7 +34,12 @@ jobs:
         run: |
           browser_engine="$BROWSER_PROJECT"
           if [ "$browser_engine" = mobile ]; then browser_engine=chromium; fi
-          bunx playwright install --with-deps "$browser_engine"
+          # HTTP session-custody checks use Chromium on every runner.
+          if [ "$browser_engine" = chromium ]; then
+            bunx playwright install --with-deps chromium
+          else
+            bunx playwright install --with-deps chromium "$browser_engine"
+          fi
       - name: Launch real local runtime
         run: |
           HEIMA_WEB_MODE=production bun scripts/test-runtime.ts > /tmp/heima-runtime.log 2>&1 &
