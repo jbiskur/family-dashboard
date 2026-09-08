@@ -15,10 +15,7 @@ export const eventStreams = [
   { flowType: "heima.notifications.0", eventType: "notification.changed.0" },
 ] as const;
 
-const client = new FlowcoreClient({
-  apiKey: config.FLOWCORE_API_KEY,
-  retry: null,
-});
+let client: FlowcoreClient | undefined;
 const cacheMs = 15_000;
 let checkedAt = 0;
 let healthy = false;
@@ -32,6 +29,10 @@ async function readCommand<Input, Output>(
   eventSourceOrigin?: string,
 ): Promise<Output> {
   signal.throwIfAborted();
+  client ??= new FlowcoreClient({
+    apiKey: config.FLOWCORE_API_KEY,
+    retry: null,
+  });
   const request = await command.getRequest(client, true);
   if (request.method !== "GET") throw new Error("Readiness must be read-only");
   const authorization = await client.getAuthHeader();
