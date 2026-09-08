@@ -8,6 +8,7 @@ import { config } from "./config";
 import { sqlClient } from "./db/client";
 import { migrateDatabase } from "./db/migrate";
 import { ApiFailure } from "./errors";
+import { eventFetchReady } from "./event-readiness";
 import { importRoutes } from "./imports";
 import { notificationRoutes, processNotifications } from "./notifications";
 import { pathways, runtimeReady, startRuntime, stopRuntime } from "./pathways";
@@ -22,12 +23,11 @@ app.use("/v1/*", async (c, next) => {
   await next();
 });
 app.get("/health/live", (c) => c.json({ status: "ok" }));
-app.get("/health/ready", (c) =>
-  c.json(
-    { status: runtimeReady ? "ready" : "starting" },
-    runtimeReady ? 200 : 503,
-  ),
-);
+app.get("/health/ready", async (c) => {
+  const ready = runtimeReady && (await eventFetchReady());
+  c.header("cache-control", "no-store");
+  return c.json({ status: ready ? "ready" : "starting" }, ready ? 200 : 503);
+});
 app.route("/v1/access", accessRoutes);
 app.route("/v1", notificationRoutes);
 app.route("/v1", importRoutes);

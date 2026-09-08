@@ -103,6 +103,9 @@ for (const width of [1440, 320]) {
     await page
       .getByRole("textbox", { name: "Find a store", exact: true })
       .fill(store);
+    await expect(
+      page.getByRole("button", { name: "Edit", exact: true }),
+    ).toHaveCount(1);
     await page.getByRole("button", { name: "Edit", exact: true }).click();
     await page
       .getByRole("spinbutton", {
@@ -240,6 +243,9 @@ for (const width of [1440, 320]) {
     await page
       .getByRole("textbox", { name: "Find a store", exact: true })
       .fill(store);
+    await expect(
+      page.getByRole("button", { name: "Archive", exact: true }),
+    ).toHaveCount(1);
     await page.getByRole("button", { name: "Archive", exact: true }).click();
     await page
       .getByRole("button", { name: "Archive store", exact: true })

@@ -21,6 +21,7 @@
       "version": "0.1.0",
       "dependencies": {
         "@flowcore/pathways": "2.7.0",
+        "@flowcore/sdk": "4.11.0",
         "@heima/contracts": "workspace:*",
         "@js-temporal/polyfill": "^0.5.1",
         "drizzle-orm": "^0.45.2",

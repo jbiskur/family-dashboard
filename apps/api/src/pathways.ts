@@ -18,6 +18,7 @@ import { config } from "./config";
 import { db } from "./db/client";
 import { commands } from "./db/schema";
 import { ApiFailure } from "./errors";
+import { eventStreams } from "./event-readiness";
 import { projectNotification } from "./notification-projection";
 import { projectResource } from "./resource-projection";
 
@@ -42,8 +43,7 @@ export const pathways = new PathwaysBuilder({
   pathwayTimeoutMs: 20_000,
 })
   .register({
-    flowType: "heima.access.0",
-    eventType: "access.changed.0",
+    ...eventStreams[0],
     schema: accessEventSchema,
     writable: true,
     encrypted: true,
@@ -52,8 +52,7 @@ export const pathways = new PathwaysBuilder({
   })
   .handle("heima.access.0/access.changed.0", projectAccess)
   .register({
-    flowType: "heima.household.0",
-    eventType: "resource.changed.0",
+    ...eventStreams[1],
     schema: resourceEventSchema,
     writable: true,
     encrypted: true,
@@ -63,8 +62,7 @@ export const pathways = new PathwaysBuilder({
   })
   .handle("heima.household.0/resource.changed.0", projectResource)
   .register({
-    flowType: "heima.notifications.0",
-    eventType: "notification.changed.0",
+    ...eventStreams[2],
     schema: notificationEventSchema,
     writable: true,
     encrypted: true,
