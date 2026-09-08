@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.2](https://github.com/jbiskur/family-dashboard/compare/v0.2.1...v0.2.2) (2026-09-08)
+
+
+### Bug Fixes
+
+* restore image caching and reliable statement previews ([#8](https://github.com/jbiskur/family-dashboard/issues/8)) ([8f46f92](https://github.com/jbiskur/family-dashboard/commit/8f46f927868078835007ae0addaf8601eb9279ff))
+
 ## [0.2.1](https://github.com/jbiskur/family-dashboard/compare/v0.2.0...v0.2.1) (2026-09-08)
 
 
