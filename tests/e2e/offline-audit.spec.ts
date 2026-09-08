@@ -1,6 +1,10 @@
 import { readFileSync } from "node:fs";
 import AxeBuilder from "@axe-core/playwright";
 import { expect, type Page, test } from "@playwright/test";
+import {
+  macWebKitOfflineNavigationUnsupported,
+  offlineNavigationLimitation,
+} from "../fixtures/browser-capabilities";
 
 const env = Object.fromEntries(
   readFileSync(".env.test.local", "utf8")
@@ -51,6 +55,7 @@ async function queued(page: Page) {
 test("Work survives an offline create, hard reload and idempotent reconnect", async ({
   page,
   context,
+  browserName,
 }, info) => {
   test.setTimeout(90_000);
   await login(page);
@@ -73,6 +78,10 @@ test("Work survives an offline create, hard reload and idempotent reconnect", as
       fullPage: true,
     });
     await page.keyboard.press("Escape");
+    test.skip(
+      macWebKitOfflineNavigationUnsupported(browserName),
+      offlineNavigationLimitation,
+    );
     await page.reload();
     await expect(
       page.getByRole("heading", { name: title, exact: true }),
@@ -105,6 +114,7 @@ test("Work survives an offline create, hard reload and idempotent reconnect", as
 test("Shopping survives an offline item create, hard reload and reconnect", async ({
   page,
   context,
+  browserName,
 }, info) => {
   test.setTimeout(90_000);
   await login(page);
@@ -134,6 +144,10 @@ test("Shopping survives an offline item create, hard reload and reconnect", asyn
       fullPage: true,
     });
     await page.keyboard.press("Escape");
+    test.skip(
+      macWebKitOfflineNavigationUnsupported(browserName),
+      offlineNavigationLimitation,
+    );
     await page.reload();
     await expect(
       page.getByRole("button", { name: `Complete ${item}`, exact: true }),
@@ -302,6 +316,7 @@ for (const choice of ["discard", "reapply"] as const) {
 test("Revoked eligibility purges private offline data before disconnected navigation", async ({
   page,
   context,
+  browserName,
 }, info) => {
   test.setTimeout(90_000);
   // Fixture controls are local only. The suite runs serially after HTTP checks.
@@ -338,6 +353,10 @@ test("Revoked eligibility purges private offline data before disconnected naviga
       )
       .toBe(false);
     await context.setOffline(true);
+    test.skip(
+      macWebKitOfflineNavigationUnsupported(browserName),
+      offlineNavigationLimitation,
+    );
     await page.goto("/work");
     await expect(
       page.getByRole("heading", { name: "Household work", exact: true }),
@@ -532,6 +551,7 @@ test("Shopping conflict reapply keeps the list and one item identity", async ({
 test("Observed list permission loss cannot reappear from offline cache", async ({
   page,
   browser,
+  browserName,
 }, info) => {
   test.setTimeout(90_000);
   const spouseContext = await browser.newContext({
@@ -587,6 +607,10 @@ test("Observed list permission loss cannot reappear from offline cache", async (
       )
       .toBe(false);
     await spouseContext.setOffline(true);
+    test.skip(
+      macWebKitOfflineNavigationUnsupported(browserName),
+      offlineNavigationLimitation,
+    );
     await spouse.reload();
     await expect(spouse.locator(".loading-state")).toHaveCount(0);
     await expect(

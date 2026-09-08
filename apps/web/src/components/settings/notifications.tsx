@@ -77,12 +77,12 @@ export function NotificationSettings() {
   const [error, setError] = useState<unknown>(null);
   const [busy, setBusy] = useState(false);
   useEffect(() => {
-    setSupported(
+    const available =
       "serviceWorker" in navigator &&
-        "PushManager" in window &&
-        "Notification" in window,
-    );
-    if ("serviceWorker" in navigator)
+      "PushManager" in window &&
+      "Notification" in window;
+    setSupported(available);
+    if (available && Notification.permission === "granted")
       void navigator.serviceWorker.ready
         .then((r) => r.pushManager.getSubscription())
         .then((s) => setSubscribed(!!s))

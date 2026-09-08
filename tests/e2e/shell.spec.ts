@@ -4,6 +4,10 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import AxeBuilder from "@axe-core/playwright";
 import { chromium, expect, test } from "@playwright/test";
+import {
+  macWebKitOfflineNavigationUnsupported,
+  offlineNavigationLimitation,
+} from "../fixtures/browser-capabilities";
 
 const env = Object.fromEntries(
   readFileSync(".env.test.local", "utf8")
@@ -17,6 +21,7 @@ const env = Object.fromEntries(
 test.use({ trace: "off", video: "off" });
 test("Reduced motion and 200-percent equivalent layout retain usable navigation", async ({
   browser,
+  browserName,
 }, info) => {
   test.setTimeout(120_000);
   // 640 CSS pixels at 2× density reproduces a 1280-pixel viewport at 200% page zoom.
@@ -129,7 +134,12 @@ test("Reduced motion and 200-percent equivalent layout retain usable navigation"
       ),
     ).toBe(false);
     await context.setOffline(true);
-    await page.reload();
+    if (macWebKitOfflineNavigationUnsupported(browserName))
+      info.annotations.push({
+        type: "engine limitation",
+        description: offlineNavigationLimitation,
+      });
+    else await page.reload();
     await expect(page.locator("body")).toContainText(
       /Finance needs a connection|You're offline/,
     );
@@ -209,7 +219,7 @@ test("Heima installs and launches in a standalone app window", async ({
     channel: "chromium",
     viewport: { width: 1000, height: 800 },
   });
-  const page = context.pages()[0]!;
+  const page = context.pages()[0] ?? (await context.newPage());
   const cdp = await context.newCDPSession(page);
   const manifestId = "http://localhost:3010/";
   let installed = false;
