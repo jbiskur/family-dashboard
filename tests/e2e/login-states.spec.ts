@@ -104,6 +104,7 @@ test.afterEach(async () => {
 test("access lifecycle states show safe next actions at 320px and desktop without exposing identity secrets", async ({
   page,
   browser,
+  browserName,
 }, info) => {
   test.setTimeout(180000);
   // Exclusive fixture-control window: no other browser/HTTP suite may mutate eligibility or scheduler time.
@@ -319,15 +320,50 @@ test("access lifecycle states show safe next actions at 320px and desktop withou
       page.getByRole("button", { name: "Copy sign-in link", exact: true }),
     ).toBeVisible();
     await inspect(page, "access-requested-pending");
-    const conflictResponse = secondOwner.waitForResponse(
-      (response) =>
-        response.request().method() === "POST" &&
-        Boolean(response.request().headers()["next-action"]),
-    );
+    let captureConflict: (result: { body?: string; error?: string }) => void =
+      () => {};
+    const conflictResponse =
+      browserName === "chromium"
+        ? new Promise<{ body?: string; error?: string }>((resolve) => {
+            captureConflict = resolve;
+          })
+        : secondOwner
+            .waitForResponse(
+              (response) =>
+                response.request().method() === "POST" &&
+                Boolean(response.request().headers()["next-action"]),
+            )
+            .then(async (response) => ({
+              body: await response.text(),
+              error: undefined,
+            }));
+    // Transparently observe the real server action before the browser consumes its
+    // response. Chromium may discard a CDP response body after Next processes it.
+    if (browserName === "chromium")
+      await secondOwner.route("**/settings/household", async (route) => {
+        if (
+          route.request().method() !== "POST" ||
+          !route.request().headers()["next-action"]
+        ) {
+          await route.continue();
+          return;
+        }
+        try {
+          const response = await route.fetch({ maxRedirects: 0 });
+          const body = await response.text();
+          await route.fulfill({ response });
+          captureConflict({ body });
+        } catch (error) {
+          captureConflict({ error: String(error) });
+          await route.abort();
+        }
+      });
     await secondOwner
       .getByRole("button", { name: "Request invited access", exact: true })
       .click();
-    expect(await (await conflictResponse).text()).toContain('"status":409');
+    const observedConflict = await conflictResponse;
+    expect(observedConflict.error).toBeUndefined();
+    expect(observedConflict.body).toContain('"status":409');
     await expect(secondOwner.getByRole("alert").first()).toBeVisible();
     await inspect(secondOwner, "conflict");
     releaseConflictAccess();
