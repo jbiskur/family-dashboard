@@ -116,6 +116,9 @@ test("access lifecycle states show safe next actions at 320px and desktop withou
   });
   const conflictContext = await browser.newContext({
     baseURL: "http://localhost:3010",
+    // This context proves stale online access, not PWA behavior. Service workers
+    // bypass page routing in WebKit and would invalidate the real-request barrier.
+    serviceWorkers: "block",
   });
   const spouse = await spouseContext.newPage();
   const outsider = await outsiderContext.newPage();
@@ -269,19 +272,22 @@ test("access lifecycle states show safe next actions at 320px and desktop withou
       spouse.getByRole("heading", { name: /check.*invitation/i }),
     ).toBeVisible();
     await inspect(spouse, "revoked-denied");
-    await secondOwner.goto("/settings/household");
-    await secondOwner
-      .getByRole("textbox", { name: "Their Usable email", exact: true })
-      .fill("spouse@heima.test");
-    // Hold this already-rendered owner's subsequent access reads while the other owner
-    // changes the real backend. Commands and responses remain completely unmodified.
+    // Install before navigation so no in-flight refresh can bypass the barrier.
+    // Allow the initial real access read, then hold later reads while the other
+    // owner changes the backend. Commands and responses remain unmodified.
+    let conflictAccessReads = 0;
     const conflictAccessGate = new Promise<void>((resolve) => {
       releaseConflictAccess = resolve;
     });
     await secondOwner.route("**/api/backend/access", async (route) => {
-      if (route.request().method() === "GET") await conflictAccessGate;
+      if (route.request().method() === "GET" && ++conflictAccessReads > 1)
+        await conflictAccessGate;
       await route.continue();
     });
+    await secondOwner.goto("/settings/household");
+    await secondOwner
+      .getByRole("textbox", { name: "Their Usable email", exact: true })
+      .fill("spouse@heima.test");
     const email = page.getByRole("textbox", {
       name: "Their Usable email",
       exact: true,
@@ -320,6 +326,15 @@ test("access lifecycle states show safe next actions at 320px and desktop withou
       page.getByRole("button", { name: "Copy sign-in link", exact: true }),
     ).toBeVisible();
     await inspect(page, "access-requested-pending");
+    await expect
+      .poll(() => conflictAccessReads, { timeout: 10000 })
+      .toBeGreaterThan(1);
+    await expect(
+      secondOwner.getByRole("textbox", {
+        name: "Their Usable email",
+        exact: true,
+      }),
+    ).toHaveValue("spouse@heima.test");
     let captureConflict: (result: { body?: string; error?: string }) => void =
       () => {};
     const conflictResponse =

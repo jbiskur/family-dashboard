@@ -126,21 +126,30 @@ test("E1 invitation expires exactly at seven days through the real encrypted mai
     expect((await api("access", owner)).body.invitation.status).toBe("pending");
 
     clock = new Date(expiresAt).toISOString();
-    await until(() => fixture.getEventLog().length === baseline + 1);
+    await until(() => fixture.getEventLog().length >= baseline + 1);
     // Canonical fixture records only after the real transformer confirms projection.
     reads = clockReads;
     await until(() => clockReads >= reads + 2);
-    expect(fixture.getEventLog()).toHaveLength(baseline + 1);
-    const expiration = fixture.getEventLog().at(-1);
-    expect(expiration?.metadata["pathways/encrypted"]).toBe("true");
-    expect(JSON.stringify(expiration?.payload)).not.toMatch(
-      /spouse@heima.test|invitation-expired/,
-    );
+    // Flowcore delivers at least once: overlapping scheduler ticks may send the
+    // same semantic command before its first projection commits.
+    const expirations = fixture.getEventLog().slice(baseline);
+    expect(expirations.length).toBeGreaterThanOrEqual(1);
+    for (const expiration of expirations) {
+      expect(expiration.metadata["pathways/encrypted"]).toBe("true");
+      expect(JSON.stringify(expiration.payload)).not.toMatch(
+        /spouse@heima.test|invitation-expired/,
+      );
+    }
     clock = null;
     const expired = await api("access", owner);
     expect(expired.body.invitation.id).toBe(invitation.id);
     expect(expired.body.invitation.status).toBe("expired");
     expect(expired.body.invitation.email).toBeUndefined();
+    expect(expired.body.invitation.requestedAt).toBe(invitation.requestedAt);
+    expect(expired.body.invitation.expiresAt).toBe(invitation.expiresAt);
+    expect((await api("access", owner)).body.invitation).toEqual(
+      expired.body.invitation,
+    );
     expect((await api("access/admit", spouse, {})).status).toBe(403);
     expect(
       (
