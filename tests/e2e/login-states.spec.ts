@@ -14,6 +14,7 @@ const settings = Object.fromEntries(
 test.use({ trace: "off", video: "off" });
 async function controls(body: Record<string, unknown>) {
   const response = await fetch("http://127.0.0.1:3212/__controls", {
+    signal: AbortSignal.timeout(10000),
     method: "POST",
     body: JSON.stringify(body),
   });
@@ -23,6 +24,7 @@ async function bearer(user: string) {
   const response = await fetch(
     `${settings.USABLE_ISSUER}/protocol/openid-connect/token`,
     {
+      signal: AbortSignal.timeout(10000),
       method: "POST",
       body: new URLSearchParams({
         grant_type: "password",
@@ -38,6 +40,7 @@ async function bearer(user: string) {
 }
 async function api(path: string, token: string, body?: unknown) {
   const response = await fetch(`http://127.0.0.1:3211/v1/${path}`, {
+    signal: AbortSignal.timeout(10000),
     method: body === undefined ? "GET" : "POST",
     headers: {
       authorization: `Bearer ${token}`,
@@ -57,6 +60,47 @@ async function signIn(page: Page, user: string) {
     timeout: 30000,
   });
 }
+test.afterEach(async () => {
+  // A timed-out browser body still gets an independent cleanup budget and fresh real JWTs.
+  test.setTimeout(45000);
+  await controls({ reset: true });
+  const ownerToken = await bearer("owner");
+  const spouseToken = await bearer("spouse");
+  const current = await api("access", ownerToken);
+  expect(current.status).toBe(200);
+  if (
+    !current.data.members.some(
+      (member: { role: string; status: string }) =>
+        member.role === "spouse" && member.status === "active",
+    )
+  ) {
+    const invitation = current.data.invitation;
+    if (
+      invitation &&
+      ["pending", "requesting", "request-failed"].includes(invitation.status)
+    ) {
+      expect(
+        (
+          await api(`access/invitations/${invitation.id}/cancel`, ownerToken, {
+            commandId: crypto.randomUUID(),
+          })
+        ).status,
+      ).toBe(200);
+    }
+    expect(
+      (
+        await api("access/invitations", ownerToken, {
+          commandId: crypto.randomUUID(),
+          email: "spouse@heima.test",
+        })
+      ).status,
+    ).toBe(201);
+    expect((await api("access/admit", spouseToken, {})).status).toBe(200);
+  }
+  const restored = await api("access", spouseToken);
+  expect(restored.status).toBe(200);
+  expect(restored.data.member.status).toBe("active");
+});
 test("access lifecycle states show safe next actions at 320px and desktop without exposing identity secrets", async ({
   page,
   browser,
@@ -76,10 +120,19 @@ test("access lifecycle states show safe next actions at 320px and desktop withou
   const outsider = await outsiderContext.newPage();
   const secondOwner = await conflictContext.newPage();
   const ownerToken = await bearer("owner");
-  const spouseToken = await bearer("spouse");
+  let releaseConflictAccess: () => void = () => {};
   const inspect = async (target: Page, state: string) => {
     for (const width of [320, 1440]) {
       await target.setViewportSize({ width, height: 900 });
+      await expect
+        .poll(() => target.evaluate(() => window.innerWidth))
+        .toBe(width);
+      await target.evaluate(async () => {
+        await document.fonts.ready;
+        await new Promise<void>((resolve) =>
+          requestAnimationFrame(() => requestAnimationFrame(() => resolve())),
+        );
+      });
       await target.evaluate(async () => {
         await Promise.all(
           document
@@ -93,10 +146,10 @@ test("access lifecycle states show safe next actions at 320px and desktop withou
       });
       const main = target.locator("main").first();
       await expect(main).toBeVisible();
-      expect
-        .soft(
-          await target.evaluate(() => document.documentElement.scrollWidth),
-          `${state} at ${width}: document width`,
+      await expect
+        .poll(
+          () => target.evaluate(() => document.documentElement.scrollWidth),
+          { message: `${state} at ${width}: document width` },
         )
         .toBeLessThanOrEqual(width + 1);
       const text = await main.innerText();
@@ -219,6 +272,15 @@ test("access lifecycle states show safe next actions at 320px and desktop withou
     await secondOwner
       .getByRole("textbox", { name: "Their Usable email", exact: true })
       .fill("spouse@heima.test");
+    // Hold this already-rendered owner's subsequent access reads while the other owner
+    // changes the real backend. Commands and responses remain completely unmodified.
+    const conflictAccessGate = new Promise<void>((resolve) => {
+      releaseConflictAccess = resolve;
+    });
+    await secondOwner.route("**/api/backend/access", async (route) => {
+      if (route.request().method() === "GET") await conflictAccessGate;
+      await route.continue();
+    });
     const email = page.getByRole("textbox", {
       name: "Their Usable email",
       exact: true,
@@ -257,11 +319,19 @@ test("access lifecycle states show safe next actions at 320px and desktop withou
       page.getByRole("button", { name: "Copy sign-in link", exact: true }),
     ).toBeVisible();
     await inspect(page, "access-requested-pending");
+    const conflictResponse = secondOwner.waitForResponse(
+      (response) =>
+        response.request().method() === "POST" &&
+        Boolean(response.request().headers()["next-action"]),
+    );
     await secondOwner
       .getByRole("button", { name: "Request invited access", exact: true })
       .click();
+    expect(await (await conflictResponse).text()).toContain('"status":409');
     await expect(secondOwner.getByRole("alert").first()).toBeVisible();
     await inspect(secondOwner, "conflict");
+    releaseConflictAccess();
+    await secondOwner.unrouteAll({ behavior: "wait" });
     await spouse.reload();
     await expect(
       spouse.getByRole("heading", { name: /check.*invitation/i }),
@@ -360,32 +430,7 @@ test("access lifecycle states show safe next actions at 320px and desktop withou
     ).toBeVisible();
     await inspect(page, "logout");
   } finally {
-    await controls({ reset: true });
-    const current = await api("access", ownerToken);
-    if (
-      !current.data.members.some(
-        (member: { role: string; status: string }) =>
-          member.role === "spouse" && member.status === "active",
-      )
-    ) {
-      const invitation = current.data.invitation;
-      if (
-        invitation &&
-        ["pending", "requesting", "request-failed"].includes(invitation.status)
-      )
-        await api(`access/invitations/${invitation.id}/cancel`, ownerToken, {
-          commandId: crypto.randomUUID(),
-        });
-      expect(
-        (
-          await api("access/invitations", ownerToken, {
-            commandId: crypto.randomUUID(),
-            email: "spouse@heima.test",
-          })
-        ).status,
-      ).toBe(201);
-      expect((await api("access/admit", spouseToken, {})).status).toBe(200);
-    }
+    releaseConflictAccess();
     await spouseContext.close();
     await outsiderContext.close();
     await conflictContext.close();
