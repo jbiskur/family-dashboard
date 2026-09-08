@@ -11,6 +11,11 @@ concurrency:
   cancel-in-progress: true
 jobs:
   verify:
+    name: verify (${{ matrix.project }})
+    strategy:
+      fail-fast: false
+      matrix:
+        project: [chromium, firefox, webkit, mobile]
     runs-on: ubuntu-latest
     timeout-minutes: 25
     steps:
@@ -23,7 +28,13 @@ jobs:
       - run: bun run typecheck
       - run: bun run build
       - run: bun run test:setup
-      - run: bunx playwright install --with-deps chromium firefox webkit
+      - name: Install project browser
+        env:
+          BROWSER_PROJECT: ${{ matrix.project }}
+        run: |
+          browser_engine="$BROWSER_PROJECT"
+          if [ "$browser_engine" = mobile ]; then browser_engine=chromium; fi
+          bunx playwright install --with-deps "$browser_engine"
       - name: Launch real local runtime
         run: |
           HEIMA_WEB_MODE=production bun scripts/test-runtime.ts > /tmp/heima-runtime.log 2>&1 &
@@ -34,11 +45,14 @@ jobs:
           cat /tmp/heima-runtime.log
           exit 1
       - run: bun test tests/http
-      - run: bunx playwright test
+      - name: Verify browser journeys
+        env:
+          BROWSER_PROJECT: ${{ matrix.project }}
+        run: bunx playwright test --project="$BROWSER_PROJECT"
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: heima-browser-evidence
+          name: heima-browser-evidence-${{ matrix.project }}
           path: |
             test-results/
             playwright-report/
