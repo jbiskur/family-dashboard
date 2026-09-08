@@ -11,7 +11,7 @@ const env = Object.fromEntries(
       line.slice(line.indexOf("=") + 1),
     ]),
 );
-test.use({ trace: "off", video: "off" });
+test.use({ trace: "off", video: "off", actionTimeout: 15_000 });
 async function login(page: Page, user = "owner") {
   await page.goto("/");
   await page.getByRole("button", { name: "Continue with Usable" }).click();
@@ -189,6 +189,7 @@ for (const choice of ["discard", "reapply"] as const) {
       await expect(
         other.getByRole("heading", { name: original, exact: true }),
       ).toBeVisible();
+      await page.bringToFront();
       await context.setOffline(true);
       await page.getByRole("heading", { name: original, exact: true }).click();
       await page.getByRole("button", { name: "Edit", exact: true }).click();
@@ -199,6 +200,7 @@ for (const choice of ["discard", "reapply"] as const) {
       await expect(
         page.getByRole("heading", { name: local, exact: true }),
       ).toBeVisible();
+      await other.bringToFront();
       await other.getByRole("heading", { name: original, exact: true }).click();
       await other.getByRole("button", { name: "Edit", exact: true }).click();
       await other
@@ -210,6 +212,7 @@ for (const choice of ["discard", "reapply"] as const) {
       await expect(
         other.getByRole("heading", { name: remote, exact: true }),
       ).toBeVisible();
+      await page.bringToFront();
       await context.setOffline(false);
       await expect
         .poll(
@@ -241,15 +244,24 @@ for (const choice of ["discard", "reapply"] as const) {
       await expect(comparison).toContainText(local);
       await expect(comparison).toContainText(remote);
       await page.evaluate(async () => {
-        await Promise.all(
-          document
-            .getAnimations()
-            .filter(
-              (animation) =>
-                animation.effect?.getTiming().iterations !== Infinity,
-            )
-            .map((animation) => animation.finished.catch(() => undefined)),
-        );
+        await Promise.race([
+          Promise.all(
+            document
+              .getAnimations()
+              .filter(
+                (animation) =>
+                  animation.effect?.getTiming().iterations !== Infinity,
+              )
+              .map((animation) => animation.finished.catch(() => undefined)),
+          ),
+          new Promise((_, reject) =>
+            setTimeout(
+              () =>
+                reject(new Error("Foreground UI animations did not settle")),
+              2_000,
+            ),
+          ),
+        ]);
       });
       const accessibility = await new AxeBuilder({ page })
         .withTags(["wcag2a", "wcag2aa", "wcag21aa"])

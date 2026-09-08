@@ -75,9 +75,17 @@ await create("shopping/items", {
   quantity: "1 kg",
   listId: weekend.id,
 });
-const today = new Intl.DateTimeFormat("en-CA", {
-  timeZone: "Atlantic/Faroe",
-}).format(new Date());
+const dateParts = Object.fromEntries(
+  new Intl.DateTimeFormat("en", {
+    timeZone: "Atlantic/Faroe",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  })
+    .formatToParts(new Date())
+    .map(({ type, value }) => [type, value]),
+);
+const today = `${dateParts.year}-${dateParts.month}-${dateParts.day}`;
 for (const item of [
   {
     title: "Water the kitchen herbs",

@@ -76,6 +76,7 @@ h2,
 h3,
 p {
   margin: 0;
+  overflow-wrap: anywhere;
 }
 h1 {
   font-family: Georgia, "Times New Roman", serif;
@@ -228,6 +229,7 @@ main:focus {
   padding-right: 28px;
 }
 .card {
+  min-width: 0;
   background: var(--card);
   border: 1px solid var(--border);
   border-radius: var(--radius);
@@ -553,7 +555,7 @@ main:focus {
 }
 .two-columns {
   display: grid;
-  grid-template-columns: 1.15fr 1fr;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
   gap: 26px;
 }
 .three-columns {
@@ -563,6 +565,8 @@ main:focus {
 }
 .stack {
   display: grid;
+  min-width: 0;
+  grid-template-columns: minmax(0, 1fr);
   gap: 14px;
 }
 .row {
@@ -1038,6 +1042,7 @@ main:focus {
   align-items: start;
 }
 .work-column {
+  min-width: 0;
   background: #eeefe5;
   border-radius: 15px;
   padding: 13px;
@@ -1746,11 +1751,11 @@ main:focus {
   }
   .two-columns,
   .settings-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
     gap: 27px;
   }
   .three-columns {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
   .metric-grid {
     gap: 11px;
@@ -1820,7 +1825,7 @@ main:focus {
     font-size: 9px;
   }
   .work-board {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
     gap: 20px;
   }
   .work-column {

@@ -258,13 +258,23 @@ test("N6 finance push hides amounts and descriptions and excludes private accoun
     expect((await command(`activity/${entry.id}/read`, {})).status).toBe(200);
   await prefs({ financeReview: true });
   const registration = await subscribe();
+  // A reused household may have older pending activity outside the latest-200 feed.
+  // Let the real scheduler deliver that baseline before observing this import.
+  await Bun.sleep(1200);
   await push({ action: "clear" });
   const imported = async (shared: boolean) => {
     const account = await create(
       "finance/accounts",
-      { name: `Secret account ${stamp}`, currency: "DKK", shared },
+      {
+        name: `Secret account ${stamp}`,
+        currency: "DKK",
+        visibility: "personal",
+        shared,
+      },
       owner,
     );
+    expect(account.visibility).toBe("personal");
+    expect(account.shared).toBe(shared);
     const preview = await request("finance/imports/preview", owner, {
       accountId: account.id,
       fileName: "private-details.csv",
@@ -284,6 +294,11 @@ test("N6 finance push hides amounts and descriptions and excludes private accoun
   expect(
     (await request(`finance/imports/${privateBatch.id}`, spouse)).status,
   ).toBe(404);
+  expect(
+    (await read("activity")).items.some((entry: { href: string }) =>
+      entry.href.includes(privateBatch.id),
+    ),
+  ).toBe(false);
   await Bun.sleep(1200);
   expect(await captures(registration.id)).toHaveLength(0);
   const batch = await imported(true);

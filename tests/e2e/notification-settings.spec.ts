@@ -81,9 +81,11 @@ test("notification choices and Faroe quiet hours persist privately without promp
     await page
       .getByRole("button", { name: "Save preferences", exact: true })
       .click();
-    await expect(page.getByRole("status")).toContainText(
-      "Notification preferences saved.",
-    );
+    await expect(
+      page
+        .getByRole("status")
+        .filter({ hasText: "Notification preferences saved." }),
+    ).toContainText("Notification preferences saved.");
     await page.reload();
     for (const field of fields)
       await expect(page.locator(`#preference-${field}`)).toBeChecked({
@@ -103,7 +105,7 @@ test("notification choices and Faroe quiet hours persist privately without promp
     ).toBe(permissionBefore);
     await page.screenshot({
       path: info.outputPath("private-preferences-quiet-hours.png"),
-      fullPage: true,
+      fullPage: false,
     });
     // Restore the prior delivery choices through the same public UI.
     for (const field of fields)
@@ -115,9 +117,11 @@ test("notification choices and Faroe quiet hours persist privately without promp
     await page
       .getByRole("button", { name: "Save preferences", exact: true })
       .click();
-    await expect(page.getByRole("status")).toContainText(
-      "Notification preferences saved.",
-    );
+    await expect(
+      page
+        .getByRole("status")
+        .filter({ hasText: "Notification preferences saved." }),
+    ).toContainText("Notification preferences saved.");
     expect((await preferences(page, actorId))[0]?.id).toBe(saved?.id);
     expect((await preferences(page, actorId))[0]?.version).toBeGreaterThan(
       saved?.version ?? 0,

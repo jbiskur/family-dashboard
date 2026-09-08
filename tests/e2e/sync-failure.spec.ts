@@ -148,7 +148,7 @@ test("a real rejected offline assignment creates one private generic sync activi
     await expect(page.getByRole("dialog")).toContainText(title);
     await page.screenshot({
       path: info.outputPath("rejected-assignment-saved.png"),
-      fullPage: true,
+      fullPage: false,
     });
     await page.keyboard.press("Escape");
     const after = await read<{ items: Activity[] }>(page, actorId, "activity");
@@ -188,7 +188,7 @@ test("a real rejected offline assignment creates one private generic sync activi
     await expect(row.getByRole("button")).toHaveCount(0);
     await page.screenshot({
       path: info.outputPath("private-sync-activity.png"),
-      fullPage: true,
+      fullPage: false,
     });
     await page.reload();
     const repeated = await read<{ items: Activity[] }>(

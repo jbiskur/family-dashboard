@@ -1,6 +1,9 @@
 import { readFileSync } from "node:fs";
+import { mkdtemp, rm } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import AxeBuilder from "@axe-core/playwright";
-import { expect, test } from "@playwright/test";
+import { chromium, expect, test } from "@playwright/test";
 
 const env = Object.fromEntries(
   readFileSync(".env.test.local", "utf8")
@@ -127,10 +130,19 @@ test("Reduced motion and 200-percent equivalent layout retain usable navigation"
     ).toBe(false);
     await context.setOffline(true);
     await page.reload();
+    await expect(page.locator("body")).toContainText(
+      /Finance needs a connection|You're offline/,
+    );
+    await expect(page.locator(".metric-grid")).toHaveCount(0);
     await expect(
-      page.getByRole("heading", { name: "Financial overview", exact: true }),
+      page.getByText("Household balance", { exact: true }),
     ).toHaveCount(0);
-    await expect(page.locator("body")).toContainText("offline");
+    await expect(page.getByText("Net cash flow", { exact: true })).toHaveCount(
+      0,
+    );
+    await expect(page.locator("body")).toContainText(
+      /isn't saved on this device for offline use|isn't stored offline/,
+    );
     await page.screenshot({
       path: info.outputPath("finance-offline-safe-shell.png"),
       fullPage: false,
@@ -182,4 +194,57 @@ test("Browser parses the installable named manifest and real icon sizes", async 
       (error: { errorId: string }) => error.errorId !== "in-incognito",
     ),
   ).toEqual([]);
+});
+
+test("Heima installs and launches in a standalone app window", async ({
+  browserName,
+}, info) => {
+  test.skip(
+    browserName !== "chromium" || info.project.name !== "chromium",
+    "Desktop installation uses full Chromium CDP and an isolated disposable profile.",
+  );
+  const profile = await mkdtemp(join(tmpdir(), "heima-pwa-proof-"));
+  const context = await chromium.launchPersistentContext(profile, {
+    headless: true,
+    channel: "chromium",
+    viewport: { width: 1000, height: 800 },
+  });
+  const page = context.pages()[0]!;
+  const cdp = await context.newCDPSession(page);
+  const manifestId = "http://localhost:3010/";
+  let installed = false;
+  try {
+    await page.goto(manifestId);
+    expect((await cdp.send("Page.getAppManifest")).errors).toEqual([]);
+    await cdp.send("PWA.install", {
+      manifestId,
+      installUrlOrBundleUrl: manifestId,
+    });
+    installed = true;
+    // Match the user's explicit browser choice to open the installed app in its own window.
+    await cdp.send("PWA.changeAppUserSettings", {
+      manifestId,
+      displayMode: "standalone",
+    });
+    const opened = context.waitForEvent("page");
+    const launch = await cdp.send("PWA.launch", { manifestId });
+    expect(launch.targetId).toBeTruthy();
+    const app = await opened;
+    await expect(app).toHaveURL(manifestId);
+    await expect
+      .poll(() =>
+        app.evaluate(() => matchMedia("(display-mode: standalone)").matches),
+      )
+      .toBe(true);
+    await expect(
+      app.getByRole("button", { name: "Continue with Usable" }),
+    ).toBeVisible();
+    await app.screenshot({
+      path: info.outputPath("installed-standalone-login.png"),
+    });
+  } finally {
+    if (installed) await cdp.send("PWA.uninstall", { manifestId });
+    await context.close();
+    await rm(profile, { recursive: true, force: true });
+  }
 });

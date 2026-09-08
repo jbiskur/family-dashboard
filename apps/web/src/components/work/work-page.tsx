@@ -15,7 +15,7 @@ import {
   Trash2,
   UserRound,
 } from "lucide-react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { useCommand, useHeima } from "@/lib/client";
 import { EntityForm } from "../shared/form";
@@ -46,7 +46,6 @@ export function WorkPage() {
   const access = useHousehold();
   const command = useCommand();
   const searchParams = useSearchParams();
-  const router = useRouter();
   const [editing, setEditing] = useState<WorkItem | "new" | null>(null);
   const [selectedId, setSelectedId] = useState<string | null>(
     searchParams.get("item"),
@@ -110,7 +109,8 @@ export function WorkPage() {
     setScope(false);
     setRemove(false);
     setSeries(false);
-    if (searchParams.has("item")) router.replace("/work");
+    if (searchParams.has("item"))
+      window.history.replaceState(null, "", "/work");
   }
   async function changeStatus(item: WorkItem, status: WorkItem["status"]) {
     const result = await update(item, { status });
@@ -243,9 +243,11 @@ export function WorkPage() {
                     key={item.id}
                     onClick={() => {
                       setSelectedId(item.id);
-                      router.replace(`/work?item=${item.id}`, {
-                        scroll: false,
-                      });
+                      window.history.replaceState(
+                        null,
+                        "",
+                        `/work?item=${item.id}`,
+                      );
                     }}
                   >
                     <ScopeBadge scope={item.visibility} />

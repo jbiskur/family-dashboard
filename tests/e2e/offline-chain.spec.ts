@@ -10,7 +10,7 @@ const env = Object.fromEntries(
       line.slice(line.indexOf("=") + 1),
     ]),
 );
-test.use({ trace: "off", video: "off" });
+test.use({ trace: "off", video: "off", actionTimeout: 15000 });
 async function login(page: Page, user = "owner") {
   await page.goto("/");
   await page.getByRole("button", { name: "Continue with Usable" }).click();

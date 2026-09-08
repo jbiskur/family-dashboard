@@ -93,6 +93,7 @@ export async function confirmRecipient(userId: string): Promise<boolean> {
         // Validate eligibility and identity BEFORE persisting a refreshed credential.
         const identity = await verifyIdentity(`Bearer ${value.accessToken}`);
         if (identity.userId !== userId) return null;
+        await requireMember(identity);
         await tx`update auth_sessions set encrypted_tokens=${encrypt(value)} where id=${row.id}`;
       }
       return value.accessToken;
