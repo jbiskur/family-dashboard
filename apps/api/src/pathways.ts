@@ -68,6 +68,7 @@ export const pathways = new PathwaysBuilder({
     schema: notificationEventSchema,
     writable: true,
     encrypted: true,
+    flowTypeDescription: "Private household activity and notification delivery",
     description: "Private recipient activity and notification delivery state",
   })
   .handle("heima.notifications.0/notification.changed.0", projectNotification)
