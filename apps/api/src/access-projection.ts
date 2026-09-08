@@ -93,20 +93,34 @@ export async function projectAccess(event: FlowcoreEvent<AccessEvent>) {
         invite.status !== "pending" ||
         invite.expiresAt <= now ||
         active.some((m) => m.role === "spouse") ||
-        actor ||
+        (actor &&
+          (actor.role !== "spouse" ||
+            actor.status !== "revoked" ||
+            actor.subject !== change.subject ||
+            invite.requestedAt <= actor.updatedAt)) ||
         active.length !== 1
       )
         errorCode = "admission-conflict";
       else {
-        await tx.insert(members).values({
-          householdId: p.householdId,
-          userId: p.actorId,
-          subject: change.subject,
-          role: "spouse",
-          status: "active",
-          sourceEventId: event.eventId,
-          updatedAt: now,
-        });
+        if (actor)
+          await tx
+            .update(members)
+            .set({
+              status: "active",
+              sourceEventId: event.eventId,
+              updatedAt: now,
+            })
+            .where(memberWhere);
+        else
+          await tx.insert(members).values({
+            householdId: p.householdId,
+            userId: p.actorId,
+            subject: change.subject,
+            role: "spouse",
+            status: "active",
+            sourceEventId: event.eventId,
+            updatedAt: now,
+          });
         await tx
           .update(invitations)
           .set({

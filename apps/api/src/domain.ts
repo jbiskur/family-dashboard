@@ -21,7 +21,7 @@ const date = z
     }
   }, "Use a valid date");
 const time = z.string().regex(/^([01]\d|2[0-3]):[0-5]\d$/);
-const amount = z.string().regex(/^-?\d{1,16}(\.\d{1,3})?$/);
+const amount = z.string().regex(/^-?\d{1,16}(\.\d{1,4})?$/);
 const currency = z
   .string()
   .regex(/^[A-Z]{3}$/)
@@ -327,4 +327,22 @@ export function toReporting(
   return (
     ((absolute + denominator / 2n) / denominator) * (numerator < 0n ? -1n : 1n)
   );
+}
+
+/** Explained source rows are exclusions; only distinct matched ledger facts reconcile. */
+export function matchedAmount(
+  rows: { status: string; transactionId: string | null; amount: string }[],
+  currency: string,
+) {
+  const matched = new Set<string>();
+  return rows.reduce((sum, row) => {
+    if (
+      row.status !== "matched" ||
+      !row.transactionId ||
+      matched.has(row.transactionId)
+    )
+      return sum;
+    matched.add(row.transactionId);
+    return sum + minor(row.amount, currency);
+  }, 0n);
 }

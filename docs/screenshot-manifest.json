@@ -1,0 +1,664 @@
+{
+  "capturedAt": "2026-09-08",
+  "environment": "Local real Keycloak / API / Postgres / Flowcore webhook fixture",
+  "receipts": [
+    {
+      "feature": "356f3e15-0c04-4aac-a838-55352310e95c",
+      "path": "/",
+      "screenshot": "docs/screenshots/feature-paths/login-1440.png",
+      "state": "login",
+      "evidence": "UI rendered and WCAG A/AA scan passed; full scenario proof separate"
+    },
+    {
+      "feature": "075fefa3-1232-4a15-80d3-a6520e500fd1",
+      "path": "/",
+      "screenshot": "docs/screenshots/feature-paths/home-1440.png",
+      "state": "home",
+      "evidence": "UI rendered and WCAG A/AA scan passed; full scenario proof separate"
+    },
+    {
+      "feature": "1795cf35-a5ca-4290-a526-5bcbecad9a27",
+      "path": "/",
+      "screenshot": "docs/screenshots/feature-paths/home-1440.png",
+      "state": "home",
+      "evidence": "UI rendered and WCAG A/AA scan passed; full scenario proof separate"
+    },
+    {
+      "feature": "fc1b28d5-86d1-45bc-9be4-8011d3e96393",
+      "path": "/",
+      "screenshot": "docs/screenshots/feature-paths/home-1440.png",
+      "state": "home",
+      "evidence": "UI rendered and WCAG A/AA scan passed; full scenario proof separate"
+    },
+    {
+      "feature": "075fefa3-1232-4a15-80d3-a6520e500fd1",
+      "path": "/",
+      "screenshot": "docs/screenshots/feature-paths/home-quick-add-1440.png",
+      "state": "home-quick-add",
+      "evidence": "UI rendered and WCAG A/AA scan passed; full scenario proof separate"
+    },
+    {
+      "feature": "a0c751ca-1dbe-4d54-905e-c741ad852345",
+      "path": "/shopping",
+      "screenshot": "docs/screenshots/feature-paths/shopping-directory-1440.png",
+      "state": "shopping-directory",
+      "evidence": "UI rendered and WCAG A/AA scan passed; full scenario proof separate"
+    },
+    {
+      "feature": "a0c751ca-1dbe-4d54-905e-c741ad852345",
+      "path": "/shopping",
+      "screenshot": "docs/screenshots/feature-paths/shopping-create-list-1440.png",
+      "state": "shopping-create-list",
+      "evidence": "UI rendered and WCAG A/AA scan passed; full scenario proof separate"
+    },
+    {
+      "feature": "95e4fc63-efc0-4496-b9f9-c575eae1fd15",
+      "path": "/shopping/fe251caa-bdc1-505d-9bf0-fb8099d54488",
+      "screenshot": "docs/screenshots/feature-paths/shopping-list-detail-1440.png",
+      "state": "shopping-list-detail",
+      "evidence": "UI rendered and WCAG A/AA scan passed; full scenario proof separate"
+    },
+    {
+      "feature": "85e60f20-ca21-4fa1-95cb-ec507c56e3c2",
+      "path": "/shopping/fe251caa-bdc1-505d-9bf0-fb8099d54488",
+      "screenshot": "docs/screenshots/feature-paths/shopping-list-detail-1440.png",
+      "state": "shopping-list-detail",
+      "evidence": "UI rendered and WCAG A/AA scan passed; full scenario proof separate"
+    },
+    {
+      "feature": "06485852-13f5-474a-b30f-e75fe82cf7d0",
+      "path": "/shopping/fe251caa-bdc1-505d-9bf0-fb8099d54488",
+      "screenshot": "docs/screenshots/feature-paths/shopping-list-detail-1440.png",
+      "state": "shopping-list-detail",
+      "evidence": "UI rendered and WCAG A/AA scan passed; full scenario proof separate"
+    },
+    {
+      "feature": "95e4fc63-efc0-4496-b9f9-c575eae1fd15",
+      "path": "/shopping/fe251caa-bdc1-505d-9bf0-fb8099d54488",
+      "screenshot": "docs/screenshots/feature-paths/shopping-add-item-offer-1440.png",
+      "state": "shopping-add-item-offer",
+      "evidence": "UI rendered and WCAG A/AA scan passed; full scenario proof separate"
+    },
+    {
+      "feature": "85e60f20-ca21-4fa1-95cb-ec507c56e3c2",
+      "path": "/shopping/fe251caa-bdc1-505d-9bf0-fb8099d54488",
+      "screenshot": "docs/screenshots/feature-paths/shopping-add-item-offer-1440.png",
+      "state": "shopping-add-item-offer",
+      "evidence": "UI rendered and WCAG A/AA scan passed; full scenario proof separate"
+    },
+    {
+      "feature": "1154e9d2-f333-41fb-a6f6-a93653fbefc8",
+      "path": "/shopping/fe251caa-bdc1-505d-9bf0-fb8099d54488",
+      "screenshot": "docs/screenshots/feature-paths/shopping-list-visibility-confirmation-1440.png",
+      "state": "shopping-list-visibility-confirmation",
+      "evidence": "UI rendered and WCAG A/AA scan passed; full scenario proof separate"
+    },
+    {
+      "feature": "06485852-13f5-474a-b30f-e75fe82cf7d0",
+      "path": "/shopping/216e4666-e8e3-50bf-9292-b20979901c5c",
+      "screenshot": "docs/screenshots/feature-paths/shopping-purchase-store-1440.png",
+      "state": "shopping-purchase-store",
+      "evidence": "UI rendered and WCAG A/AA scan passed; full scenario proof separate"
+    },
+    {
+      "feature": "748622b5-4c53-4f89-a62e-c6ffdcf81509",
+      "path": "/shopping/stores",
+      "screenshot": "docs/screenshots/feature-paths/stores-1440.png",
+      "state": "stores",
+      "evidence": "UI rendered and WCAG A/AA scan passed; full scenario proof separate"
+    },
+    {
+      "feature": "748622b5-4c53-4f89-a62e-c6ffdcf81509",
+      "path": "/shopping/stores",
+      "screenshot": "docs/screenshots/feature-paths/store-create-location-1440.png",
+      "state": "store-create-location",
+      "evidence": "UI rendered and WCAG A/AA scan passed; full scenario proof separate"
+    },
+    {
+      "feature": "91af72df-8407-49ea-ab25-738aa02b6bc4",
+      "path": "/work",
+      "screenshot": "docs/screenshots/feature-paths/work-board-1440.png",
+      "state": "work-board",
+      "evidence": "UI rendered and WCAG A/AA scan passed; full scenario proof separate"
+    },
+    {
+      "feature": "91af72df-8407-49ea-ab25-738aa02b6bc4",
+      "path": "/work",
+      "screenshot": "docs/screenshots/feature-paths/work-create-assignment-recurrence-1440.png",
+      "state": "work-create-assignment-recurrence",
+      "evidence": "UI rendered and WCAG A/AA scan passed; full scenario proof separate"
+    },
+    {
+      "feature": "a83f1ed2-d88b-44a1-87b6-119ab2ef8053",
+      "path": "/work",
+      "screenshot": "docs/screenshots/feature-paths/work-create-assignment-recurrence-1440.png",
+      "state": "work-create-assignment-recurrence",
+      "evidence": "UI rendered and WCAG A/AA scan passed; full scenario proof separate"
+    },
+    {
+      "feature": "64e88dcf-cfa7-4882-8863-4ef8dccc7391",
+      "path": "/work",
+      "screenshot": "docs/screenshots/feature-paths/work-create-assignment-recurrence-1440.png",
+      "state": "work-create-assignment-recurrence",
+      "evidence": "UI rendered and WCAG A/AA scan passed; full scenario proof separate"
+    },
+    {
+      "feature": "91af72df-8407-49ea-ab25-738aa02b6bc4",
+      "path": "/work?item=aeaeca7f-7403-54f0-8f80-edc9ee03524c",
+      "screenshot": "docs/screenshots/feature-paths/work-detail-1440.png",
+      "state": "work-detail",
+      "evidence": "UI rendered and WCAG A/AA scan passed; full scenario proof separate"
+    },
+    {
+      "feature": "a83f1ed2-d88b-44a1-87b6-119ab2ef8053",
+      "path": "/work?item=aeaeca7f-7403-54f0-8f80-edc9ee03524c",
+      "screenshot": "docs/screenshots/feature-paths/work-detail-1440.png",
+      "state": "work-detail",
+      "evidence": "UI rendered and WCAG A/AA scan passed; full scenario proof separate"
+    },
+    {
+      "feature": "64e88dcf-cfa7-4882-8863-4ef8dccc7391",
+      "path": "/work?item=aeaeca7f-7403-54f0-8f80-edc9ee03524c",
+      "screenshot": "docs/screenshots/feature-paths/work-detail-1440.png",
+      "state": "work-detail",
+      "evidence": "UI rendered and WCAG A/AA scan passed; full scenario proof separate"
+    },
+    {
+      "feature": "2e58d7da-a071-4cb3-9d13-8ac8a8d4af6e",
+      "path": "/work?item=aeaeca7f-7403-54f0-8f80-edc9ee03524c",
+      "screenshot": "docs/screenshots/feature-paths/work-history-1440.png",
+      "state": "work-history",
+      "evidence": "UI rendered and WCAG A/AA scan passed; full scenario proof separate"
+    },
+    {
+      "feature": "4e2d9ae3-ef97-4a6f-9c8f-dc5c514f7d1f",
+      "path": "/work?item=aeaeca7f-7403-54f0-8f80-edc9ee03524c",
+      "screenshot": "docs/screenshots/feature-paths/work-scope-confirmation-1440.png",
+      "state": "work-scope-confirmation",
+      "evidence": "UI rendered and WCAG A/AA scan passed; full scenario proof separate"
+    },
+    {
+      "feature": "5acb0582-b26c-4d24-9454-883b84e286f5",
+      "path": "/finance",
+      "screenshot": "docs/screenshots/feature-paths/finance-overview-1440.png",
+      "state": "finance-overview",
+      "evidence": "UI rendered and WCAG A/AA scan passed; full scenario proof separate"
+    },
+    {
+      "feature": "0230cd86-af8c-437a-9a01-afb4839ddb25",
+      "path": "/finance/spending",
+      "screenshot": "docs/screenshots/feature-paths/finance-spending-1440.png",
+      "state": "finance-spending",
+      "evidence": "UI rendered and WCAG A/AA scan passed; full scenario proof separate"
+    },
+    {
+      "feature": "69595cdd-68c2-4884-9ae9-ff929df200ce",
+      "path": "/finance/accounts",
+      "screenshot": "docs/screenshots/feature-paths/finance-accounts-1440.png",
+      "state": "finance-accounts",
+      "evidence": "UI rendered and WCAG A/AA scan passed; full scenario proof separate"
+    },
+    {
+      "feature": "69595cdd-68c2-4884-9ae9-ff929df200ce",
+      "path": "/finance/accounts",
+      "screenshot": "docs/screenshots/feature-paths/finance-account-create-1440.png",
+      "state": "finance-account-create",
+      "evidence": "UI rendered and WCAG A/AA scan passed; full scenario proof separate"
+    },
+    {
+      "feature": "4309c82f-f717-4d56-8faa-cc5d492fad75",
+      "path": "/finance/accounts/ab510fc0-c163-5ce3-8d1c-8e1bc8c6e6bc",
+      "screenshot": "docs/screenshots/feature-paths/finance-account-detail-1440.png",
+      "state": "finance-account-detail",
+      "evidence": "UI rendered and WCAG A/AA scan passed; full scenario proof separate"
+    },
+    {
+      "feature": "7f3e4bf3-6659-4010-8c57-b1be2f9f12c9",
+      "path": "/finance/transactions",
+      "screenshot": "docs/screenshots/feature-paths/finance-transactions-1440.png",
+      "state": "finance-transactions",
+      "evidence": "UI rendered and WCAG A/AA scan passed; full scenario proof separate"
+    },
+    {
+      "feature": "10c22d2d-b275-4042-a5e2-3409a8a006d5",
+      "path": "/finance/transactions",
+      "screenshot": "docs/screenshots/feature-paths/finance-manual-exception-1440.png",
+      "state": "finance-manual-exception",
+      "evidence": "UI rendered and WCAG A/AA scan passed; full scenario proof separate"
+    },
+    {
+      "feature": "f972dec6-6666-4338-b2ec-3e246e3ff2d2",
+      "path": "/finance/budgets",
+      "screenshot": "docs/screenshots/feature-paths/finance-budgets-1440.png",
+      "state": "finance-budgets",
+      "evidence": "UI rendered and WCAG A/AA scan passed; full scenario proof separate"
+    },
+    {
+      "feature": "f972dec6-6666-4338-b2ec-3e246e3ff2d2",
+      "path": "/finance/budgets",
+      "screenshot": "docs/screenshots/feature-paths/finance-budget-create-1440.png",
+      "state": "finance-budget-create",
+      "evidence": "UI rendered and WCAG A/AA scan passed; full scenario proof separate"
+    },
+    {
+      "feature": "1ac0abfd-e7f7-4d7f-8b06-c1256f0eb680",
+      "path": "/finance/budgets",
+      "screenshot": "docs/screenshots/feature-paths/finance-category-tree-1440.png",
+      "state": "finance-category-tree",
+      "evidence": "UI rendered and WCAG A/AA scan passed; full scenario proof separate"
+    },
+    {
+      "feature": "d1712d7f-af94-4946-8629-c065fb780a23",
+      "path": "/finance/imports",
+      "screenshot": "docs/screenshots/feature-paths/finance-imports-1440.png",
+      "state": "finance-imports",
+      "evidence": "UI rendered and WCAG A/AA scan passed; full scenario proof separate"
+    },
+    {
+      "feature": "e1664e78-0689-48fa-a609-3c7e2d467772",
+      "path": "/finance/imports",
+      "screenshot": "docs/screenshots/feature-paths/finance-imports-1440.png",
+      "state": "finance-imports",
+      "evidence": "UI rendered and WCAG A/AA scan passed; full scenario proof separate"
+    },
+    {
+      "feature": "356f3e15-0c04-4aac-a838-55352310e95c",
+      "path": "/settings/household",
+      "screenshot": "docs/screenshots/feature-paths/household-members-profiles-1440.png",
+      "state": "household-members-profiles",
+      "evidence": "UI rendered and WCAG A/AA scan passed; full scenario proof separate"
+    },
+    {
+      "feature": "7025de7c-5fb5-4e08-939b-eff542fb1dc3",
+      "path": "/settings/household",
+      "screenshot": "docs/screenshots/feature-paths/household-members-profiles-1440.png",
+      "state": "household-members-profiles",
+      "evidence": "UI rendered and WCAG A/AA scan passed; full scenario proof separate"
+    },
+    {
+      "feature": "eb2cefa6-5a47-481e-b430-89960338ed72",
+      "path": "/settings/notifications",
+      "screenshot": "docs/screenshots/feature-paths/notification-preferences-1440.png",
+      "state": "notification-preferences",
+      "evidence": "UI rendered and WCAG A/AA scan passed; full scenario proof separate"
+    },
+    {
+      "feature": "356f3e15-0c04-4aac-a838-55352310e95c",
+      "path": "/",
+      "screenshot": "docs/screenshots/feature-paths/login-320.png",
+      "state": "login",
+      "evidence": "UI rendered and WCAG A/AA scan passed; full scenario proof separate"
+    },
+    {
+      "feature": "075fefa3-1232-4a15-80d3-a6520e500fd1",
+      "path": "/",
+      "screenshot": "docs/screenshots/feature-paths/home-320.png",
+      "state": "home",
+      "evidence": "UI rendered and WCAG A/AA scan passed; full scenario proof separate"
+    },
+    {
+      "feature": "1795cf35-a5ca-4290-a526-5bcbecad9a27",
+      "path": "/",
+      "screenshot": "docs/screenshots/feature-paths/home-320.png",
+      "state": "home",
+      "evidence": "UI rendered and WCAG A/AA scan passed; full scenario proof separate"
+    },
+    {
+      "feature": "fc1b28d5-86d1-45bc-9be4-8011d3e96393",
+      "path": "/",
+      "screenshot": "docs/screenshots/feature-paths/home-320.png",
+      "state": "home",
+      "evidence": "UI rendered and WCAG A/AA scan passed; full scenario proof separate"
+    },
+    {
+      "feature": "075fefa3-1232-4a15-80d3-a6520e500fd1",
+      "path": "/",
+      "screenshot": "docs/screenshots/feature-paths/home-quick-add-320.png",
+      "state": "home-quick-add",
+      "evidence": "UI rendered and WCAG A/AA scan passed; full scenario proof separate"
+    },
+    {
+      "feature": "a0c751ca-1dbe-4d54-905e-c741ad852345",
+      "path": "/shopping",
+      "screenshot": "docs/screenshots/feature-paths/shopping-directory-320.png",
+      "state": "shopping-directory",
+      "evidence": "UI rendered and WCAG A/AA scan passed; full scenario proof separate"
+    },
+    {
+      "feature": "a0c751ca-1dbe-4d54-905e-c741ad852345",
+      "path": "/shopping",
+      "screenshot": "docs/screenshots/feature-paths/shopping-create-list-320.png",
+      "state": "shopping-create-list",
+      "evidence": "UI rendered and WCAG A/AA scan passed; full scenario proof separate"
+    },
+    {
+      "feature": "95e4fc63-efc0-4496-b9f9-c575eae1fd15",
+      "path": "/shopping/fe251caa-bdc1-505d-9bf0-fb8099d54488",
+      "screenshot": "docs/screenshots/feature-paths/shopping-list-detail-320.png",
+      "state": "shopping-list-detail",
+      "evidence": "UI rendered and WCAG A/AA scan passed; full scenario proof separate"
+    },
+    {
+      "feature": "85e60f20-ca21-4fa1-95cb-ec507c56e3c2",
+      "path": "/shopping/fe251caa-bdc1-505d-9bf0-fb8099d54488",
+      "screenshot": "docs/screenshots/feature-paths/shopping-list-detail-320.png",
+      "state": "shopping-list-detail",
+      "evidence": "UI rendered and WCAG A/AA scan passed; full scenario proof separate"
+    },
+    {
+      "feature": "06485852-13f5-474a-b30f-e75fe82cf7d0",
+      "path": "/shopping/fe251caa-bdc1-505d-9bf0-fb8099d54488",
+      "screenshot": "docs/screenshots/feature-paths/shopping-list-detail-320.png",
+      "state": "shopping-list-detail",
+      "evidence": "UI rendered and WCAG A/AA scan passed; full scenario proof separate"
+    },
+    {
+      "feature": "95e4fc63-efc0-4496-b9f9-c575eae1fd15",
+      "path": "/shopping/fe251caa-bdc1-505d-9bf0-fb8099d54488",
+      "screenshot": "docs/screenshots/feature-paths/shopping-add-item-offer-320.png",
+      "state": "shopping-add-item-offer",
+      "evidence": "UI rendered and WCAG A/AA scan passed; full scenario proof separate"
+    },
+    {
+      "feature": "85e60f20-ca21-4fa1-95cb-ec507c56e3c2",
+      "path": "/shopping/fe251caa-bdc1-505d-9bf0-fb8099d54488",
+      "screenshot": "docs/screenshots/feature-paths/shopping-add-item-offer-320.png",
+      "state": "shopping-add-item-offer",
+      "evidence": "UI rendered and WCAG A/AA scan passed; full scenario proof separate"
+    },
+    {
+      "feature": "1154e9d2-f333-41fb-a6f6-a93653fbefc8",
+      "path": "/shopping/fe251caa-bdc1-505d-9bf0-fb8099d54488",
+      "screenshot": "docs/screenshots/feature-paths/shopping-list-visibility-confirmation-320.png",
+      "state": "shopping-list-visibility-confirmation",
+      "evidence": "UI rendered and WCAG A/AA scan passed; full scenario proof separate"
+    },
+    {
+      "feature": "06485852-13f5-474a-b30f-e75fe82cf7d0",
+      "path": "/shopping/216e4666-e8e3-50bf-9292-b20979901c5c",
+      "screenshot": "docs/screenshots/feature-paths/shopping-purchase-store-320.png",
+      "state": "shopping-purchase-store",
+      "evidence": "UI rendered and WCAG A/AA scan passed; full scenario proof separate"
+    },
+    {
+      "feature": "748622b5-4c53-4f89-a62e-c6ffdcf81509",
+      "path": "/shopping/stores",
+      "screenshot": "docs/screenshots/feature-paths/stores-320.png",
+      "state": "stores",
+      "evidence": "UI rendered and WCAG A/AA scan passed; full scenario proof separate"
+    },
+    {
+      "feature": "748622b5-4c53-4f89-a62e-c6ffdcf81509",
+      "path": "/shopping/stores",
+      "screenshot": "docs/screenshots/feature-paths/store-create-location-320.png",
+      "state": "store-create-location",
+      "evidence": "UI rendered and WCAG A/AA scan passed; full scenario proof separate"
+    },
+    {
+      "feature": "91af72df-8407-49ea-ab25-738aa02b6bc4",
+      "path": "/work",
+      "screenshot": "docs/screenshots/feature-paths/work-board-320.png",
+      "state": "work-board",
+      "evidence": "UI rendered and WCAG A/AA scan passed; full scenario proof separate"
+    },
+    {
+      "feature": "91af72df-8407-49ea-ab25-738aa02b6bc4",
+      "path": "/work",
+      "screenshot": "docs/screenshots/feature-paths/work-create-assignment-recurrence-320.png",
+      "state": "work-create-assignment-recurrence",
+      "evidence": "UI rendered and WCAG A/AA scan passed; full scenario proof separate"
+    },
+    {
+      "feature": "a83f1ed2-d88b-44a1-87b6-119ab2ef8053",
+      "path": "/work",
+      "screenshot": "docs/screenshots/feature-paths/work-create-assignment-recurrence-320.png",
+      "state": "work-create-assignment-recurrence",
+      "evidence": "UI rendered and WCAG A/AA scan passed; full scenario proof separate"
+    },
+    {
+      "feature": "64e88dcf-cfa7-4882-8863-4ef8dccc7391",
+      "path": "/work",
+      "screenshot": "docs/screenshots/feature-paths/work-create-assignment-recurrence-320.png",
+      "state": "work-create-assignment-recurrence",
+      "evidence": "UI rendered and WCAG A/AA scan passed; full scenario proof separate"
+    },
+    {
+      "feature": "91af72df-8407-49ea-ab25-738aa02b6bc4",
+      "path": "/work?item=aeaeca7f-7403-54f0-8f80-edc9ee03524c",
+      "screenshot": "docs/screenshots/feature-paths/work-detail-320.png",
+      "state": "work-detail",
+      "evidence": "UI rendered and WCAG A/AA scan passed; full scenario proof separate"
+    },
+    {
+      "feature": "a83f1ed2-d88b-44a1-87b6-119ab2ef8053",
+      "path": "/work?item=aeaeca7f-7403-54f0-8f80-edc9ee03524c",
+      "screenshot": "docs/screenshots/feature-paths/work-detail-320.png",
+      "state": "work-detail",
+      "evidence": "UI rendered and WCAG A/AA scan passed; full scenario proof separate"
+    },
+    {
+      "feature": "64e88dcf-cfa7-4882-8863-4ef8dccc7391",
+      "path": "/work?item=aeaeca7f-7403-54f0-8f80-edc9ee03524c",
+      "screenshot": "docs/screenshots/feature-paths/work-detail-320.png",
+      "state": "work-detail",
+      "evidence": "UI rendered and WCAG A/AA scan passed; full scenario proof separate"
+    },
+    {
+      "feature": "2e58d7da-a071-4cb3-9d13-8ac8a8d4af6e",
+      "path": "/work?item=aeaeca7f-7403-54f0-8f80-edc9ee03524c",
+      "screenshot": "docs/screenshots/feature-paths/work-history-320.png",
+      "state": "work-history",
+      "evidence": "UI rendered and WCAG A/AA scan passed; full scenario proof separate"
+    },
+    {
+      "feature": "4e2d9ae3-ef97-4a6f-9c8f-dc5c514f7d1f",
+      "path": "/work?item=aeaeca7f-7403-54f0-8f80-edc9ee03524c",
+      "screenshot": "docs/screenshots/feature-paths/work-scope-confirmation-320.png",
+      "state": "work-scope-confirmation",
+      "evidence": "UI rendered and WCAG A/AA scan passed; full scenario proof separate"
+    },
+    {
+      "feature": "5acb0582-b26c-4d24-9454-883b84e286f5",
+      "path": "/finance",
+      "screenshot": "docs/screenshots/feature-paths/finance-overview-320.png",
+      "state": "finance-overview",
+      "evidence": "UI rendered and WCAG A/AA scan passed; full scenario proof separate"
+    },
+    {
+      "feature": "0230cd86-af8c-437a-9a01-afb4839ddb25",
+      "path": "/finance/spending",
+      "screenshot": "docs/screenshots/feature-paths/finance-spending-320.png",
+      "state": "finance-spending",
+      "evidence": "UI rendered and WCAG A/AA scan passed; full scenario proof separate"
+    },
+    {
+      "feature": "69595cdd-68c2-4884-9ae9-ff929df200ce",
+      "path": "/finance/accounts",
+      "screenshot": "docs/screenshots/feature-paths/finance-accounts-320.png",
+      "state": "finance-accounts",
+      "evidence": "UI rendered and WCAG A/AA scan passed; full scenario proof separate"
+    },
+    {
+      "feature": "69595cdd-68c2-4884-9ae9-ff929df200ce",
+      "path": "/finance/accounts",
+      "screenshot": "docs/screenshots/feature-paths/finance-account-create-320.png",
+      "state": "finance-account-create",
+      "evidence": "UI rendered and WCAG A/AA scan passed; full scenario proof separate"
+    },
+    {
+      "feature": "4309c82f-f717-4d56-8faa-cc5d492fad75",
+      "path": "/finance/accounts/ab510fc0-c163-5ce3-8d1c-8e1bc8c6e6bc",
+      "screenshot": "docs/screenshots/feature-paths/finance-account-detail-320.png",
+      "state": "finance-account-detail",
+      "evidence": "UI rendered and WCAG A/AA scan passed; full scenario proof separate"
+    },
+    {
+      "feature": "7f3e4bf3-6659-4010-8c57-b1be2f9f12c9",
+      "path": "/finance/transactions",
+      "screenshot": "docs/screenshots/feature-paths/finance-transactions-320.png",
+      "state": "finance-transactions",
+      "evidence": "UI rendered and WCAG A/AA scan passed; full scenario proof separate"
+    },
+    {
+      "feature": "10c22d2d-b275-4042-a5e2-3409a8a006d5",
+      "path": "/finance/transactions",
+      "screenshot": "docs/screenshots/feature-paths/finance-manual-exception-320.png",
+      "state": "finance-manual-exception",
+      "evidence": "UI rendered and WCAG A/AA scan passed; full scenario proof separate"
+    },
+    {
+      "feature": "f972dec6-6666-4338-b2ec-3e246e3ff2d2",
+      "path": "/finance/budgets",
+      "screenshot": "docs/screenshots/feature-paths/finance-budgets-320.png",
+      "state": "finance-budgets",
+      "evidence": "UI rendered and WCAG A/AA scan passed; full scenario proof separate"
+    },
+    {
+      "feature": "f972dec6-6666-4338-b2ec-3e246e3ff2d2",
+      "path": "/finance/budgets",
+      "screenshot": "docs/screenshots/feature-paths/finance-budget-create-320.png",
+      "state": "finance-budget-create",
+      "evidence": "UI rendered and WCAG A/AA scan passed; full scenario proof separate"
+    },
+    {
+      "feature": "1ac0abfd-e7f7-4d7f-8b06-c1256f0eb680",
+      "path": "/finance/budgets",
+      "screenshot": "docs/screenshots/feature-paths/finance-category-tree-320.png",
+      "state": "finance-category-tree",
+      "evidence": "UI rendered and WCAG A/AA scan passed; full scenario proof separate"
+    },
+    {
+      "feature": "d1712d7f-af94-4946-8629-c065fb780a23",
+      "path": "/finance/imports",
+      "screenshot": "docs/screenshots/feature-paths/finance-imports-320.png",
+      "state": "finance-imports",
+      "evidence": "UI rendered and WCAG A/AA scan passed; full scenario proof separate"
+    },
+    {
+      "feature": "e1664e78-0689-48fa-a609-3c7e2d467772",
+      "path": "/finance/imports",
+      "screenshot": "docs/screenshots/feature-paths/finance-imports-320.png",
+      "state": "finance-imports",
+      "evidence": "UI rendered and WCAG A/AA scan passed; full scenario proof separate"
+    },
+    {
+      "feature": "356f3e15-0c04-4aac-a838-55352310e95c",
+      "path": "/settings/household",
+      "screenshot": "docs/screenshots/feature-paths/household-members-profiles-320.png",
+      "state": "household-members-profiles",
+      "evidence": "UI rendered and WCAG A/AA scan passed; full scenario proof separate"
+    },
+    {
+      "feature": "7025de7c-5fb5-4e08-939b-eff542fb1dc3",
+      "path": "/settings/household",
+      "screenshot": "docs/screenshots/feature-paths/household-members-profiles-320.png",
+      "state": "household-members-profiles",
+      "evidence": "UI rendered and WCAG A/AA scan passed; full scenario proof separate"
+    },
+    {
+      "feature": "eb2cefa6-5a47-481e-b430-89960338ed72",
+      "path": "/settings/notifications",
+      "screenshot": "docs/screenshots/feature-paths/notification-preferences-320.png",
+      "state": "notification-preferences",
+      "evidence": "UI rendered and WCAG A/AA scan passed; full scenario proof separate"
+    },
+    {
+      "feature": "6ecad9b5-c30d-47ce-8027-38de44563a51",
+      "path": "/work",
+      "screenshot": "docs/screenshots/offline/work-offline-reloaded.png",
+      "state": "work-offline-reloaded",
+      "evidence": "Optimized local app: offline create, hard reload and reconnect passed; Work readback proves one server fact."
+    },
+    {
+      "feature": "6ecad9b5-c30d-47ce-8027-38de44563a51",
+      "path": "/work",
+      "screenshot": "docs/screenshots/offline/work-offline-queue.png",
+      "state": "work-offline-queue",
+      "evidence": "Optimized local app: offline create, hard reload and reconnect passed; Work readback proves one server fact."
+    },
+    {
+      "feature": "33a70ce3-c483-4fa3-bf65-726a942c80fd",
+      "path": "/shopping/{listId}",
+      "screenshot": "docs/screenshots/offline/shopping-offline-queue.png",
+      "state": "shopping-offline-queue",
+      "evidence": "Optimized local app: offline create, hard reload and reconnect passed; Work readback proves one server fact."
+    },
+    {
+      "feature": "33a70ce3-c483-4fa3-bf65-726a942c80fd",
+      "path": "/shopping/{listId}",
+      "screenshot": "docs/screenshots/offline/shopping-offline-reloaded.png",
+      "state": "shopping-offline-reloaded",
+      "evidence": "Optimized local app: offline create, hard reload and reconnect passed; Work readback proves one server fact."
+    },
+    {
+      "feature": "6ecad9b5-c30d-47ce-8027-38de44563a51",
+      "path": "/work \u2192 Review sync \u2192 Compare changes",
+      "screenshot": "docs/screenshots/offline/work-conflict-discard.png",
+      "state": "work-conflict-discard",
+      "evidence": "Two real browser contexts: original/local/current compared, explicit discard preserved server edit; settled WCAG A/AA scan passed. Reapply also passed separately."
+    },
+    {
+      "feature": "6ecad9b5-c30d-47ce-8027-38de44563a51",
+      "path": "/work after eligibility denial \u2192 offline reload",
+      "screenshot": "docs/screenshots/offline/revoked-offline-private-cache-purged.png",
+      "state": "private-cache-purged",
+      "evidence": "Private lease, queue, stored data and private shell cache absent; offline navigation reveals no household work."
+    },
+    {
+      "feature": "33a70ce3-c483-4fa3-bf65-726a942c80fd",
+      "path": "/work after eligibility denial \u2192 offline reload",
+      "screenshot": "docs/screenshots/offline/revoked-offline-private-cache-purged.png",
+      "state": "private-cache-purged",
+      "evidence": "Private lease, queue, stored data and private shell cache absent; offline navigation reveals no household work."
+    },
+    {
+      "feature": "356f3e15-0c04-4aac-a838-55352310e95c",
+      "path": "/work after eligibility denial \u2192 offline reload",
+      "screenshot": "docs/screenshots/offline/revoked-offline-private-cache-purged.png",
+      "state": "private-cache-purged",
+      "evidence": "Private lease, queue, stored data and private shell cache absent; offline navigation reveals no household work."
+    },
+    {
+      "feature": "1795cf35-a5ca-4290-a526-5bcbecad9a27",
+      "path": "/work",
+      "screenshot": "docs/screenshots/offline/work-offline-reloaded.png",
+      "state": "work-offline-reloaded",
+      "evidence": "Optimized local app: offline create, hard reload and reconnect passed; Work readback proves one server fact."
+    },
+    {
+      "feature": "1795cf35-a5ca-4290-a526-5bcbecad9a27",
+      "path": "/work after eligibility denial \u2192 offline reload",
+      "screenshot": "docs/screenshots/offline/revoked-offline-private-cache-purged.png",
+      "state": "private-cache-purged",
+      "evidence": "Private lease, queue, stored data and private shell cache absent; offline navigation reveals no household work."
+    },
+    {
+      "feature": "356f3e15-0c04-4aac-a838-55352310e95c",
+      "path": "/work + second tab /settings/household \u2192 Sign out \u2192 spouse sign-in",
+      "screenshot": "docs/screenshots/offline/old-tab-private-data-removed.png",
+      "state": "old-tab-private-data-removed",
+      "evidence": "Owner private work removed from old tab immediately; spouse cannot see it; old actor header returns403 with new spouse session."
+    },
+    {
+      "feature": "1795cf35-a5ca-4290-a526-5bcbecad9a27",
+      "path": "/work + second tab /settings/household \u2192 Sign out \u2192 spouse sign-in",
+      "screenshot": "docs/screenshots/offline/old-tab-private-data-removed.png",
+      "state": "old-tab-private-data-removed",
+      "evidence": "Owner private work removed from old tab immediately; spouse cannot see it; old actor header returns403 with new spouse session."
+    },
+    {
+      "feature": "6ecad9b5-c30d-47ce-8027-38de44563a51",
+      "path": "/work + second tab /settings/household \u2192 Sign out \u2192 spouse sign-in",
+      "screenshot": "docs/screenshots/offline/old-tab-private-data-removed.png",
+      "state": "old-tab-private-data-removed",
+      "evidence": "Owner private work removed from old tab immediately; spouse cannot see it; old actor header returns403 with new spouse session."
+    },
+    {
+      "feature": "33a70ce3-c483-4fa3-bf65-726a942c80fd",
+      "path": "/work + second tab /settings/household \u2192 Sign out \u2192 spouse sign-in",
+      "screenshot": "docs/screenshots/offline/old-tab-private-data-removed.png",
+      "state": "old-tab-private-data-removed",
+      "evidence": "Owner private work removed from old tab immediately; spouse cannot see it; old actor header returns403 with new spouse session."
+    }
+  ]
+}

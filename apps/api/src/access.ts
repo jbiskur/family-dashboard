@@ -169,10 +169,17 @@ accessRoutes.post("/admit", async (c) => {
       )
       .limit(1)
   )[0];
-  if (existing) {
+  if (existing?.status === "active") {
     await requireMember(identity);
     return c.json(await accessView(identity));
   }
+  if (
+    existing &&
+    (existing.role !== "spouse" ||
+      existing.status !== "revoked" ||
+      existing.subject !== identity.subject)
+  )
+    throw denied();
   const claim = (
     await db
       .select()

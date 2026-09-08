@@ -1,6 +1,7 @@
 import {
   commandSchema,
   type NotificationEvent,
+  syncFailureSchema,
   uuidSchema,
 } from "@heima/contracts";
 import { Temporal } from "@js-temporal/polyfill";
@@ -8,10 +9,11 @@ import { and, eq } from "drizzle-orm";
 import { Hono } from "hono";
 import webpush from "web-push";
 import { type ApiVariables, requireMember } from "./access";
+import { activityHref } from "./activity-links";
 import { config } from "./config";
 import { db } from "./db/client";
-import { activity, members, resources } from "./db/schema";
-import { canRead, fields, TIMEZONE } from "./domain";
+import { activity, commands, members, resources } from "./db/schema";
+import { fields, TIMEZONE } from "./domain";
 import { ApiFailure } from "./errors";
 import { emitNotification } from "./pathways";
 import { confirmRecipient } from "./recipient-session";
@@ -34,6 +36,57 @@ notificationRoutes.get("/settings/push-public-key", (c) =>
     available: pushAvailable,
   }),
 );
+notificationRoutes.post("/activity/sync-failures", async (c) => {
+  const report = syncFailureSchema.parse(await c.req.json());
+  const userId = c.get("identity").userId;
+  const original = (
+    await db
+      .select()
+      .from(commands)
+      .where(eq(commands.id, report.failedCommandId))
+      .limit(1)
+  )[0];
+  if (
+    original &&
+    (original.actorId !== userId ||
+      original.householdId !== config.HOUSEHOLD_ID)
+  )
+    throw new ApiFailure(
+      "command-conflict",
+      409,
+      "This change could not be applied.",
+    );
+  if (original?.status === "completed")
+    return c.json({ id: null, recorded: false });
+  const commandId = semanticId(
+    `sync-failure:${userId}:${report.failedCommandId}`,
+  );
+  await emitNotification({
+    commandId,
+    householdId: config.HOUSEHOLD_ID,
+    actorId: userId,
+    recipientId: userId,
+    occurredAt: new Date().toISOString(),
+    action: "sync-failure",
+    targetId: report.failedCommandId,
+    syncFailure: report,
+  });
+  const id = semanticId(`${commandId}:activity`);
+  const entry = (
+    await db
+      .select()
+      .from(activity)
+      .where(
+        and(
+          eq(activity.id, id),
+          eq(activity.recipientId, userId),
+          eq(activity.householdId, config.HOUSEHOLD_ID),
+        ),
+      )
+      .limit(1)
+  )[0];
+  return c.json({ id: entry ? id : null, recorded: !!entry });
+});
 notificationRoutes.post("/activity/:id/read", async (c) => {
   const id = uuidSchema.parse(c.req.param("id"));
   const { commandId } = commandSchema.parse(await c.req.json());
@@ -55,8 +108,7 @@ notificationRoutes.post("/activity/:id/read", async (c) => {
       )
       .limit(1)
   )[0];
-  const row = all.find((r) => r.id === entry?.resourceId);
-  if (!entry || !row || !canRead(row, userId, all))
+  if (!entry || !activityHref(entry, userId, all))
     throw new ApiFailure(
       "not-found",
       404,
@@ -163,10 +215,9 @@ export async function processNotifications() {
         return (
           e.recipientId === recipient.userId &&
           e.isRead === "false" &&
-          row &&
-          canRead(row, recipient.userId, all) &&
+          activityHref(e, recipient.userId, all) &&
           preferences[e.category] === true &&
-          !(e.category === "dueReminders" && row.data.status === "done")
+          !(e.category === "dueReminders" && row?.data.status === "done")
         );
       });
       if (
@@ -213,7 +264,10 @@ export async function processNotifications() {
                 entries.length > 1
                   ? `${entries.length} household updates are ready`
                   : first.title,
-              url: entries.length > 1 ? "/settings/notifications" : first.href,
+              url:
+                entries.length > 1
+                  ? "/settings/notifications"
+                  : activityHref(first, recipient.userId, all),
               id: tag,
             }),
             { TTL: 3600, topic: tag.replaceAll("-", ""), timeout: 10_000 },

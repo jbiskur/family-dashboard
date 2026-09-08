@@ -86,7 +86,7 @@ export const activity = pgTable("activity", {
   id: uuid("id").primaryKey(),
   householdId: uuid("household_id").notNull(),
   recipientId: uuid("recipient_id").notNull(),
-  resourceId: uuid("resource_id").notNull(),
+  resourceId: uuid("resource_id"),
   category: text("category").notNull(),
   title: text("title").notNull(),
   href: text("href").notNull(),

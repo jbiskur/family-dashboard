@@ -11,16 +11,24 @@ Requires Bun 1.3.10 and Docker. Tests create an isolated real Keycloak realm and
 ```sh
 bun install --frozen-lockfile
 bun run test:setup
-HEIMA_API_ONLY=1 bun scripts/test-runtime.ts
+bun run build
+HEIMA_WEB_MODE=production bun scripts/test-runtime.ts
 ```
 
 In another terminal:
 
 ```sh
 bun test tests/http
-bun run --filter @heima/api typecheck
+bunx playwright install chromium firefox webkit
+bunx playwright test
+bun run typecheck
+bun run lint
 ```
 
 The API listens on `http://localhost:3211`. Health checks are `/health/live` and `/health/ready`. Test credentials are generated into ignored `.env.test.local` with mode 0600. Keep that file private. The canonical webhook fixture emulates external transport and forwards encrypted events to real projection handlers.
 
-The application UI and browser evidence are delivered in the next stacked change. Version publishing and container-service deployment configuration follow that verified app change.
+Open `http://localhost:3010` and continue through the isolated Usable-compatible Keycloak login. The test owner is `owner@heima.test`; its generated password is `TEST_USER_PASSWORD` in the private test environment file. Real production login uses the invite-only Usable application; the local realm is a verification fixture.
+
+Home connects quick capture and attention items to Shopping, Work and Finance. Shopping and Work support bounded offline access, durable queues and explicit conflict recovery. Finance stays online, keeps personal account details private, preserves exact amounts and requires zero-difference statement reconciliation before trusting imports.
+
+[Feature paths and screenshots](docs/screenshot-manifest.json) cover all 29 work units. [Verification](docs/verification.md) distinguishes observed evidence from outstanding acceptance requirements. Live specifications and plan references are indexed in [the project map](docs/spec-index.json).

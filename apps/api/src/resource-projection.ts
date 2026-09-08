@@ -9,6 +9,7 @@ import {
   canRead,
   dueInstant,
   fields,
+  matchedAmount,
   minor,
   nextDate,
   type ResourceRow,
@@ -607,10 +608,7 @@ export async function projectResource(event: FlowcoreEvent<ResourceEvent>) {
               const difference =
                 minor(String(data.closingBalance), String(data.currency)) -
                 minor(String(data.openingBalance), String(data.currency)) -
-                sourceRows.reduce(
-                  (sum, r) => sum + minor(r.amount, String(data.currency)),
-                  0n,
-                );
+                matchedAmount(sourceRows, String(data.currency));
               if (difference !== 0n) fail("reconciliation-difference");
               data.status = "reconciled";
               for (const row of sourceRows)
