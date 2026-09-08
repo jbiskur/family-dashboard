@@ -1,5 +1,9 @@
 import { readFileSync } from "node:fs";
 import { expect, type Page, test } from "@playwright/test";
+import {
+  macWebKitOfflineNavigationUnsupported,
+  offlineNavigationLimitation,
+} from "../fixtures/browser-capabilities";
 
 const settings = Object.fromEntries(
   readFileSync(".env.test.local", "utf8")
@@ -43,6 +47,7 @@ test("a real rejected offline assignment creates one private generic sync activi
   page,
   context,
   browser,
+  browserName,
 }, info) => {
   test.setTimeout(120000);
   const otherContext = await browser.newContext({
@@ -90,8 +95,16 @@ test("a real rejected offline assignment creates one private generic sync activi
       .poll(() => page.evaluate(() => !!navigator.serviceWorker.controller))
       .toBe(true);
     await context.setOffline(true);
-    // A hard reload also proves the permitted minimal assignment references survive offline.
-    await page.reload();
+    // Keep the complete producer journey on macOS WebKit; the independent control
+    // excludes only its unsupported offline hard navigation. Other engines prove reload.
+    if (macWebKitOfflineNavigationUnsupported(browserName)) {
+      info.annotations.push({
+        type: "offline-navigation-limitation",
+        description: offlineNavigationLimitation,
+      });
+    } else {
+      await page.reload();
+    }
     await page
       .getByRole("button", { name: "Add a to-do", exact: true })
       .click();

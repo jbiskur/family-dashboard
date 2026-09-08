@@ -1,5 +1,9 @@
 import { readFileSync } from "node:fs";
 import { expect, type Page, test } from "@playwright/test";
+import {
+  macWebKitOfflineNavigationUnsupported,
+  offlineNavigationLimitation,
+} from "../fixtures/browser-capabilities";
 
 const env = Object.fromEntries(
   readFileSync(".env.test.local", "utf8")
@@ -50,6 +54,7 @@ async function queued(page: Page) {
 test("Shopping offline reorder, complete, reopen and remove preserve the command chain", async ({
   page,
   context,
+  browserName,
 }, info) => {
   await login(page);
   await page.goto("/shopping");
@@ -114,6 +119,10 @@ test("Shopping offline reorder, complete, reopen and remove preserve the command
       }),
     ).toBeHidden();
     await expect.poll(() => queued(page)).toBeGreaterThanOrEqual(5);
+    test.skip(
+      macWebKitOfflineNavigationUnsupported(browserName),
+      offlineNavigationLimitation,
+    );
     await page.reload();
     await expect(
       page.getByRole("button", {
@@ -163,6 +172,7 @@ test("Shopping offline reorder, complete, reopen and remove preserve the command
 test("Work offline assignment, due date and status chain survives reload and sync", async ({
   page,
   context,
+  browserName,
 }, info) => {
   await login(page);
   await warmOffline(page, "/work");
@@ -212,6 +222,10 @@ test("Work offline assignment, due date and status chain survives reload and syn
       page.getByRole("dialog").getByText("No due date", { exact: true }),
     ).toBeVisible();
     await page.keyboard.press("Escape");
+    test.skip(
+      macWebKitOfflineNavigationUnsupported(browserName),
+      offlineNavigationLimitation,
+    );
     await page.reload();
     await expect(
       page.getByRole("heading", { name: title, exact: true }),
