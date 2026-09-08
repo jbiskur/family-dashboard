@@ -12,6 +12,7 @@
   "dependencies": {
     "@heima/contracts": "workspace:*",
     "@flowcore/pathways": "2.7.0",
+    "@flowcore/sdk": "4.11.0",
     "@js-temporal/polyfill": "^0.5.1",
     "hono": "^4.13.7",
     "drizzle-orm": "^0.45.2",
