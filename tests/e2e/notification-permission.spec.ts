@@ -75,7 +75,13 @@ test("explicit notification opt-in handles actual denied browser permission with
     fullPage: true,
   });
   await page
-    .getByRole("navigation", { name: "Primary navigation", exact: true })
+    .getByRole("navigation", {
+      name:
+        (page.viewportSize()?.width ?? 1440) >= 768
+          ? "Primary navigation"
+          : "Mobile primary navigation",
+      exact: true,
+    })
     .getByRole("link", { name: "Shopping", exact: true })
     .click();
   await expect(page).toHaveURL("http://localhost:3010/shopping");
