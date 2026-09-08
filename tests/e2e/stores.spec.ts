@@ -274,3 +274,107 @@ for (const width of [1440, 320]) {
     ).toHaveCount(0);
   });
 }
+
+test.describe("Stores cold navigation", () => {
+  test.use({ serviceWorkers: "block" });
+
+  for (const width of [1440, 320]) {
+    test(`search stays disabled before hydration and filters after real scripts load at ${width}px`, async ({
+      page,
+      context,
+      browser,
+      browserName,
+    }, info) => {
+      await page.setViewportSize({ width, height: 900 });
+      await page.goto("/");
+      await page.getByRole("button", { name: "Continue with Usable" }).click();
+      await page.locator("#username").fill("owner@heima.test");
+      if (!env.TEST_USER_PASSWORD)
+        throw new Error("Missing local fixture password");
+      await page.locator("#password").fill(env.TEST_USER_PASSWORD);
+      await page.locator("#kc-login").click();
+      await expect(page).toHaveURL("http://localhost:3010/");
+      await page.goto("/shopping/stores");
+      const target = `Hydration market ${crypto.randomUUID()}`;
+      const other = `Different market ${crypto.randomUUID()}`;
+      for (const name of [target, other]) {
+        await page
+          .getByRole("button", { name: "Add store", exact: true })
+          .click();
+        await page.getByRole("textbox", { name: /Store name/ }).fill(name);
+        await page.getByRole("button", { name: "Save", exact: true }).click();
+        await expect(
+          page.getByRole("heading", { name, exact: true }),
+        ).toBeVisible();
+      }
+
+      // Fresh context excludes previously loaded scripts and service-worker caches.
+      // Hold actual Next scripts, then release their original network responses.
+      const coldContext = await browser.newContext({
+        baseURL: "http://localhost:3010",
+        storageState: await context.storageState(),
+        serviceWorkers: "block",
+        viewport: { width, height: 900 },
+      });
+      const coldPage = await coldContext.newPage();
+      let releaseScripts = () => {};
+      const scriptsReleased = new Promise<void>((resolve) => {
+        releaseScripts = resolve;
+      });
+      let heldScripts = 0;
+      await coldContext.route(
+        /\/_next\/static\/.*\.js(?:\?.*)?$/,
+        async (route) => {
+          heldScripts++;
+          await scriptsReleased;
+          await route.continue();
+        },
+      );
+      try {
+        await coldPage.goto("/shopping/stores", { waitUntil: "commit" });
+        const search = coldPage.getByRole("textbox", {
+          name: "Find a store",
+          exact: true,
+        });
+        await expect(search).toBeVisible();
+        await expect.poll(() => heldScripts).toBeGreaterThan(0);
+        await expect(search).toBeDisabled();
+        // WebKit's screenshot font wait depends on the scripts held here.
+        // Every browser still verifies disabled SSR and the hydrated result.
+        if (browserName === "chromium")
+          await coldPage.screenshot({
+            path: info.outputPath(
+              `stores-disabled-before-hydration-${width}.png`,
+            ),
+            animations: "allow",
+          });
+        releaseScripts();
+        await expect(search).toBeEnabled();
+        await expect(
+          coldPage.getByRole("heading", { name: target, exact: true }),
+        ).toBeVisible();
+        await expect(
+          coldPage.getByRole("heading", { name: other, exact: true }),
+        ).toBeVisible();
+        await search.fill(target);
+        await expect(search).toHaveValue(target);
+        await expect(
+          coldPage.getByRole("heading", { name: target, exact: true }),
+        ).toBeVisible();
+        await expect(
+          coldPage.getByRole("heading", { name: other, exact: true }),
+        ).toHaveCount(0);
+        await expect(
+          coldPage.getByRole("button", { name: "Archive", exact: true }),
+        ).toHaveCount(1);
+        await coldPage.screenshot({
+          path: info.outputPath(`stores-loaded-filtered-${width}.png`),
+        });
+      } finally {
+        releaseScripts();
+        await coldContext.unrouteAll({ behavior: "wait" });
+        await coldContext.close();
+      }
+    });
+  }
+});

@@ -809,6 +809,7 @@ export function StoresPage() {
         <Input
           aria-label="Find a store"
           placeholder="Find a store…"
+          disabled={query.isPending}
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
