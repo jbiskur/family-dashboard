@@ -12,3 +12,9 @@
 - Authentication is handled by the wrapper through `~/.klokkan/auth.py`; never place tokens or API keys in this repository.
 - Do not install or invoke Klokkan through agent lifecycle hooks. If tracking fails, report the error instead of hiding it.
 <!-- klokkan:managed:end -->
+
+## Documentation storage
+
+Store and maintain Heima documentation as Usable fragments in the private My Life workspace `f37b9773-0e9f-4ccd-8e85-05c5971af264`, tagged `repo:family-dashboard` and `project:family-dashboard`. Search for and update the existing fragment before creating another. README links to the canonical documents.
+
+Keep only README.md, CHANGELOG.md, AGENTS.md and CLAUDE.md as repository Markdown documentation, including nested agent instructions. Do not add local Markdown architecture notes, runbooks, feature guides or verification reports. Import existing documents and verify their saved content before deleting repository copies. Keep screenshot and machine-readable evidence links working.
