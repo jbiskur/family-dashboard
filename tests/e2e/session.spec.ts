@@ -1,4 +1,5 @@
 import { readFileSync } from "node:fs";
+import { createRequire } from "node:module";
 import { expect, test } from "@playwright/test";
 
 const settings = Object.fromEntries(
@@ -10,6 +11,50 @@ const settings = Object.fromEntries(
       line.slice(line.indexOf("=") + 1),
     ]),
 );
+
+test("a browser session without a provider grant returns to sign-in", async ({
+  page,
+}, info) => {
+  // Use Auth.js's public encoder to exercise a valid cookie with incomplete
+  // session state through the real HTTP and browser boundaries.
+  const webRequire = createRequire(
+    new URL("../../apps/web/package.json", import.meta.url),
+  );
+  const { encode } = await import(webRequire.resolve("next-auth/jwt"));
+  const cookieName = "authjs.session-token";
+  const cookie = await encode({
+    token: {
+      sub: "00000000-0000-4000-8000-000000000001",
+      name: "Incomplete fixture session",
+    },
+    secret: settings.AUTH_SECRET!,
+    salt: cookieName,
+    maxAge: 60,
+  });
+  await page.context().addCookies([
+    {
+      name: cookieName,
+      value: cookie,
+      domain: "localhost",
+      path: "/",
+      httpOnly: true,
+      sameSite: "Lax",
+    },
+  ]);
+  const session = await (await page.request.get("/api/auth/session")).json();
+  expect(session.sessionId).toBe("");
+  expect((await page.request.get("/api/offline-lease")).status()).toBe(401);
+  await page.goto("/shopping");
+  await expect(page).toHaveURL("http://localhost:3010/");
+  await expect(
+    page.getByRole("button", { name: "Continue with Usable" }),
+  ).toBeVisible();
+  await expect(page.locator("#main-content")).toHaveCount(0);
+  await page.screenshot({
+    path: info.outputPath("missing-provider-session.png"),
+    fullPage: true,
+  });
+});
 
 test("opaque browser session is unusable after local and provider logout", async ({
   page,

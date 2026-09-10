@@ -45,3 +45,7 @@ Project documentation is stored and maintained in the private My Life workspace 
 - [Heima native Faroese and Revolut statements](https://usable.dev/dashboard/workspaces/f37b9773-0e9f-4ccd-8e85-05c5971af264/fragments/e17be22b-c3a4-4c7a-b3f8-70832e2d04be)
 - [Heima released API verification](https://usable.dev/dashboard/workspaces/f37b9773-0e9f-4ccd-8e85-05c5971af264/fragments/9f3b324c-d010-43e4-8cef-213bed650ac4)
 - [Heima project acceptance verification](https://usable.dev/dashboard/workspaces/f37b9773-0e9f-4ccd-8e85-05c5971af264/fragments/96b98ea2-8fc5-44c8-8b2e-7a7a41baaf5a)
+
+## License
+
+[MIT](LICENSE).

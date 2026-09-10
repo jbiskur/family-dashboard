@@ -2,6 +2,7 @@
   "name": "@heima/web",
   "version": "0.1.0",
   "private": true,
+  "license": "MIT",
   "type": "module",
   "scripts": {
     "dev": "next dev -p 3010",
@@ -25,7 +26,7 @@
     "lucide-react": "^1.0.0",
     "motion": "^12.0.0",
     "next": "^16.0.0",
-    "next-auth": "5.0.0-beta.30",
+    "next-auth": "5.0.0-beta.32",
     "postgres": "^3.4.7",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",

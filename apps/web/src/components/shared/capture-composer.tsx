@@ -93,9 +93,16 @@ function CaptureForm({
   const id = useId();
   const input = useRef<HTMLInputElement>(null);
   const saving = useRef(false);
+  const detailsOpen = useRef(false);
+  const focusInputOnClose = useRef(false);
   const [expanded, setExpanded] = useState(false);
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
+  function changeExpanded(open: boolean) {
+    detailsOpen.current = open;
+    if (open) focusInputOnClose.current = false;
+    setExpanded(open);
+  }
   const fields = [choice.title, ...(choice.context ?? []), ...choice.details];
   const [defaults] = useState<Record<string, string>>(() =>
     Object.fromEntries(
@@ -167,8 +174,11 @@ function CaptureForm({
           ? "Added to this device’s sync queue."
           : `${values[choice.title.name]} added.`,
       );
-      setExpanded(false);
-      setTimeout(() => input.current?.focus({ preventScroll: true }), 30);
+      focusInputOnClose.current = true;
+      if (detailsOpen.current) {
+        // Restore focus when the dialog finishes closing, after its focus trap.
+        changeExpanded(false);
+      } else input.current?.focus({ preventScroll: true });
     } catch (cause) {
       const message =
         cause instanceof Error
@@ -307,7 +317,7 @@ function CaptureForm({
             size="icon"
             aria-label="Details"
             disabled={!ready || saving.current}
-            onClick={() => setExpanded(true)}
+            onClick={() => changeExpanded(true)}
           >
             <SlidersHorizontal size={20} />
           </Button>
@@ -333,7 +343,13 @@ function CaptureForm({
       )}
       <Dialog
         open={expanded}
-        onOpenChange={setExpanded}
+        onOpenChange={changeExpanded}
+        onCloseAutoFocus={(event) => {
+          if (!focusInputOnClose.current) return;
+          focusInputOnClose.current = false;
+          event.preventDefault();
+          input.current?.focus({ preventScroll: true });
+        }}
         title={`${choice.label} details`}
         description="Keep it simple, or add a little more."
         className="capture-details"
@@ -351,7 +367,7 @@ function CaptureForm({
           }}
           onSubmit={save}
           submitLabel={`Add ${choice.label.toLowerCase()}`}
-          onCancel={() => setExpanded(false)}
+          onCancel={() => changeExpanded(false)}
         />
       </Dialog>
     </>

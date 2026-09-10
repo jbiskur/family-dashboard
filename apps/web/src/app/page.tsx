@@ -3,7 +3,7 @@ import { Login } from "@/components/auth/login";
 import { HomePage } from "@/components/home/home-page";
 import { Authorized } from "@/components/shared/authorized";
 export default async function Welcome() {
-  if (await auth())
+  if ((await auth())?.sessionId)
     return (
       <Authorized>
         <HomePage />
