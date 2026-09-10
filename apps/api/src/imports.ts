@@ -1,17 +1,27 @@
 import { createHash } from "node:crypto";
 import type { ImportRow } from "@heima/contracts";
-import { Temporal } from "@js-temporal/polyfill";
 import { Hono } from "hono";
 import * as XLSX from "xlsx";
 import { z } from "zod";
 import { type ApiVariables, requireMember } from "./access";
 import { canManage, decimal, minor } from "./domain";
 import { ApiFailure } from "./errors";
+import {
+  detectStatementDelimiter,
+  parseExcelStatementDate,
+  parseStatementAmount,
+  parseStatementDate,
+  suggestStatementMapping,
+} from "./import-format";
 import { loadResources, visibleResource } from "./resources";
 import { semanticId } from "./security";
 
 const inputSchema = z.object({
   accountId: z.string().uuid(),
+  provider: z.enum(["other", "revolut", "faroese"]).default("other"),
+  feeTreatment: z
+    .enum(["included", "subtract-positive", "add-signed"])
+    .optional(),
   fileName: z.string().min(1).max(240),
   contentBase64: z.string().max(14_000_000),
   delimiter: z.enum([",", ";", "\t"]).optional(),
@@ -20,40 +30,16 @@ const inputSchema = z.object({
   mapping: z.record(z.string()).optional(),
   decimalSeparator: z.enum([".", ","]).default("."),
   dateFormat: z
-    .enum(["yyyy-MM-dd", "dd/MM/yyyy", "MM/dd/yyyy"])
+    .enum([
+      "yyyy-MM-dd",
+      "yyyy-MM-dd HH:mm:ss",
+      "dd/MM/yyyy",
+      "MM/dd/yyyy",
+      "dd-MM-yyyy",
+      "dd.MM.yyyy",
+    ])
     .default("yyyy-MM-dd"),
 });
-function parseDate(value: string, format: string) {
-  const trimmed = value.trim();
-  if (!trimmed) return null;
-  const parsed =
-    format === "yyyy-MM-dd"
-      ? /^(\d{4})-(\d{2})-(\d{2})$/.exec(trimmed)
-      : /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(trimmed);
-  if (!parsed)
-    throw new Error("Date does not match the selected interpretation");
-  const valueISO =
-    format === "yyyy-MM-dd"
-      ? trimmed
-      : `${parsed[3]}-${format === "dd/MM/yyyy" ? parsed[2] : parsed[1]}-${format === "dd/MM/yyyy" ? parsed[1] : parsed[2]}`;
-  return Temporal.PlainDate.from(valueISO).toString();
-}
-function parseAmount(value: string, separator: "." | ",", currency: string) {
-  const s = value.trim();
-  const pattern =
-    separator === "."
-      ? /^-?(?:\d+|\d{1,3}(?:,\d{3})+)(?:\.\d+)?$/
-      : /^-?(?:\d+|\d{1,3}(?:\.\d{3})+)(?:,\d+)?$/;
-  if (!pattern.test(s))
-    throw new Error(
-      "Amount does not match the selected decimal interpretation",
-    );
-  const normalized =
-    separator === "."
-      ? s.replaceAll(",", "")
-      : s.replaceAll(".", "").replace(",", ".");
-  return decimal(minor(normalized, currency), currency);
-}
 export const importRoutes = new Hono<{ Variables: ApiVariables }>();
 importRoutes.post("/finance/imports/preview", async (c) => {
   const identity = c.get("identity");
@@ -81,14 +67,32 @@ importRoutes.post("/finance/imports/preview", async (c) => {
       400,
       "Choose a file up to 10 MB.",
     );
+  let csvText: string | undefined;
+  if (/\.csv$/i.test(input.fileName)) {
+    try {
+      // Decode explicitly: SheetJS's buffer CSV default is a legacy codepage.
+      // TextDecoder strips a UTF-8 BOM and rejects corruption instead of replacing it.
+      csvText = new TextDecoder("utf-8", { fatal: true }).decode(content);
+    } catch {
+      throw new ApiFailure(
+        "invalid-file",
+        400,
+        "Save the CSV with UTF-8 encoding, or choose an Excel statement.",
+      );
+    }
+  }
+  const delimiter =
+    input.delimiter ??
+    (csvText === undefined ? "," : detectStatementDelimiter(csvText));
   let workbook: XLSX.WorkBook;
   try {
-    workbook = XLSX.read(content, {
-      type: "buffer",
+    workbook = XLSX.read(csvText ?? content, {
+      type: csvText === undefined ? "buffer" : "string",
       raw: true,
       cellDates: false,
+      cellNF: true,
       sheetRows: 1052,
-      FS: input.delimiter,
+      FS: delimiter,
       dense: true,
     });
   } catch {
@@ -105,36 +109,60 @@ importRoutes.post("/finance/imports/preview", async (c) => {
       400,
       "Choose an available worksheet.",
     );
+  const fullRange = workbook.Sheets[sheetName]?.["!fullref"];
+  const readRange = workbook.Sheets[sheetName]?.["!ref"];
+  // CSV stops at sheetRows without !fullref. Reaching the read boundary is
+  // ambiguous, so reject rather than silently import only a prefix.
+  if (
+    (fullRange && XLSX.utils.decode_range(fullRange).e.r >= 1052) ||
+    (readRange && XLSX.utils.decode_range(readRange).e.r >= 1051)
+  )
+    throw new ApiFailure(
+      "too-many-rows",
+      400,
+      "This statement exceeds the readable row limit. Split it into smaller files with no more than 1000 transaction rows.",
+    );
   const matrix = XLSX.utils.sheet_to_json<string[]>(
     workbook.Sheets[sheetName]!,
-    { header: 1, raw: false, defval: "", blankrows: false },
+    { header: 1, raw: false, defval: "", blankrows: true, range: 0 },
   );
   const headers = (matrix[input.headerRow - 1] ?? []).map((v) =>
     String(v).trim(),
   );
-  if (
+  const headerIssue =
     !headers.length ||
     new Set(headers).size !== headers.length ||
     headers.some((h) => !h)
-  )
-    throw new ApiFailure(
-      "invalid-headers",
-      400,
-      "Choose a header row with unique, non-empty column names.",
-    );
-  const sourceRows = matrix.slice(input.headerRow);
+      ? "Choose a header row with unique, non-empty column names. Adjust the worksheet, separator or header row below."
+      : null;
+  const sourceRows = matrix
+    .slice(input.headerRow)
+    .map((cells, index) => ({ cells, rowNumber: index + input.headerRow + 1 }))
+    .filter(({ cells }) => cells.some((cell) => String(cell).trim()));
   if (sourceRows.length > 1000)
     throw new ApiFailure(
       "too-many-rows",
       400,
       "Import no more than 1000 source rows at a time.",
     );
-  const preview = sourceRows.map((row) =>
-    Object.fromEntries(headers.map((h, i) => [h, String(row[i] ?? "")])),
+  const preview = sourceRows.map(({ cells }) =>
+    Object.fromEntries(headers.map((h, i) => [h, String(cells[i] ?? "")])),
   );
   const sourceHash = createHash("sha256").update(content).digest("hex");
   const result = {
     accountId: account.id,
+    provider: input.provider,
+    delimiter,
+    sheet: sheetName,
+    headerRow: input.headerRow,
+    headerIssue,
+    sourceRowCount: sourceRows.length,
+    excluded: [] as {
+      row: number;
+      reason: string;
+      original: Record<string, string>;
+    }[],
+    feeTreatment: input.feeTreatment ?? null,
     fileName: input.fileName,
     sourceHash,
     currency: String(account.data.currency),
@@ -143,10 +171,21 @@ importRoutes.post("/finance/imports/preview", async (c) => {
     preview: preview.slice(0, 10),
     rows: [] as ImportRow[],
     errors: [] as { row: number; message: string }[],
-    mapping: input.mapping ?? {},
+    mapping:
+      input.mapping ??
+      (input.provider === "other" ? {} : suggestStatementMapping(headers)),
     valid: false,
   };
-  if (!input.mapping) return c.json(result);
+  if (headerIssue || !input.mapping) return c.json(result);
+  if (
+    input.provider === "revolut" &&
+    (!input.mapping.currency || !input.mapping.state)
+  )
+    throw new ApiFailure(
+      "mapping-required",
+      400,
+      "For Revolut, also map currency and transaction state before validating.",
+    );
   if (
     !["bookingDate", "amount", "description"].every(
       (key) => input.mapping?.[key] && headers.includes(input.mapping[key]!),
@@ -166,14 +205,90 @@ importRoutes.post("/finance/imports/preview", async (c) => {
   for (const [index, original] of preview.entries()) {
     const get = (field: string) =>
       input.mapping?.[field] ? (original[input.mapping[field]!] ?? "") : "";
+    const getDate = (field: string) => {
+      const column = headers.indexOf(input.mapping?.[field] ?? "");
+      const cell =
+        column < 0
+          ? undefined
+          : workbook.Sheets[sheetName]?.["!data"]?.[
+              sourceRows[index]!.rowNumber - 1
+            ]?.[column];
+      const excelDate =
+        csvText === undefined
+          ? parseExcelStatementDate(
+              cell,
+              workbook.Workbook?.WBProps?.date1904 === true,
+            )
+          : undefined;
+      return excelDate === undefined
+        ? parseStatementDate(get(field), input.dateFormat)
+        : excelDate;
+    };
     try {
-      const bookingDate = parseDate(get("bookingDate"), input.dateFormat);
+      if (
+        input.mapping.currency &&
+        get("currency").trim().toUpperCase() !== result.currency
+      )
+        throw new Error(
+          `Row currency must match the selected ${result.currency} account. Choose a statement for this currency.`,
+        );
+      if (input.mapping.state) {
+        const state = get("state").trim().toUpperCase();
+        if (
+          [
+            "PENDING",
+            "REVERTED",
+            "CANCELLED",
+            "CANCELED",
+            "FAILED",
+            "DECLINED",
+          ].includes(state)
+        ) {
+          result.excluded.push({
+            row: sourceRows[index]!.rowNumber,
+            reason: `Not imported: ${state.toLowerCase()} transaction`,
+            original,
+          });
+          continue;
+        }
+        if (state !== "COMPLETED")
+          throw new Error(
+            "Transaction state must be COMPLETED, or a recognized unsettled/reverted state.",
+          );
+      }
+      const bookingDate = getDate("bookingDate");
       if (!bookingDate) throw new Error("Booking date is required");
-      const amount = parseAmount(
+      let amount = parseStatementAmount(
         get("amount"),
         input.decimalSeparator,
         result.currency,
       );
+      if (input.mapping.fee) {
+        const fee = minor(
+          parseStatementAmount(
+            get("fee"),
+            input.decimalSeparator,
+            result.currency,
+          ),
+          result.currency,
+        );
+        if (fee !== 0n && !input.feeTreatment)
+          throw new Error("Choose how nonzero fees affect the signed amount.");
+        if (input.feeTreatment === "subtract-positive" && fee < 0n)
+          throw new Error(
+            "A separate positive charge cannot be negative. Check the fee interpretation.",
+          );
+        if (input.feeTreatment === "subtract-positive")
+          amount = decimal(
+            minor(amount, result.currency) - fee,
+            result.currency,
+          );
+        if (input.feeTreatment === "add-signed")
+          amount = decimal(
+            minor(amount, result.currency) + fee,
+            result.currency,
+          );
+      }
       const description = get("description").trim();
       if (!description) throw new Error("Description is required");
       const sourceId = get("sourceId").trim() || null;
@@ -182,8 +297,8 @@ importRoutes.post("/finance/imports/preview", async (c) => {
         id: semanticId(`${sourceHash}:${index}`),
         sourceId,
         bookingDate,
-        transactionDate: parseDate(get("transactionDate"), input.dateFormat),
-        valueDate: parseDate(get("valueDate"), input.dateFormat),
+        transactionDate: getDate("transactionDate"),
+        valueDate: getDate("valueDate"),
         amount,
         description,
         reference,
@@ -196,11 +311,22 @@ importRoutes.post("/finance/imports/preview", async (c) => {
       });
     } catch (error) {
       result.errors.push({
-        row: index + input.headerRow + 1,
+        row: sourceRows[index]!.rowNumber,
         message: error instanceof Error ? error.message : "Check this row",
       });
     }
   }
+  if (!sourceRows.length)
+    result.errors.push({
+      row: input.headerRow + 1,
+      message: "This statement has no transaction rows.",
+    });
+  if (sourceRows.length && !result.rows.length && !result.errors.length)
+    result.errors.push({
+      row: input.headerRow + 1,
+      message:
+        "No completed transactions remain to import. Excluded rows are listed for review.",
+    });
   result.valid = result.rows.length > 0 && result.errors.length === 0;
   return c.json(result);
 });

@@ -1,0 +1,53 @@
+{
+  "capturedAt": "2026-09-10",
+  "receipts": [
+    {
+      "feature": "393e3d11-a251-45c7-9755-895554451e74",
+      "route": "/finance/imports",
+      "screenshot": "revolut-guidance-viewport.png",
+      "sha256": "a5e923a946d83a9b651d950e3b01bb099b7557cd64db751e129b94ce2b5619a2",
+      "engine": "Chromium",
+      "fixture": "Synthetic local statement; real Keycloak/API/Postgres/encrypted event projection fixture"
+    },
+    {
+      "feature": "393e3d11-a251-45c7-9755-895554451e74",
+      "route": "/finance/imports",
+      "screenshot": "revolut-fee-review-required-viewport.png",
+      "sha256": "f2cc20e5381d39e634313971521e7e5131a4d026d56de902792f3ff5d9336927",
+      "engine": "Chromium",
+      "fixture": "Synthetic local statement; real Keycloak/API/Postgres/encrypted event projection fixture"
+    },
+    {
+      "feature": "393e3d11-a251-45c7-9755-895554451e74",
+      "route": "/finance/imports",
+      "screenshot": "revolut-normalized-confirmation-viewport.png",
+      "sha256": "b18eb0d694bcc276c0a6517738ce2bf0c521e705bc9c1bd38e7d17cd1e8db488",
+      "engine": "Chromium",
+      "fixture": "Synthetic local statement; real Keycloak/API/Postgres/encrypted event projection fixture"
+    },
+    {
+      "feature": "393e3d11-a251-45c7-9755-895554451e74",
+      "route": "/finance/imports",
+      "screenshot": "revolut-historical-statement-reconciled-viewport.png",
+      "sha256": "1adb3bf98cdf5d45a6f0801be2752afb86e9f81c9f2533ffbba6ac113e4dcfbe",
+      "engine": "Chromium",
+      "fixture": "Synthetic local statement; real Keycloak/API/Postgres/encrypted event projection fixture"
+    },
+    {
+      "feature": "393e3d11-a251-45c7-9755-895554451e74",
+      "route": "/finance/imports",
+      "screenshot": "faroese-header-error-320-viewport.png",
+      "sha256": "7489602610137593ccddd2040840089dffed1228c257df35036c582918b69911",
+      "engine": "Chromium",
+      "fixture": "Synthetic local statement; real Keycloak/API/Postgres/encrypted event projection fixture"
+    },
+    {
+      "feature": "393e3d11-a251-45c7-9755-895554451e74",
+      "route": "/finance/imports",
+      "screenshot": "faroese-normalized-320-viewport.png",
+      "sha256": "849281552c36c89fc4754d0713631e2de16295fbd200306bfad258057d0ef680",
+      "engine": "Chromium",
+      "fixture": "Synthetic local statement; real Keycloak/API/Postgres/encrypted event projection fixture"
+    }
+  ]
+}
