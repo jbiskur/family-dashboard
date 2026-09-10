@@ -1,0 +1,86 @@
+{
+  "passed": true,
+  "observedAt": "2026-09-10T09:59:20.145Z",
+  "mode": "next dev",
+  "origin": "http://localhost:3013",
+  "engine": "webkit",
+  "widths": [
+    320,
+    390
+  ],
+  "observations": [
+    {
+      "feature": "bank",
+      "passed": true,
+      "widths": [
+        390,
+        320
+      ],
+      "proof": [
+        "Real upload and inferred editable mapping",
+        "Nonzero fee blocks until explicitly interpreted",
+        "Pending and reverted rows excluded",
+        "Exact normalized date and -12.84 DKK",
+        "Public transaction collection unchanged before confirmation"
+      ],
+      "confirmed": false
+    },
+    {
+      "feature": "shopping",
+      "width": 320,
+      "passed": true,
+      "fontSize": 16,
+      "proof": [
+        "Actual title-surface horizontal full swipe",
+        "Named Undo clears mobile capture and navigation",
+        "Shopping restored with optional Add store",
+        "Trailing gesture opens existing editor",
+        "History name selection fills without submitting"
+      ]
+    },
+    {
+      "feature": "work",
+      "width": 320,
+      "passed": true,
+      "fontSize": 16,
+      "proof": [
+        "Actual title-surface horizontal full swipe",
+        "Named Undo clears mobile capture and navigation",
+        "Work Undo restores exact In progress status",
+        "Trailing gesture opens existing editor",
+        "History name selection fills without submitting"
+      ]
+    },
+    {
+      "feature": "shopping",
+      "width": 390,
+      "passed": true,
+      "fontSize": 16,
+      "proof": [
+        "Actual title-surface horizontal full swipe",
+        "Named Undo clears mobile capture and navigation",
+        "Shopping restored with optional Add store",
+        "Trailing gesture opens existing editor",
+        "History name selection fills without submitting"
+      ]
+    },
+    {
+      "feature": "work",
+      "width": 390,
+      "passed": true,
+      "fontSize": 16,
+      "proof": [
+        "Actual title-surface horizontal full swipe",
+        "Named Undo clears mobile capture and navigation",
+        "Work Undo restores exact In progress status",
+        "Trailing gesture opens existing editor",
+        "History name selection fills without submitting"
+      ]
+    }
+  ],
+  "limits": [
+    "Desktop WebKit with mobile viewport and real mouse pointer gestures; physical iOS keyboard and finger gestures untested",
+    "Fictional Revolut statement; no import confirmation",
+    "Synthetic Shopping/Work/account records created through existing UI commands; no database reset or direct write"
+  ]
+}

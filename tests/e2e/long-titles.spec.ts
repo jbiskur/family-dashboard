@@ -23,13 +23,15 @@ test("long unbroken titles and full UUIDs wrap within Home and Work at 320px", a
   await expect(page).toHaveURL("http://localhost:3010/", { timeout: 30000 });
   await page.goto("/work");
   const title = `HouseholdReference${"A".repeat(85)}${crypto.randomUUID()}`;
-  await page.getByRole("button", { name: "Add a to-do", exact: true }).click();
-  await page.getByRole("textbox", { name: /What needs doing/ }).fill(title);
+  await page.getByRole("button", { name: "Details", exact: true }).click();
+  await page.getByRole("combobox", { name: /What needs doing/ }).fill(title);
   await page
     .getByLabel("Due date (optional)", { exact: true })
     .fill("2024-01-01");
   await page.getByRole("button", { name: "Add to-do", exact: true }).click();
-  await expect(page.getByRole("dialog", { name: "New to-do" })).toBeHidden();
+  await expect(
+    page.getByRole("dialog", { name: "To-do details" }),
+  ).toBeHidden();
   await expect(
     page.getByRole("heading", { name: title, exact: true }),
   ).toBeVisible();

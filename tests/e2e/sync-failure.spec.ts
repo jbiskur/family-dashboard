@@ -105,10 +105,8 @@ test("a real rejected offline assignment creates one private generic sync activi
     } else {
       await page.reload();
     }
-    await page
-      .getByRole("button", { name: "Add a to-do", exact: true })
-      .click();
-    await page.getByRole("textbox", { name: /What needs doing/ }).fill(title);
+    await page.getByRole("button", { name: "Details", exact: true }).click();
+    await page.getByRole("combobox", { name: /What needs doing/ }).fill(title);
     await page
       .getByRole("combobox", { name: "Who's on it?", exact: true })
       .selectOption({ label: profileName });

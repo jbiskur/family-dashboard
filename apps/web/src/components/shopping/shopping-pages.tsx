@@ -5,7 +5,6 @@ import {
   ArrowLeft,
   ArrowRight,
   ArrowUp,
-  Check,
   CheckCircle2,
   Circle,
   History,
@@ -22,6 +21,14 @@ import {
 import Link from "next/link";
 import { useState } from "react";
 import { useCommand, useHeima } from "@/lib/client";
+import {
+  shoppingCategory,
+  shoppingCategoryChoices,
+} from "@/lib/shopping-categories";
+import { ActionNotice } from "../shared/action-notice";
+import { CaptureComposer } from "../shared/capture-composer";
+import { shoppingDetails, shoppingTitle } from "../shared/capture-fields";
+import { ColourTag } from "../shared/colour-choice";
 import { EntityForm } from "../shared/form";
 import { HistoryDialog } from "../shared/history";
 import {
@@ -31,6 +38,7 @@ import {
   PageHeader,
   ScopeBadge,
 } from "../shared/page";
+import { SwipeRow } from "../shared/swipe-row";
 import { Button } from "../ui/button";
 import { Badge, Card } from "../ui/card";
 import { Dialog } from "../ui/dialog";
@@ -206,6 +214,9 @@ export function ShoppingDetailPage({ id }: { id: string }) {
   const itemsQuery = useHeima<{ items: ShoppingItem[] }>(
     `/v1/shopping/items?listId=${id}`,
   );
+  const itemHistory = useHeima<{ items: ShoppingItem[] }>(
+    `/v1/shopping/items?listId=${id}&includeArchived=true`,
+  );
   const storesQuery = useHeima<{ items: Store[] }>(
     "/v1/shopping/stores?includeArchived=true",
   );
@@ -219,7 +230,8 @@ export function ShoppingDetailPage({ id }: { id: string }) {
   const [suggestion, setSuggestion] = useState<string | null>(null);
   const [geoStatus, setGeoStatus] = useState("");
   const [notice, setNotice] = useState("");
-  const [undo, setUndo] = useState<ShoppingItem | null>(null);
+  const [undoStack, setUndoStack] = useState<ShoppingItem[]>([]);
+  const undo = notice.includes("sync queue") ? undefined : undoStack.at(-1);
   const list = listQuery.data;
   const historicalStores = storesQuery.data?.items ?? [];
   const stores = historicalStores.filter((store) => !store.archived);
@@ -234,15 +246,17 @@ export function ShoppingDetailPage({ id }: { id: string }) {
     }) as Promise<ShoppingItem>;
   async function complete(item: ShoppingItem) {
     const result = await update(item, { completed: !item.completed });
-    setUndo(result);
+    if ("pending" in result && result.pending) {
+      setNotice(`${item.name} added to this device’s sync queue.`);
+      return;
+    }
+    setUndoStack((previous) => [
+      ...previous.filter((entry) => entry.id !== item.id),
+      result,
+    ]);
     setNotice(
       item.completed ? "Back on your list." : "One less thing to pick up.",
     );
-    if (!item.completed && stores.length) {
-      setPurchase(result);
-      setSuggestion(null);
-      setGeoStatus("");
-    }
   }
   async function move(item: ShoppingItem, target: number) {
     const ordered = all
@@ -320,12 +334,47 @@ export function ShoppingDetailPage({ id }: { id: string }) {
         eyebrow="A LITTLE LESS TO REMEMBER"
         title={list.name}
         description="Pick it up. Check it off. Keep the day moving."
-        action={
-          <Button onClick={() => setEditing("new")}>
-            <Plus size={17} />
-            Add item
-          </Button>
-        }
+      />
+      <CaptureComposer
+        choices={[
+          {
+            id: "shopping",
+            label: "Shopping",
+            icon: ShoppingBag,
+            title: {
+              ...shoppingTitle,
+              history: (values) => ({
+                names: (itemHistory.error
+                  ? []
+                  : (itemHistory.data?.items ?? [])
+                )
+                  .filter(
+                    (item) =>
+                      !values.category || item.category === values.category,
+                  )
+                  .map((item) => item.name),
+                loading: itemHistory.isPending,
+                unavailable: !!itemHistory.error,
+              }),
+            },
+            destination: (
+              <span>
+                {list.name} ·{" "}
+                {list.visibility === "personal" ? "Just me" : "Household"}
+              </span>
+            ),
+            details: shoppingDetails(
+              stores.map((store) => ({ value: store.id, label: store.name })),
+            ),
+            onSubmit: (values) =>
+              command.execute("/v1/shopping/items", {
+                ...values,
+                listId: id,
+                offerStoreId: values.offerStoreId || null,
+                position: all.length,
+              }),
+          },
+        ]}
       />
       <div className="toolbar">
         <div className="pill-filter">
@@ -361,33 +410,47 @@ export function ShoppingDetailPage({ id }: { id: string }) {
           <Pencil size={13} />
         </Button>
       </div>
-      {notice && (
-        <div className="notice" role="status">
-          <Check size={17} />
-          <span className="grow">{notice}</span>
-          {undo && (
-            <Button
-              variant="ghost"
-              onClick={async () => {
-                await update(undo, { completed: !undo.completed });
-                setNotice("Undone.");
-                setUndo(null);
-              }}
-            >
-              Undo
-            </Button>
-          )}
-          <Button
-            variant="ghost"
-            onClick={() => {
-              setNotice("");
-              setUndo(null);
-            }}
-          >
-            Dismiss
-          </Button>
-        </div>
-      )}
+      <ActionNotice
+        key={`${undo?.id}-${undo?.version}-${notice}`}
+        message={
+          undo
+            ? `${undo.name}. ${undo.completed ? "One less thing to pick up." : "Back on your list."}`
+            : notice
+        }
+        busy={command.isPending}
+        undoLabel={undo ? `Undo ${undo.name}` : undefined}
+        onUndo={
+          undo
+            ? async () => {
+                const result = await update(undo, {
+                  completed: !undo.completed,
+                });
+                setNotice(
+                  "pending" in result && result.pending
+                    ? "Undo added to this device’s sync queue."
+                    : "Undone.",
+                );
+                if (undo) setUndoStack((previous) => previous.slice(0, -1));
+              }
+            : undefined
+        }
+        secondary={
+          undo?.completed && stores.length
+            ? {
+                label: "Add store",
+                onClick: () => {
+                  setPurchase(all.find((item) => item.id === undo.id) ?? undo);
+                  setSuggestion(null);
+                  setGeoStatus("");
+                },
+              }
+            : undefined
+        }
+        onDismiss={() => {
+          setNotice("");
+          if (undo) setUndoStack((previous) => previous.slice(0, -1));
+        }}
+      />
       {command.error && (
         <ErrorState
           error={command.error}
@@ -425,94 +488,100 @@ export function ShoppingDetailPage({ id }: { id: string }) {
           />
         ) : items.length ? (
           items.map((item, index) => (
-            <div className="shopping-row" key={item.id}>
-              <button
-                type="button"
-                className={`check-button ${item.completed ? "completed" : ""}`}
-                aria-label={`${item.completed ? "Reopen" : "Complete"} ${item.name}`}
-                disabled={command.isPending}
-                onClick={() => void complete(item)}
-              >
-                {item.completed ? (
-                  <CheckCircle2 size={24} />
-                ) : (
-                  <Circle size={24} strokeWidth={1.4} />
-                )}
-              </button>
-              <div className="shopping-item-main">
-                <h3 className={item.completed ? "completed-text" : ""}>
-                  {item.name}
-                  {item.quantity && (
-                    <span
-                      className="muted"
-                      style={{ fontSize: 12, fontWeight: 400, marginLeft: 8 }}
-                    >
-                      · {item.quantity}
-                    </span>
+            <SwipeRow
+              key={item.id}
+              itemName={item.name}
+              actionLabel={item.completed ? "Reopen" : "Complete"}
+              onAction={() => complete(item)}
+              onEdit={() => setEditing(item)}
+              disabled={command.isPending}
+            >
+              <div className="shopping-row">
+                <button
+                  type="button"
+                  className={`check-button ${item.completed ? "completed" : ""}`}
+                  aria-label={`${item.completed ? "Reopen" : "Complete"} ${item.name}`}
+                  disabled={command.isPending}
+                  onClick={() => void complete(item).catch(() => {})}
+                >
+                  {item.completed ? (
+                    <CheckCircle2 size={24} />
+                  ) : (
+                    <Circle size={24} strokeWidth={1.4} />
                   )}
-                </h3>
-                {item.note && <p>{item.note}</p>}
-                <div className="item-tags">
-                  {item.category && <Badge>{item.category}</Badge>}
-                  {item.offerStoreId && (
-                    <Badge className="clay">
-                      <Tag size={10} />
-                      Offer ·{" "}
-                      {historicalStores.find((s) => s.id === item.offerStoreId)
-                        ?.name ?? "Archived store"}
-                    </Badge>
+                </button>
+                <div className="shopping-item-main">
+                  <h3 className={item.completed ? "completed-text" : ""}>
+                    {item.name}
+                    {item.quantity && (
+                      <span
+                        className="muted"
+                        style={{ fontSize: 12, fontWeight: 400, marginLeft: 8 }}
+                      >
+                        · {item.quantity}
+                      </span>
+                    )}
+                  </h3>
+                  {item.note && <p>{item.note}</p>}
+                  <div className="item-tags">
+                    {item.category && (
+                      <ColourTag choice={shoppingCategory(item.category)} />
+                    )}
+                    {item.offerStoreId && (
+                      <Badge className="clay">
+                        <Tag size={10} />
+                        Offer ·{" "}
+                        {historicalStores.find(
+                          (s) => s.id === item.offerStoreId,
+                        )?.name ?? "Archived store"}
+                      </Badge>
+                    )}
+                    {item.purchaseStoreId && (
+                      <Badge className="forest">
+                        <MapPin size={10} />
+                        {historicalStores.find(
+                          (s) => s.id === item.purchaseStoreId,
+                        )?.name ?? "Archived store"}
+                      </Badge>
+                    )}
+                  </div>
+                </div>
+                <div className="item-actions">
+                  {!item.completed && (
+                    <div className="row hide-mobile" style={{ gap: 0 }}>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        disabled={index === 0 || command.isPending}
+                        aria-label={`Move ${item.name} up`}
+                        onClick={() => void move(item, index - 1)}
+                      >
+                        <ArrowUp size={15} />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        disabled={
+                          index === items.length - 1 || command.isPending
+                        }
+                        aria-label={`Move ${item.name} down`}
+                        onClick={() => void move(item, index + 1)}
+                      >
+                        <ArrowDown size={15} />
+                      </Button>
+                    </div>
                   )}
-                  {item.purchaseStoreId && (
-                    <Badge className="forest">
-                      <MapPin size={10} />
-                      {historicalStores.find(
-                        (s) => s.id === item.purchaseStoreId,
-                      )?.name ?? "Archived store"}
-                    </Badge>
-                  )}
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    aria-label={`History of ${item.name}`}
+                    onClick={() => setHistory(item)}
+                  >
+                    <History size={16} />
+                  </Button>
                 </div>
               </div>
-              <div className="item-actions">
-                {!item.completed && (
-                  <div className="row hide-mobile" style={{ gap: 0 }}>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      disabled={index === 0 || command.isPending}
-                      aria-label={`Move ${item.name} up`}
-                      onClick={() => void move(item, index - 1)}
-                    >
-                      <ArrowUp size={15} />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      disabled={index === items.length - 1 || command.isPending}
-                      aria-label={`Move ${item.name} down`}
-                      onClick={() => void move(item, index + 1)}
-                    >
-                      <ArrowDown size={15} />
-                    </Button>
-                  </div>
-                )}
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  aria-label={`Edit ${item.name}`}
-                  onClick={() => setEditing(item)}
-                >
-                  <Pencil size={16} />
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  aria-label={`History of ${item.name}`}
-                  onClick={() => setHistory(item)}
-                >
-                  <History size={16} />
-                </Button>
-              </div>
-            </div>
+            </SwipeRow>
           ))
         ) : (
           <EmptyState
@@ -527,14 +596,7 @@ export function ShoppingDetailPage({ id }: { id: string }) {
                 ? "Completed items keep their story here. You can always reopen them."
                 : "Add your first item. Your future self will thank you."
             }
-          >
-            {tab !== "completed" && (
-              <Button variant="secondary" onClick={() => setEditing("new")}>
-                <Plus size={16} />
-                Add an item
-              </Button>
-            )}
-          </EmptyState>
+          ></EmptyState>
         )}
       </Card>
       <Dialog
@@ -565,7 +627,9 @@ export function ShoppingDetailPage({ id }: { id: string }) {
                   name: "category",
                   label: "Category",
                   defaultValue: editing === "new" ? "" : editing.category,
-                  placeholder: "Bakery",
+                  colourChoices: shoppingCategoryChoices(
+                    editing === "new" ? "" : editing.category,
+                  ),
                 },
                 {
                   name: "note",

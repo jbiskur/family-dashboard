@@ -67,10 +67,12 @@ test("Shopping offline reorder, complete, reopen and remove preserve the command
   const path = new URL(page.url()).pathname;
   const listId = path.split("/").at(-1);
   for (const name of ["Bread for breakfast", "Milk for coffee"]) {
-    await page.getByRole("button", { name: "Add item", exact: true }).click();
-    await page.getByRole("textbox", { name: "Item", exact: true }).fill(name);
+    await page.getByRole("button", { name: "Details", exact: true }).click();
     await page
-      .getByRole("button", { name: "Add to list", exact: true })
+      .getByRole("combobox", { name: "What do we need?", exact: true })
+      .fill(name);
+    await page
+      .getByRole("button", { name: "Add shopping", exact: true })
       .click();
     await expect(
       page.getByRole("button", { name: `Complete ${name}`, exact: true }),
@@ -90,7 +92,7 @@ test("Shopping offline reorder, complete, reopen and remove preserve the command
       .getByRole("button", { name: "Complete Milk for coffee", exact: true })
       .click();
     await expect(page.locator(".notice")).toContainText(
-      "One less thing to pick up.",
+      "Milk for coffee added to this device’s sync queue.",
     );
     if (await page.getByRole("dialog").isVisible())
       await page.keyboard.press("Escape");
@@ -179,11 +181,9 @@ test("Work offline assignment, due date and status chain survives reload and syn
   const title = `Offline responsibility ${crypto.randomUUID()}`;
   try {
     await context.setOffline(true);
+    await page.getByRole("button", { name: "Details", exact: true }).click();
     await page
-      .getByRole("button", { name: "Add a to-do", exact: true })
-      .click();
-    await page
-      .getByRole("textbox", { name: "What needs doing?", exact: true })
+      .getByRole("combobox", { name: "What needs doing?", exact: true })
       .fill(title);
     await page
       .getByRole("combobox", { name: "Who's on it?", exact: true })
@@ -193,8 +193,7 @@ test("Work offline assignment, due date and status chain survives reload and syn
       .fill("2036-09-10");
     await page.getByRole("button", { name: "Add to-do", exact: true }).click();
     await page
-      .getByRole("button")
-      .filter({ has: page.getByRole("heading", { name: title, exact: true }) })
+      .getByRole("button", { name: `Details ${title}`, exact: true })
       .click();
     for (const status of ["In progress", "Done", "To do"]) {
       await page
@@ -215,8 +214,7 @@ test("Work offline assignment, due date and status chain survives reload and syn
       .click();
     await expect(page.getByRole("dialog")).toBeHidden();
     await page
-      .getByRole("button")
-      .filter({ has: page.getByRole("heading", { name: title, exact: true }) })
+      .getByRole("button", { name: `Details ${title}`, exact: true })
       .click();
     await expect(
       page.getByRole("dialog").getByText("No due date", { exact: true }),
@@ -270,11 +268,9 @@ test("An expired offline lease removes private work and unsent commands", async 
   try {
     await context.setOffline(true);
     const title = `Expired private note ${crypto.randomUUID()}`;
+    await page.getByRole("button", { name: "Details", exact: true }).click();
     await page
-      .getByRole("button", { name: "Add a to-do", exact: true })
-      .click();
-    await page
-      .getByRole("textbox", { name: "What needs doing?", exact: true })
+      .getByRole("combobox", { name: "What needs doing?", exact: true })
       .fill(title);
     await page
       .getByRole("combobox", { name: "Who can see it?", exact: true })

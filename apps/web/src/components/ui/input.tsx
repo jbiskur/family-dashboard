@@ -1,12 +1,12 @@
 import type {
-  InputHTMLAttributes,
+  ComponentPropsWithRef,
   SelectHTMLAttributes,
   TextareaHTMLAttributes,
 } from "react";
 export function Input({
   className = "",
   ...props
-}: InputHTMLAttributes<HTMLInputElement>) {
+}: ComponentPropsWithRef<"input">) {
   return <input className={`input ${className}`} {...props} />;
 }
 export function Textarea({

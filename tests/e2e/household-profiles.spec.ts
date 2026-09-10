@@ -73,8 +73,8 @@ test("profile create, rename and archive preserve assigned work without granting
     path: info.outputPath("profile-renamed-no-login.png"),
   });
   await page.goto("/work");
-  await page.getByRole("button", { name: "Add a to-do", exact: true }).click();
-  await page.getByRole("textbox", { name: /What needs doing/ }).fill(title);
+  await page.getByRole("button", { name: "Details", exact: true }).click();
+  await page.getByRole("combobox", { name: /What needs doing/ }).fill(title);
   await page
     .getByRole("combobox", { name: "Who's on it?", exact: true })
     .selectOption(created.id);
@@ -116,7 +116,7 @@ test("profile create, rename and archive preserve assigned work without granting
     path: info.outputPath("archived-profile-assignment-retained.png"),
   });
   await page.keyboard.press("Escape");
-  await page.getByRole("button", { name: "Add a to-do", exact: true }).click();
+  await page.getByRole("button", { name: "Details", exact: true }).click();
   const assignment = page.getByRole("combobox", {
     name: "Who's on it?",
     exact: true,

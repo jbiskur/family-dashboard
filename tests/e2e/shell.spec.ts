@@ -91,9 +91,7 @@ test("Reduced motion and 200-percent equivalent layout retain usable navigation"
       ).toEqual([]);
     }
     await page.goto("/work");
-    await page
-      .getByRole("button", { name: "Add a to-do", exact: true })
-      .click();
+    await page.getByRole("button", { name: "Details", exact: true }).click();
     await expect(page.getByRole("dialog")).toBeVisible();
     expect(
       await page.evaluate(
@@ -105,7 +103,7 @@ test("Reduced motion and 200-percent equivalent layout retain usable navigation"
     ).toBe(0);
     await page.keyboard.press("Escape");
     await expect(
-      page.getByRole("button", { name: "Add a to-do", exact: true }),
+      page.getByRole("button", { name: "Details", exact: true }),
     ).toBeFocused();
     await page.screenshot({
       path: info.outputPath("shell-200-percent-equivalent-reduced-motion.png"),

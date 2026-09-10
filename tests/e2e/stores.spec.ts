@@ -131,8 +131,8 @@ for (const width of [1440, 320]) {
     await expect(page).toHaveURL(/\/shopping\/[0-9a-f-]{36}$/);
     const listPath = new URL(page.url()).pathname;
     const name = `Fresh bread ${crypto.randomUUID()}`;
-    await page.getByRole("button", { name: "Add item", exact: true }).click();
-    await page.getByRole("textbox", { name: /^Item/ }).fill(name);
+    await page.getByRole("button", { name: "Details", exact: true }).click();
+    await page.getByRole("combobox", { name: /What do we need/ }).fill(name);
     await page
       .getByRole("searchbox", {
         name: "Search store offer choices",
@@ -144,7 +144,7 @@ for (const width of [1440, 320]) {
       .selectOption(savedStore.id);
     await capture("searchable-store-offer");
     await page
-      .getByRole("button", { name: "Add to list", exact: true })
+      .getByRole("button", { name: "Add shopping", exact: true })
       .click();
     await expect(
       page.getByText(`Offer · ${store}`, { exact: true }),
@@ -174,6 +174,8 @@ for (const width of [1440, 320]) {
     const purchase = page.getByRole("dialog", {
       name: "Where did you pick it up?",
     });
+    await expect(purchase).toBeHidden();
+    await page.getByRole("button", { name: "Add store", exact: true }).click();
     await expect(purchase).toBeVisible();
     let item = (await read("shopping/items")).items.find(
       (row: { name: string }) => row.name === name,
@@ -266,7 +268,7 @@ for (const width of [1440, 320]) {
       ),
     ).toBe(true);
     await capture("archived-offer-history-preserved");
-    await page.getByRole("button", { name: "Add item", exact: true }).click();
+    await page.getByRole("button", { name: "Details", exact: true }).click();
     await expect(
       page
         .getByRole("combobox", { name: "Store offer", exact: true })

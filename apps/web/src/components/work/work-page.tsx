@@ -8,7 +8,6 @@ import {
   ListTodo,
   Pencil,
   Play,
-  Plus,
   Repeat2,
   Search,
   SkipForward,
@@ -18,6 +17,9 @@ import {
 import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { useCommand, useHeima } from "@/lib/client";
+import { ActionNotice } from "../shared/action-notice";
+import { CaptureComposer } from "../shared/capture-composer";
+import { workAudience, workDetails, workTitle } from "../shared/capture-fields";
 import { EntityForm } from "../shared/form";
 import { HistoryDialog } from "../shared/history";
 import {
@@ -28,6 +30,7 @@ import {
   ScopeBadge,
 } from "../shared/page";
 import { useHousehold } from "../shared/providers";
+import { SwipeRow } from "../shared/swipe-row";
 import { Button } from "../ui/button";
 import { Card } from "../ui/card";
 import { Dialog } from "../ui/dialog";
@@ -56,17 +59,19 @@ export function WorkPage() {
   const [removedItem, setRemovedItem] = useState<WorkItem | null>(null);
   const removedQuery = useHeima<{ items: WorkItem[] }>(
     "/v1/work/items?includeArchived=true",
-    removed,
   );
   const [scope, setScope] = useState(false);
   const [remove, setRemove] = useState(false);
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("all");
   const [notice, setNotice] = useState("");
-  const [undo, setUndo] = useState<{
-    item: WorkItem;
-    status: WorkItem["status"];
-  } | null>(null);
+  const [undoStack, setUndoStack] = useState<
+    {
+      item: WorkItem;
+      status: WorkItem["status"];
+    }[]
+  >([]);
+  const undo = notice.includes("sync queue") ? undefined : undoStack.at(-1);
   const items = query.data?.items ?? [];
   const selected = items.find((i) => i.id === selectedId) ?? null;
   const assignees = [
@@ -114,10 +119,19 @@ export function WorkPage() {
   }
   async function changeStatus(item: WorkItem, status: WorkItem["status"]) {
     const result = await update(item, { status });
-    setUndo({ item: result, status: item.status });
+    if ("pending" in result && result.pending) {
+      setNotice(`${item.title} added to this device’s sync queue.`);
+      return;
+    }
+    setUndoStack((previous) => [
+      ...previous.filter((entry) => entry.item.id !== item.id),
+      { item: result, status: item.status },
+    ]);
     setNotice(
       status === "done"
-        ? "Done. That's one less thing."
+        ? item.recurrence
+          ? "Done. Undo reopens this task; the next occurrence remains."
+          : "Done. That's one less thing."
         : "The task is updated.",
     );
   }
@@ -127,12 +141,45 @@ export function WorkPage() {
         eyebrow="WORK"
         title="Household work"
         description="Plan tasks, share the work, and keep track of what is done."
-        action={
-          <Button onClick={() => setEditing("new")}>
-            <Plus size={17} />
-            Add a to-do
-          </Button>
-        }
+      />
+      <CaptureComposer
+        choices={[
+          {
+            id: "work",
+            label: "To-do",
+            icon: ListTodo,
+            title: {
+              ...workTitle,
+              history: (values) => ({
+                names: (removedQuery.error
+                  ? []
+                  : (removedQuery.data?.items ?? [])
+                )
+                  .filter((item) => item.visibility === values.visibility)
+                  .map((item) => item.title),
+                loading: removedQuery.isPending,
+                unavailable: !!removedQuery.error,
+              }),
+            },
+            context: [workAudience],
+            details: workDetails(assignees),
+            onSubmit: (values) => {
+              const { recurrenceUnit, recurrenceInterval, ...rest } = values;
+              return command.execute("/v1/work/items", {
+                ...rest,
+                assigneeId: rest.assigneeId || null,
+                dueDate: rest.dueDate || null,
+                dueTime: rest.dueTime || null,
+                recurrence: recurrenceUnit
+                  ? {
+                      unit: recurrenceUnit,
+                      interval: Number(recurrenceInterval),
+                    }
+                  : null,
+              });
+            },
+          },
+        ]}
       />
       <div className="toolbar">
         <fieldset className="pill-filter" aria-label="Work scope">
@@ -167,33 +214,33 @@ export function WorkPage() {
           />
         </div>
       </div>
-      {notice && (
-        <div className="notice" role="status">
-          <Check size={16} />
-          <span className="grow">{notice}</span>
-          {undo && (
-            <Button
-              variant="ghost"
-              onClick={async () => {
-                await update(undo.item, { status: undo.status });
-                setUndo(null);
-                setNotice("Undone.");
-              }}
-            >
-              Undo
-            </Button>
-          )}
-          <Button
-            variant="ghost"
-            onClick={() => {
-              setNotice("");
-              setUndo(null);
-            }}
-          >
-            Dismiss
-          </Button>
-        </div>
-      )}
+      <ActionNotice
+        key={`${undo?.item.id}-${undo?.item.version}-${notice}`}
+        message={
+          undo
+            ? `${undo.item.title}. ${undo.item.status === "done" && undo.item.recurrence ? "Undo reopens this task; the next occurrence remains." : "The task is updated."}`
+            : notice
+        }
+        busy={command.isPending}
+        undoLabel={undo ? `Undo ${undo.item.title}` : undefined}
+        onUndo={
+          undo
+            ? async () => {
+                const result = await update(undo.item, { status: undo.status });
+                if (undo) setUndoStack((previous) => previous.slice(0, -1));
+                setNotice(
+                  "pending" in result && result.pending
+                    ? "Undo added to this device’s sync queue."
+                    : "Undone.",
+                );
+              }
+            : undefined
+        }
+        onDismiss={() => {
+          setNotice("");
+          if (undo) setUndoStack((previous) => previous.slice(0, -1));
+        }}
+      />
       {command.error && (
         <ErrorState
           error={command.error}
@@ -213,12 +260,7 @@ export function WorkPage() {
             icon={<ListTodo size={28} />}
             title="No tasks yet"
             description="Add something that needs doing. Assign it, give it a date, or leave room for someone to help."
-          >
-            <Button onClick={() => setEditing("new")}>
-              <Plus size={16} />
-              Add the first to-do
-            </Button>
-          </EmptyState>
+          />
         </Card>
       ) : (
         <div className="work-board">
@@ -236,55 +278,88 @@ export function WorkPage() {
               {filtered
                 .filter((i) => i.status === value)
                 .map((item) => (
-                  <button
-                    type="button"
-                    className="card work-card"
-                    style={{ width: "100%", textAlign: "left" }}
+                  <SwipeRow
                     key={item.id}
-                    onClick={() => {
-                      setSelectedId(item.id);
-                      window.history.replaceState(
-                        null,
-                        "",
-                        `/work?item=${item.id}`,
-                      );
-                    }}
+                    itemName={item.title}
+                    actionLabel={item.status === "done" ? "Reopen" : "Complete"}
+                    onAction={() =>
+                      changeStatus(
+                        item,
+                        item.status === "done" ? "todo" : "done",
+                      )
+                    }
+                    onEdit={() => setEditing(item)}
+                    disabled={command.isPending}
+                    allowFullSwipe={!item.recurrence}
                   >
-                    <ScopeBadge scope={item.visibility} />
-                    <h3 className={value === "done" ? "completed-text" : ""}>
-                      {item.title}
-                    </h3>
-                    {item.note && (
-                      <p>
-                        {item.note.length > 90
-                          ? `${item.note.slice(0, 90)}…`
-                          : item.note}
-                      </p>
-                    )}
-                    <div className="work-card-footer">
-                      <span className="avatar">
-                        <UserRound size={12} />
-                      </span>
-                      <span>{name(item.assigneeId)}</span>
-                      {item.dueDate && (
-                        <span
-                          className={`row ${item.dueDate < new Date().toISOString().slice(0, 10) && value !== "done" ? "due-overdue" : ""}`}
-                          style={{ gap: 4, marginLeft: "auto" }}
-                        >
-                          <CalendarDays size={12} />
-                          {new Date(
-                            `${item.dueDate}T12:00:00`,
-                          ).toLocaleDateString("en-GB", {
-                            day: "numeric",
-                            month: "short",
-                          })}
+                    <div className="card work-card">
+                      <ScopeBadge scope={item.visibility} />
+                      <h3 className={value === "done" ? "completed-text" : ""}>
+                        {item.title}
+                      </h3>
+                      {item.note && (
+                        <p>
+                          {item.note.length > 90
+                            ? `${item.note.slice(0, 90)}…`
+                            : item.note}
+                        </p>
+                      )}
+                      <div className="work-card-footer">
+                        <span className="avatar">
+                          <UserRound size={12} />
                         </span>
-                      )}
-                      {item.recurrence && (
-                        <Repeat2 size={13} aria-label="Repeats" />
-                      )}
+                        <span>{name(item.assigneeId)}</span>
+                        {item.dueDate && (
+                          <span
+                            className={`row ${item.dueDate < new Date().toISOString().slice(0, 10) && value !== "done" ? "due-overdue" : ""}`}
+                            style={{ gap: 4, marginLeft: "auto" }}
+                          >
+                            <CalendarDays size={12} />
+                            {new Date(
+                              `${item.dueDate}T12:00:00`,
+                            ).toLocaleDateString("en-GB", {
+                              day: "numeric",
+                              month: "short",
+                            })}
+                          </span>
+                        )}
+                        {item.recurrence && (
+                          <Repeat2 size={13} aria-label="Repeats" />
+                        )}
+                      </div>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="compact"
+                        aria-label={`Details ${item.title}`}
+                        onClick={() => {
+                          setSelectedId(item.id);
+                          window.history.replaceState(
+                            null,
+                            "",
+                            `/work?item=${item.id}`,
+                          );
+                        }}
+                      >
+                        Details
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="compact"
+                        aria-label={`${item.status === "done" ? "Reopen" : "Complete"} ${item.title}`}
+                        disabled={command.isPending}
+                        onClick={() =>
+                          void changeStatus(
+                            item,
+                            item.status === "done" ? "todo" : "done",
+                          ).catch(() => {})
+                        }
+                      >
+                        <Check size={16} />
+                        {item.status === "done" ? "Reopen" : "Complete"}
+                      </Button>
                     </div>
-                  </button>
+                  </SwipeRow>
                 ))}
               {!filtered.some((i) => i.status === value) && (
                 <p

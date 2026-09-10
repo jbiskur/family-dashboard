@@ -49,12 +49,12 @@ for (const area of ["shopping", "work"] as const) {
       await page.goto(`/${area}`);
       await page
         .getByRole("button", {
-          name: area === "shopping" ? "New list" : "Add a to-do",
+          name: area === "shopping" ? "New list" : "Details",
           exact: true,
         })
         .click();
       await page
-        .getByRole("textbox", {
+        .getByRole(area === "shopping" ? "textbox" : "combobox", {
           name: area === "shopping" ? "List name" : "What needs doing?",
           exact: true,
         })
@@ -76,7 +76,9 @@ for (const area of ["shopping", "work"] as const) {
         await expect(page).toHaveURL(/\/shopping\/[0-9a-f-]{36}$/);
         id = new URL(page.url()).pathname.split("/").at(-1) ?? null;
       } else {
-        await page.getByRole("heading", { name: title, exact: true }).click();
+        await page
+          .getByRole("button", { name: `Details ${title}`, exact: true })
+          .click();
         await expect(page).toHaveURL(/\/work\?item=[0-9a-f-]{36}$/);
         id = new URL(page.url()).searchParams.get("item");
       }
