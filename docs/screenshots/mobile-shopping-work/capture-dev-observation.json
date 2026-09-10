@@ -1,0 +1,34 @@
+{
+  "passed": true,
+  "mode": "next dev",
+  "origin": "http://localhost:3013",
+  "engine": "webkit",
+  "widths": [
+    390,
+    320,
+    1440
+  ],
+  "metrics": {
+    "dock": {
+      "top": 643.5,
+      "bottom": 781
+    },
+    "nav": {
+      "top": 781,
+      "bottom": 844
+    },
+    "input": 16,
+    "scrollWidth": 390
+  },
+  "observations": [
+    "Single Home capture",
+    "Details preserves title and note across close/reopen",
+    "Add via existing command succeeds",
+    "Repeat input refocused",
+    "No horizontal overflow",
+    "Scrolled work dock clears navigation"
+  ],
+  "limits": [
+    "Desktop WebKit emulation; physical iOS keyboard untested"
+  ]
+}

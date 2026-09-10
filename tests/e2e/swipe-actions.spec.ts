@@ -425,97 +425,106 @@ test("Swipe cancellations, vertical intent, edges and keyboard alternatives do n
   await expect(target).toHaveAttribute("data-swipe-side", "closed");
 });
 
-test("Busy swipe sends one command and stale versions expose recovery without a status change", async ({
-  page,
-}, info) => {
-  const token = await login(page);
-  const list = await api(page, token, "shopping/lists", {
-    name: `Busy swipe ${crypto.randomUUID()}`,
-  });
-  const item = await api(page, token, "shopping/items", {
-    listId: list.id,
-    name: "Busy swipe target",
-  });
-  await page.goto(`/shopping/${list.id}`);
-  const target = row(page, item.name);
-  let release = () => {};
-  const held = new Promise<void>((resolve) => {
-    release = resolve;
-  });
-  let commands = 0;
-  await page.route(`**/shopping/${list.id}`, async (route) => {
-    if (
-      route.request().method() === "POST" &&
-      route.request().headers()["next-action"]
-    ) {
-      commands += 1;
-      await held;
+// Playwright request interception excludes service-worker-controlled requests.
+// Match the existing capture timing harness; offline journeys retain workers.
+test.describe("swipe response timing", () => {
+  test.use({ serviceWorkers: "block" });
+  test("Busy swipe sends one command and stale versions expose recovery without a status change", async ({
+    page,
+  }, info) => {
+    const token = await login(page);
+    const list = await api(page, token, "shopping/lists", {
+      name: `Busy swipe ${crypto.randomUUID()}`,
+    });
+    const item = await api(page, token, "shopping/items", {
+      listId: list.id,
+      name: "Busy swipe target",
+    });
+    await page.goto(`/shopping/${list.id}`);
+    const target = row(page, item.name);
+    let release = () => {};
+    const held = new Promise<void>((resolve) => {
+      release = resolve;
+    });
+    let commands = 0;
+    await page.route(`**/shopping/${list.id}`, async (route) => {
+      if (
+        route.request().method() === "POST" &&
+        route.request().headers()["next-action"]
+      ) {
+        commands += 1;
+        await held;
+      }
+      await route.continue();
+    });
+    try {
+      await drag(page, target, 80);
+      await target
+        .getByRole("button", {
+          name: `Swipe complete ${item.name}`,
+          exact: true,
+        })
+        .click();
+      await expect(target).toHaveAttribute("aria-busy", "true");
+      await expect(
+        target.getByRole("button", {
+          name: `Complete ${item.name}`,
+          exact: true,
+        }),
+      ).toBeDisabled();
+      await drag(page, target, 220);
+      await expect.poll(() => commands).toBe(1);
+      expect(
+        (await api(page, token, `shopping/items/${item.id}`)).completed,
+      ).toBe(false);
+      await shot(page, info, "swipe-busy-no-duplicate-desktop");
+    } finally {
+      release();
     }
-    await route.continue();
-  });
-  try {
+    await expect(target).toHaveCount(0);
+    await page.unroute(`**/shopping/${list.id}`);
+    expect(commands).toBe(1);
+    const completed = await api(page, token, `shopping/items/${item.id}`);
+    expect(completed.version).toBe(2);
+    await page
+      .getByRole("button", { name: `Undo ${item.name}`, exact: true })
+      .click();
+    await expect(target).toBeVisible();
+    const beforeConflict = await api(page, token, `shopping/items/${item.id}`);
+    // A second public writer makes this rendered row stale; no internal mocks.
+    await api(page, token, `shopping/items/${item.id}`, {
+      baseVersion: beforeConflict.version,
+      note: "Changed by another session",
+    });
     await drag(page, target, 80);
     await target
       .getByRole("button", { name: `Swipe complete ${item.name}`, exact: true })
       .click();
-    await expect(target).toHaveAttribute("aria-busy", "true");
-    await expect(
-      target.getByRole("button", {
-        name: `Complete ${item.name}`,
-        exact: true,
-      }),
-    ).toBeDisabled();
-    await drag(page, target, 220);
-    expect(commands).toBe(1);
+    const conflict = page.getByRole("dialog", {
+      name: "Compare changes",
+      exact: true,
+    });
+    await expect(conflict).toBeVisible();
+    await shot(page, info, "swipe-existing-conflict-comparison-desktop");
     expect(
       (await api(page, token, `shopping/items/${item.id}`)).completed,
     ).toBe(false);
-    await shot(page, info, "swipe-busy-no-duplicate-desktop");
-  } finally {
-    release();
-  }
-  await expect(target).toHaveCount(0);
-  await page.unroute(`**/shopping/${list.id}`);
-  const completed = await api(page, token, `shopping/items/${item.id}`);
-  expect(completed.version).toBe(2);
-  await page
-    .getByRole("button", { name: `Undo ${item.name}`, exact: true })
-    .click();
-  await expect(target).toBeVisible();
-  const beforeConflict = await api(page, token, `shopping/items/${item.id}`);
-  // A second public writer makes this rendered row stale; no internal mocks.
-  await api(page, token, `shopping/items/${item.id}`, {
-    baseVersion: beforeConflict.version,
-    note: "Changed by another session",
+    await page.keyboard.press("Escape");
+    await expect(target.getByRole("alert")).toBeVisible();
+    await shot(page, info, "swipe-version-conflict-recovery-desktop");
+    await expect(
+      target.getByRole("button", { name: "Retry complete", exact: true }),
+    ).toBeVisible();
+    await page.getByRole("button", { name: "Try again", exact: true }).click();
+    await expect(target).toContainText("Changed by another session");
+    await target
+      .getByRole("button", { name: "Retry complete", exact: true })
+      .click();
+    await expect(target).toHaveCount(0);
+    expect(
+      (await api(page, token, `shopping/items/${item.id}`)).completed,
+    ).toBe(true);
   });
-  await drag(page, target, 80);
-  await target
-    .getByRole("button", { name: `Swipe complete ${item.name}`, exact: true })
-    .click();
-  const conflict = page.getByRole("dialog", {
-    name: "Compare changes",
-    exact: true,
-  });
-  await expect(conflict).toBeVisible();
-  await shot(page, info, "swipe-existing-conflict-comparison-desktop");
-  expect((await api(page, token, `shopping/items/${item.id}`)).completed).toBe(
-    false,
-  );
-  await page.keyboard.press("Escape");
-  await expect(target.getByRole("alert")).toBeVisible();
-  await shot(page, info, "swipe-version-conflict-recovery-desktop");
-  await expect(
-    target.getByRole("button", { name: "Retry complete", exact: true }),
-  ).toBeVisible();
-  await page.getByRole("button", { name: "Try again", exact: true }).click();
-  await expect(target).toContainText("Changed by another session");
-  await target
-    .getByRole("button", { name: "Retry complete", exact: true })
-    .click();
-  await expect(target).toHaveCount(0);
-  expect((await api(page, token, `shopping/items/${item.id}`)).completed).toBe(
-    true,
-  );
 });
 
 test("Consecutive completions keep named Undo history and queued actions tell the truth", async ({

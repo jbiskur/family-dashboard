@@ -11,7 +11,7 @@
     },
     {
       "feature": "b0798491-cfc3-4bed-bd2a-76e57dbe5fa6",
-      "route": "/work",
+      "route": "/shopping/{listId}",
       "screenshot": "capture-reachable-320.png",
       "sha256": "e7b5143ba185eb476aa7525f9de93506f7d571da80e21a8ea717b4d2b7e819cc",
       "engine": "Chromium",
@@ -99,7 +99,7 @@
     },
     {
       "feature": "3f23dfd1-918f-4055-a85b-a8957b0260c3",
-      "route": "/work \u2192 conflict \u2192 Try again \u2192 Retry",
+      "route": "/shopping/{listId} \u2192 conflict \u2192 Try again \u2192 Retry",
       "screenshot": "swipe-version-conflict-recovery-desktop.png",
       "sha256": "b7c9b74976bdb8bf4eaac959b9bee52893660aba08219175c6a6cef7cdcdb6fe",
       "engine": "Chromium",

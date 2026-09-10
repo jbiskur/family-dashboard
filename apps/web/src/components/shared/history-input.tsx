@@ -47,7 +47,14 @@ export function HistoryInput({
       items={matches}
       filter={null}
       value={value}
-      onValueChange={onValueChange}
+      onValueChange={(next, details) => {
+        if (details.reason === "escape-key") {
+          details.cancel();
+          details.allowPropagation();
+          return;
+        }
+        onValueChange(next);
+      }}
       submitOnItemClick={false}
       open={visible}
       onOpenChange={(next) => {

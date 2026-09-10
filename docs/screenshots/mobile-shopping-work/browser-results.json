@@ -1,0 +1,1846 @@
+{
+  "observedAt": "2026-09-10",
+  "scope": "Full matrix plus applicable reruns; final changed UI scenarios rerun after Escape fix. Counts identify unique project/scenario pairs, not one uninterrupted run.",
+  "counts": {
+    "chromium": {
+      "passed": 64,
+      "skipped": 0,
+      "failed": 0
+    },
+    "firefox": {
+      "passed": 61,
+      "skipped": 3,
+      "failed": 0
+    },
+    "webkit": {
+      "passed": 55,
+      "skipped": 9,
+      "failed": 0
+    },
+    "mobile": {
+      "passed": 63,
+      "skipped": 1,
+      "failed": 0
+    }
+  },
+  "runs": [
+    {
+      "run": "full-chromium-recheck",
+      "sha256": "e3732fd15c8da80144fdb062047fb5547332eb19f3322e02813923b5b2fd2862"
+    },
+    {
+      "run": "full-browser-matrix",
+      "sha256": "dd04d8570a14fd51654e852cde34e1178f95b60f42bdec36a03d8b79cf4bb91c"
+    },
+    {
+      "run": "feature-paths-final",
+      "sha256": "020153b08136479cc2e321e03c9800d3e1e9d246a503493b0f0312b0b64f69f3"
+    },
+    {
+      "run": "busy-swipe-sw-final",
+      "sha256": "1a75b97aa88fe0cc8ac420f2f45a8dd04b6658f0c1cf6f3c2e4e2fe26cc4ce7e"
+    },
+    {
+      "run": "final-feature-regressions",
+      "sha256": "c03f771a54db6e33fe422b9e5be486be714fdbdbbe2f7c500af468ca860dd8cf"
+    },
+    {
+      "run": "offline-chain-final",
+      "sha256": "5686467671c754255ef920005f7c7955396d6c80084d8198a94a79403d569e67"
+    }
+  ],
+  "results": [
+    {
+      "project": "chromium",
+      "file": "tests/e2e/bank-import.spec.ts",
+      "scenario": "Revolut guidance reviews exclusions, currency and explicit fee treatment before importing",
+      "result": "passed",
+      "receipt": "full-chromium-recheck"
+    },
+    {
+      "project": "chromium",
+      "file": "tests/e2e/bank-import.spec.ts",
+      "scenario": "Faroese-style headers recover without uploading again at 320px",
+      "result": "passed",
+      "receipt": "full-chromium-recheck"
+    },
+    {
+      "project": "chromium",
+      "file": "tests/e2e/feature-paths.spec.ts",
+      "scenario": "feature UI path evidence at 1440px",
+      "result": "passed",
+      "receipt": "feature-paths-final"
+    },
+    {
+      "project": "chromium",
+      "file": "tests/e2e/feature-paths.spec.ts",
+      "scenario": "feature UI path evidence at 320px",
+      "result": "passed",
+      "receipt": "feature-paths-final"
+    },
+    {
+      "project": "chromium",
+      "file": "tests/e2e/finance-import.spec.ts",
+      "scenario": "statement replacement immediately removes the previous confirmation while loading",
+      "result": "passed",
+      "receipt": "full-chromium-recheck"
+    },
+    {
+      "project": "chromium",
+      "file": "tests/e2e/finance-import.spec.ts",
+      "scenario": "statement replacement ignores an older read success without ending current loading",
+      "result": "passed",
+      "receipt": "full-chromium-recheck"
+    },
+    {
+      "project": "chromium",
+      "file": "tests/e2e/finance-import.spec.ts",
+      "scenario": "statement replacement ignores an older read failure without ending current loading",
+      "result": "passed",
+      "receipt": "full-chromium-recheck"
+    },
+    {
+      "project": "chromium",
+      "file": "tests/e2e/finance-import.spec.ts",
+      "scenario": "statement replacement ignores an older mapping success without ending current loading",
+      "result": "passed",
+      "receipt": "full-chromium-recheck"
+    },
+    {
+      "project": "chromium",
+      "file": "tests/e2e/finance-import.spec.ts",
+      "scenario": "statement replacement ignores an older mapping failure without ending current loading",
+      "result": "passed",
+      "receipt": "full-chromium-recheck"
+    },
+    {
+      "project": "chromium",
+      "file": "tests/e2e/finance-import.spec.ts",
+      "scenario": "statement replacement rejects files safely and invalidates pending work on account change",
+      "result": "passed",
+      "receipt": "full-chromium-recheck"
+    },
+    {
+      "project": "chromium",
+      "file": "tests/e2e/finance-import.spec.ts",
+      "scenario": "statement preview writes nothing, invalid mapping stays blocked, and reviewed rows require an exact zero reconciliation",
+      "result": "passed",
+      "receipt": "full-chromium-recheck"
+    },
+    {
+      "project": "chromium",
+      "file": "tests/e2e/finance-import.spec.ts",
+      "scenario": "category hierarchy and budget edits preserve exact actuals, deliberate zero, and archive history",
+      "result": "passed",
+      "receipt": "full-chromium-recheck"
+    },
+    {
+      "project": "chromium",
+      "file": "tests/e2e/household-profiles.spec.ts",
+      "scenario": "profile create, rename and archive preserve assigned work without granting a login",
+      "result": "passed",
+      "receipt": "full-chromium-recheck"
+    },
+    {
+      "project": "chromium",
+      "file": "tests/e2e/login-states.spec.ts",
+      "scenario": "access lifecycle states show safe next actions at 320px and desktop without exposing identity secrets",
+      "result": "passed",
+      "receipt": "full-chromium-recheck"
+    },
+    {
+      "project": "chromium",
+      "file": "tests/e2e/long-titles.spec.ts",
+      "scenario": "long unbroken titles and full UUIDs wrap within Home and Work at 320px",
+      "result": "passed",
+      "receipt": "full-chromium-recheck"
+    },
+    {
+      "project": "chromium",
+      "file": "tests/e2e/notification-permission.spec.ts",
+      "scenario": "explicit notification opt-in handles actual denied browser permission without registering a device",
+      "result": "passed",
+      "receipt": "full-chromium-recheck"
+    },
+    {
+      "project": "chromium",
+      "file": "tests/e2e/notification-settings.spec.ts",
+      "scenario": "notification choices and Faroe quiet hours persist privately without prompting for push",
+      "result": "passed",
+      "receipt": "full-chromium-recheck"
+    },
+    {
+      "project": "chromium",
+      "file": "tests/e2e/offline-audit.spec.ts",
+      "scenario": "Work survives an offline create, hard reload and idempotent reconnect",
+      "result": "passed",
+      "receipt": "full-chromium-recheck"
+    },
+    {
+      "project": "chromium",
+      "file": "tests/e2e/offline-audit.spec.ts",
+      "scenario": "Shopping survives an offline item create, hard reload and reconnect",
+      "result": "passed",
+      "receipt": "full-chromium-recheck"
+    },
+    {
+      "project": "chromium",
+      "file": "tests/e2e/offline-audit.spec.ts",
+      "scenario": "Work conflict shows three versions and requires explicit discard",
+      "result": "passed",
+      "receipt": "full-chromium-recheck"
+    },
+    {
+      "project": "chromium",
+      "file": "tests/e2e/offline-audit.spec.ts",
+      "scenario": "Work conflict shows three versions and requires explicit reapply",
+      "result": "passed",
+      "receipt": "full-chromium-recheck"
+    },
+    {
+      "project": "chromium",
+      "file": "tests/e2e/offline-audit.spec.ts",
+      "scenario": "Revoked eligibility purges private offline data before disconnected navigation",
+      "result": "passed",
+      "receipt": "full-chromium-recheck"
+    },
+    {
+      "project": "chromium",
+      "file": "tests/e2e/offline-audit.spec.ts",
+      "scenario": "Changing account in another tab removes old private work and rejects its principal",
+      "result": "passed",
+      "receipt": "full-chromium-recheck"
+    },
+    {
+      "project": "chromium",
+      "file": "tests/e2e/offline-audit.spec.ts",
+      "scenario": "Shopping conflict reapply keeps the list and one item identity",
+      "result": "passed",
+      "receipt": "full-chromium-recheck"
+    },
+    {
+      "project": "chromium",
+      "file": "tests/e2e/offline-audit.spec.ts",
+      "scenario": "Observed list permission loss cannot reappear from offline cache",
+      "result": "passed",
+      "receipt": "full-chromium-recheck"
+    },
+    {
+      "project": "chromium",
+      "file": "tests/e2e/offline-chain.spec.ts",
+      "scenario": "Shopping offline reorder, complete, reopen and remove preserve the command chain",
+      "result": "passed",
+      "receipt": "offline-chain-final"
+    },
+    {
+      "project": "chromium",
+      "file": "tests/e2e/offline-chain.spec.ts",
+      "scenario": "Work offline assignment, due date and status chain survives reload and sync",
+      "result": "passed",
+      "receipt": "full-chromium-recheck"
+    },
+    {
+      "project": "chromium",
+      "file": "tests/e2e/offline-chain.spec.ts",
+      "scenario": "An expired offline lease removes private work and unsent commands",
+      "result": "passed",
+      "receipt": "full-chromium-recheck"
+    },
+    {
+      "project": "chromium",
+      "file": "tests/e2e/scope-conversion.spec.ts",
+      "scenario": "shopping visibility conversion requires deliberate confirmation, preserves the full identity and revokes the other reader",
+      "result": "passed",
+      "receipt": "full-chromium-recheck"
+    },
+    {
+      "project": "chromium",
+      "file": "tests/e2e/scope-conversion.spec.ts",
+      "scenario": "work visibility conversion requires deliberate confirmation, preserves the full identity and revokes the other reader",
+      "result": "passed",
+      "receipt": "full-chromium-recheck"
+    },
+    {
+      "project": "chromium",
+      "file": "tests/e2e/shared-refresh.spec.ts",
+      "scenario": "Visible Shopping directory refreshes shared lists within five seconds and never includes personal lists",
+      "result": "passed",
+      "receipt": "full-chromium-recheck"
+    },
+    {
+      "project": "chromium",
+      "file": "tests/e2e/shell.spec.ts",
+      "scenario": "Reduced motion and 200-percent equivalent layout retain usable navigation",
+      "result": "passed",
+      "receipt": "full-chromium-recheck"
+    },
+    {
+      "project": "chromium",
+      "file": "tests/e2e/shell.spec.ts",
+      "scenario": "Browser parses the installable named manifest and real icon sizes",
+      "result": "passed",
+      "receipt": "full-chromium-recheck"
+    },
+    {
+      "project": "chromium",
+      "file": "tests/e2e/shell.spec.ts",
+      "scenario": "Heima installs and launches in a standalone app window",
+      "result": "passed",
+      "receipt": "full-chromium-recheck"
+    },
+    {
+      "project": "chromium",
+      "file": "tests/e2e/stores.spec.ts",
+      "scenario": "Store search, offer, foreground suggestion and archived history at 1440px",
+      "result": "passed",
+      "receipt": "full-chromium-recheck"
+    },
+    {
+      "project": "chromium",
+      "file": "tests/e2e/stores.spec.ts",
+      "scenario": "Store search, offer, foreground suggestion and archived history at 320px",
+      "result": "passed",
+      "receipt": "full-chromium-recheck"
+    },
+    {
+      "project": "chromium",
+      "file": "tests/e2e/stores.spec.ts",
+      "scenario": "search stays disabled before hydration and filters after real scripts load at 1440px",
+      "result": "passed",
+      "receipt": "full-chromium-recheck"
+    },
+    {
+      "project": "chromium",
+      "file": "tests/e2e/stores.spec.ts",
+      "scenario": "search stays disabled before hydration and filters after real scripts load at 320px",
+      "result": "passed",
+      "receipt": "full-chromium-recheck"
+    },
+    {
+      "project": "chromium",
+      "file": "tests/e2e/swipe-actions.spec.ts",
+      "scenario": "Shopping swipe edit, full completion and named Undo stay reachable at 320px",
+      "result": "passed",
+      "receipt": "final-feature-regressions"
+    },
+    {
+      "project": "chromium",
+      "file": "tests/e2e/swipe-actions.spec.ts",
+      "scenario": "Work swipe Undo restores doing; recurring completion preserves its one successor",
+      "result": "passed",
+      "receipt": "final-feature-regressions"
+    },
+    {
+      "project": "chromium",
+      "file": "tests/e2e/swipe-actions.spec.ts",
+      "scenario": "Swipe cancellations, vertical intent, edges and keyboard alternatives do not mutate",
+      "result": "passed",
+      "receipt": "final-feature-regressions"
+    },
+    {
+      "project": "chromium",
+      "file": "tests/e2e/swipe-actions.spec.ts",
+      "scenario": "Busy swipe sends one command and stale versions expose recovery without a status change",
+      "result": "passed",
+      "receipt": "final-feature-regressions"
+    },
+    {
+      "project": "chromium",
+      "file": "tests/e2e/swipe-actions.spec.ts",
+      "scenario": "Consecutive completions keep named Undo history and queued actions tell the truth",
+      "result": "passed",
+      "receipt": "final-feature-regressions"
+    },
+    {
+      "project": "chromium",
+      "file": "tests/e2e/sync-failure.spec.ts",
+      "scenario": "a real rejected offline assignment creates one private generic sync activity with a safe area link",
+      "result": "passed",
+      "receipt": "full-chromium-recheck"
+    },
+    {
+      "project": "chromium",
+      "file": "tests/e2e/ux-audit.spec.ts",
+      "scenario": "independent UX audit at 1440px",
+      "result": "passed",
+      "receipt": "full-chromium-recheck"
+    },
+    {
+      "project": "chromium",
+      "file": "tests/e2e/ux-audit.spec.ts",
+      "scenario": "independent UX audit at 390px",
+      "result": "passed",
+      "receipt": "full-chromium-recheck"
+    },
+    {
+      "project": "chromium",
+      "file": "tests/e2e/ux-audit.spec.ts",
+      "scenario": "independent UX audit at 320px",
+      "result": "passed",
+      "receipt": "full-chromium-recheck"
+    },
+    {
+      "project": "chromium",
+      "file": "tests/e2e/work-lifecycle.spec.ts",
+      "scenario": "Occurrence edit, monthly successor, explicit series stop and removed history connect",
+      "result": "passed",
+      "receipt": "full-chromium-recheck"
+    },
+    {
+      "project": "chromium",
+      "file": "tests/e2e/capture-history.spec.ts",
+      "scenario": "category presets are optional, persist and preserve legacy categories",
+      "result": "passed",
+      "receipt": "final-feature-regressions"
+    },
+    {
+      "project": "chromium",
+      "file": "tests/e2e/capture-history.spec.ts",
+      "scenario": "shopping history deduplicates, limits and filters list and category without copying fields",
+      "result": "passed",
+      "receipt": "final-feature-regressions"
+    },
+    {
+      "project": "chromium",
+      "file": "tests/e2e/capture-history.spec.ts",
+      "scenario": "Home and Work history respects audience and touch selection never submits",
+      "result": "passed",
+      "receipt": "final-feature-regressions"
+    },
+    {
+      "project": "chromium",
+      "file": "tests/e2e/capture-history.spec.ts",
+      "scenario": "slow or unavailable history leaves manual entry usable",
+      "result": "passed",
+      "receipt": "final-feature-regressions"
+    },
+    {
+      "project": "chromium",
+      "file": "tests/e2e/capture-history.spec.ts",
+      "scenario": "suggestions fit narrow and desktop layouts, Escape dismisses and offline entries still queue",
+      "result": "passed",
+      "receipt": "final-feature-regressions"
+    },
+    {
+      "project": "chromium",
+      "file": "tests/e2e/finance.spec.ts",
+      "scenario": "account and manual financial fact show exact amount and provenance",
+      "result": "passed",
+      "receipt": "full-chromium-recheck"
+    },
+    {
+      "project": "chromium",
+      "file": "tests/e2e/home.spec.ts",
+      "scenario": "entry and Home keep their optimized illustration at mobile and desktop widths",
+      "result": "passed",
+      "receipt": "full-chromium-recheck"
+    },
+    {
+      "project": "chromium",
+      "file": "tests/e2e/home.spec.ts",
+      "scenario": "Home quick capture connects to the owning list and Work without duplicate entries",
+      "result": "passed",
+      "receipt": "full-chromium-recheck"
+    },
+    {
+      "project": "chromium",
+      "file": "tests/e2e/journeys.spec.ts",
+      "scenario": "shopping create, complete, history and undo survive navigation",
+      "result": "passed",
+      "receipt": "full-chromium-recheck"
+    },
+    {
+      "project": "chromium",
+      "file": "tests/e2e/journeys.spec.ts",
+      "scenario": "household task goes from creation through progress to done",
+      "result": "passed",
+      "receipt": "full-chromium-recheck"
+    },
+    {
+      "project": "chromium",
+      "file": "tests/e2e/mobile-capture.spec.ts",
+      "scenario": "one Home capture preserves separate drafts, destination and expanded fields",
+      "result": "passed",
+      "receipt": "final-feature-regressions"
+    },
+    {
+      "project": "chromium",
+      "file": "tests/e2e/mobile-capture.spec.ts",
+      "scenario": "capture stays reachable after long-list scrolling at narrow and desktop widths",
+      "result": "passed",
+      "receipt": "final-feature-regressions"
+    },
+    {
+      "project": "chromium",
+      "file": "tests/e2e/mobile-capture.spec.ts",
+      "scenario": "pending capture preserves next-entry typing and suppresses duplicate submission",
+      "result": "passed",
+      "receipt": "final-feature-regressions"
+    },
+    {
+      "project": "chromium",
+      "file": "tests/e2e/mobile-capture.spec.ts",
+      "scenario": "invalid capture stays editable and reports errors inside expanded details",
+      "result": "passed",
+      "receipt": "final-feature-regressions"
+    },
+    {
+      "project": "chromium",
+      "file": "tests/e2e/mobile-capture.spec.ts",
+      "scenario": "capture distinguishes offline queue and preserves accessible keyboard layout",
+      "result": "passed",
+      "receipt": "final-feature-regressions"
+    },
+    {
+      "project": "chromium",
+      "file": "tests/e2e/session.spec.ts",
+      "scenario": "opaque browser session is unusable after local and provider logout",
+      "result": "passed",
+      "receipt": "full-chromium-recheck"
+    },
+    {
+      "project": "firefox",
+      "file": "tests/e2e/bank-import.spec.ts",
+      "scenario": "Revolut guidance reviews exclusions, currency and explicit fee treatment before importing",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "firefox",
+      "file": "tests/e2e/bank-import.spec.ts",
+      "scenario": "Faroese-style headers recover without uploading again at 320px",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "firefox",
+      "file": "tests/e2e/feature-paths.spec.ts",
+      "scenario": "feature UI path evidence at 1440px",
+      "result": "passed",
+      "receipt": "feature-paths-final"
+    },
+    {
+      "project": "firefox",
+      "file": "tests/e2e/feature-paths.spec.ts",
+      "scenario": "feature UI path evidence at 320px",
+      "result": "passed",
+      "receipt": "feature-paths-final"
+    },
+    {
+      "project": "firefox",
+      "file": "tests/e2e/finance-import.spec.ts",
+      "scenario": "statement replacement immediately removes the previous confirmation while loading",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "firefox",
+      "file": "tests/e2e/finance-import.spec.ts",
+      "scenario": "statement replacement ignores an older read success without ending current loading",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "firefox",
+      "file": "tests/e2e/finance-import.spec.ts",
+      "scenario": "statement replacement ignores an older read failure without ending current loading",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "firefox",
+      "file": "tests/e2e/finance-import.spec.ts",
+      "scenario": "statement replacement ignores an older mapping success without ending current loading",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "firefox",
+      "file": "tests/e2e/finance-import.spec.ts",
+      "scenario": "statement replacement ignores an older mapping failure without ending current loading",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "firefox",
+      "file": "tests/e2e/finance-import.spec.ts",
+      "scenario": "statement replacement rejects files safely and invalidates pending work on account change",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "firefox",
+      "file": "tests/e2e/finance-import.spec.ts",
+      "scenario": "statement preview writes nothing, invalid mapping stays blocked, and reviewed rows require an exact zero reconciliation",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "firefox",
+      "file": "tests/e2e/finance-import.spec.ts",
+      "scenario": "category hierarchy and budget edits preserve exact actuals, deliberate zero, and archive history",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "firefox",
+      "file": "tests/e2e/household-profiles.spec.ts",
+      "scenario": "profile create, rename and archive preserve assigned work without granting a login",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "firefox",
+      "file": "tests/e2e/login-states.spec.ts",
+      "scenario": "access lifecycle states show safe next actions at 320px and desktop without exposing identity secrets",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "firefox",
+      "file": "tests/e2e/long-titles.spec.ts",
+      "scenario": "long unbroken titles and full UUIDs wrap within Home and Work at 320px",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "firefox",
+      "file": "tests/e2e/notification-permission.spec.ts",
+      "scenario": "explicit notification opt-in handles actual denied browser permission without registering a device",
+      "result": "skipped",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "firefox",
+      "file": "tests/e2e/notification-settings.spec.ts",
+      "scenario": "notification choices and Faroe quiet hours persist privately without prompting for push",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "firefox",
+      "file": "tests/e2e/offline-audit.spec.ts",
+      "scenario": "Work survives an offline create, hard reload and idempotent reconnect",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "firefox",
+      "file": "tests/e2e/offline-audit.spec.ts",
+      "scenario": "Shopping survives an offline item create, hard reload and reconnect",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "firefox",
+      "file": "tests/e2e/offline-audit.spec.ts",
+      "scenario": "Work conflict shows three versions and requires explicit discard",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "firefox",
+      "file": "tests/e2e/offline-audit.spec.ts",
+      "scenario": "Work conflict shows three versions and requires explicit reapply",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "firefox",
+      "file": "tests/e2e/offline-audit.spec.ts",
+      "scenario": "Revoked eligibility purges private offline data before disconnected navigation",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "firefox",
+      "file": "tests/e2e/offline-audit.spec.ts",
+      "scenario": "Changing account in another tab removes old private work and rejects its principal",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "firefox",
+      "file": "tests/e2e/offline-audit.spec.ts",
+      "scenario": "Shopping conflict reapply keeps the list and one item identity",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "firefox",
+      "file": "tests/e2e/offline-audit.spec.ts",
+      "scenario": "Observed list permission loss cannot reappear from offline cache",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "firefox",
+      "file": "tests/e2e/offline-chain.spec.ts",
+      "scenario": "Shopping offline reorder, complete, reopen and remove preserve the command chain",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "firefox",
+      "file": "tests/e2e/offline-chain.spec.ts",
+      "scenario": "Work offline assignment, due date and status chain survives reload and sync",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "firefox",
+      "file": "tests/e2e/offline-chain.spec.ts",
+      "scenario": "An expired offline lease removes private work and unsent commands",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "firefox",
+      "file": "tests/e2e/scope-conversion.spec.ts",
+      "scenario": "shopping visibility conversion requires deliberate confirmation, preserves the full identity and revokes the other reader",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "firefox",
+      "file": "tests/e2e/scope-conversion.spec.ts",
+      "scenario": "work visibility conversion requires deliberate confirmation, preserves the full identity and revokes the other reader",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "firefox",
+      "file": "tests/e2e/shared-refresh.spec.ts",
+      "scenario": "Visible Shopping directory refreshes shared lists within five seconds and never includes personal lists",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "firefox",
+      "file": "tests/e2e/shell.spec.ts",
+      "scenario": "Reduced motion and 200-percent equivalent layout retain usable navigation",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "firefox",
+      "file": "tests/e2e/shell.spec.ts",
+      "scenario": "Browser parses the installable named manifest and real icon sizes",
+      "result": "skipped",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "firefox",
+      "file": "tests/e2e/shell.spec.ts",
+      "scenario": "Heima installs and launches in a standalone app window",
+      "result": "skipped",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "firefox",
+      "file": "tests/e2e/stores.spec.ts",
+      "scenario": "Store search, offer, foreground suggestion and archived history at 1440px",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "firefox",
+      "file": "tests/e2e/stores.spec.ts",
+      "scenario": "Store search, offer, foreground suggestion and archived history at 320px",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "firefox",
+      "file": "tests/e2e/stores.spec.ts",
+      "scenario": "search stays disabled before hydration and filters after real scripts load at 1440px",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "firefox",
+      "file": "tests/e2e/stores.spec.ts",
+      "scenario": "search stays disabled before hydration and filters after real scripts load at 320px",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "firefox",
+      "file": "tests/e2e/swipe-actions.spec.ts",
+      "scenario": "Shopping swipe edit, full completion and named Undo stay reachable at 320px",
+      "result": "passed",
+      "receipt": "final-feature-regressions"
+    },
+    {
+      "project": "firefox",
+      "file": "tests/e2e/swipe-actions.spec.ts",
+      "scenario": "Work swipe Undo restores doing; recurring completion preserves its one successor",
+      "result": "passed",
+      "receipt": "final-feature-regressions"
+    },
+    {
+      "project": "firefox",
+      "file": "tests/e2e/swipe-actions.spec.ts",
+      "scenario": "Swipe cancellations, vertical intent, edges and keyboard alternatives do not mutate",
+      "result": "passed",
+      "receipt": "final-feature-regressions"
+    },
+    {
+      "project": "firefox",
+      "file": "tests/e2e/swipe-actions.spec.ts",
+      "scenario": "Busy swipe sends one command and stale versions expose recovery without a status change",
+      "result": "passed",
+      "receipt": "final-feature-regressions"
+    },
+    {
+      "project": "firefox",
+      "file": "tests/e2e/swipe-actions.spec.ts",
+      "scenario": "Consecutive completions keep named Undo history and queued actions tell the truth",
+      "result": "passed",
+      "receipt": "final-feature-regressions"
+    },
+    {
+      "project": "firefox",
+      "file": "tests/e2e/sync-failure.spec.ts",
+      "scenario": "a real rejected offline assignment creates one private generic sync activity with a safe area link",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "firefox",
+      "file": "tests/e2e/ux-audit.spec.ts",
+      "scenario": "independent UX audit at 1440px",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "firefox",
+      "file": "tests/e2e/ux-audit.spec.ts",
+      "scenario": "independent UX audit at 390px",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "firefox",
+      "file": "tests/e2e/ux-audit.spec.ts",
+      "scenario": "independent UX audit at 320px",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "firefox",
+      "file": "tests/e2e/work-lifecycle.spec.ts",
+      "scenario": "Occurrence edit, monthly successor, explicit series stop and removed history connect",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "firefox",
+      "file": "tests/e2e/capture-history.spec.ts",
+      "scenario": "category presets are optional, persist and preserve legacy categories",
+      "result": "passed",
+      "receipt": "final-feature-regressions"
+    },
+    {
+      "project": "firefox",
+      "file": "tests/e2e/capture-history.spec.ts",
+      "scenario": "shopping history deduplicates, limits and filters list and category without copying fields",
+      "result": "passed",
+      "receipt": "final-feature-regressions"
+    },
+    {
+      "project": "firefox",
+      "file": "tests/e2e/capture-history.spec.ts",
+      "scenario": "Home and Work history respects audience and touch selection never submits",
+      "result": "passed",
+      "receipt": "final-feature-regressions"
+    },
+    {
+      "project": "firefox",
+      "file": "tests/e2e/capture-history.spec.ts",
+      "scenario": "slow or unavailable history leaves manual entry usable",
+      "result": "passed",
+      "receipt": "final-feature-regressions"
+    },
+    {
+      "project": "firefox",
+      "file": "tests/e2e/capture-history.spec.ts",
+      "scenario": "suggestions fit narrow and desktop layouts, Escape dismisses and offline entries still queue",
+      "result": "passed",
+      "receipt": "final-feature-regressions"
+    },
+    {
+      "project": "firefox",
+      "file": "tests/e2e/finance.spec.ts",
+      "scenario": "account and manual financial fact show exact amount and provenance",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "firefox",
+      "file": "tests/e2e/home.spec.ts",
+      "scenario": "entry and Home keep their optimized illustration at mobile and desktop widths",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "firefox",
+      "file": "tests/e2e/home.spec.ts",
+      "scenario": "Home quick capture connects to the owning list and Work without duplicate entries",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "firefox",
+      "file": "tests/e2e/journeys.spec.ts",
+      "scenario": "shopping create, complete, history and undo survive navigation",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "firefox",
+      "file": "tests/e2e/journeys.spec.ts",
+      "scenario": "household task goes from creation through progress to done",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "firefox",
+      "file": "tests/e2e/mobile-capture.spec.ts",
+      "scenario": "one Home capture preserves separate drafts, destination and expanded fields",
+      "result": "passed",
+      "receipt": "final-feature-regressions"
+    },
+    {
+      "project": "firefox",
+      "file": "tests/e2e/mobile-capture.spec.ts",
+      "scenario": "capture stays reachable after long-list scrolling at narrow and desktop widths",
+      "result": "passed",
+      "receipt": "final-feature-regressions"
+    },
+    {
+      "project": "firefox",
+      "file": "tests/e2e/mobile-capture.spec.ts",
+      "scenario": "pending capture preserves next-entry typing and suppresses duplicate submission",
+      "result": "passed",
+      "receipt": "final-feature-regressions"
+    },
+    {
+      "project": "firefox",
+      "file": "tests/e2e/mobile-capture.spec.ts",
+      "scenario": "invalid capture stays editable and reports errors inside expanded details",
+      "result": "passed",
+      "receipt": "final-feature-regressions"
+    },
+    {
+      "project": "firefox",
+      "file": "tests/e2e/mobile-capture.spec.ts",
+      "scenario": "capture distinguishes offline queue and preserves accessible keyboard layout",
+      "result": "passed",
+      "receipt": "final-feature-regressions"
+    },
+    {
+      "project": "firefox",
+      "file": "tests/e2e/session.spec.ts",
+      "scenario": "opaque browser session is unusable after local and provider logout",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "webkit",
+      "file": "tests/e2e/bank-import.spec.ts",
+      "scenario": "Revolut guidance reviews exclusions, currency and explicit fee treatment before importing",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "webkit",
+      "file": "tests/e2e/bank-import.spec.ts",
+      "scenario": "Faroese-style headers recover without uploading again at 320px",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "webkit",
+      "file": "tests/e2e/feature-paths.spec.ts",
+      "scenario": "feature UI path evidence at 1440px",
+      "result": "passed",
+      "receipt": "feature-paths-final"
+    },
+    {
+      "project": "webkit",
+      "file": "tests/e2e/feature-paths.spec.ts",
+      "scenario": "feature UI path evidence at 320px",
+      "result": "passed",
+      "receipt": "feature-paths-final"
+    },
+    {
+      "project": "webkit",
+      "file": "tests/e2e/finance-import.spec.ts",
+      "scenario": "statement replacement immediately removes the previous confirmation while loading",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "webkit",
+      "file": "tests/e2e/finance-import.spec.ts",
+      "scenario": "statement replacement ignores an older read success without ending current loading",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "webkit",
+      "file": "tests/e2e/finance-import.spec.ts",
+      "scenario": "statement replacement ignores an older read failure without ending current loading",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "webkit",
+      "file": "tests/e2e/finance-import.spec.ts",
+      "scenario": "statement replacement ignores an older mapping success without ending current loading",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "webkit",
+      "file": "tests/e2e/finance-import.spec.ts",
+      "scenario": "statement replacement ignores an older mapping failure without ending current loading",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "webkit",
+      "file": "tests/e2e/finance-import.spec.ts",
+      "scenario": "statement replacement rejects files safely and invalidates pending work on account change",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "webkit",
+      "file": "tests/e2e/finance-import.spec.ts",
+      "scenario": "statement preview writes nothing, invalid mapping stays blocked, and reviewed rows require an exact zero reconciliation",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "webkit",
+      "file": "tests/e2e/finance-import.spec.ts",
+      "scenario": "category hierarchy and budget edits preserve exact actuals, deliberate zero, and archive history",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "webkit",
+      "file": "tests/e2e/household-profiles.spec.ts",
+      "scenario": "profile create, rename and archive preserve assigned work without granting a login",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "webkit",
+      "file": "tests/e2e/login-states.spec.ts",
+      "scenario": "access lifecycle states show safe next actions at 320px and desktop without exposing identity secrets",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "webkit",
+      "file": "tests/e2e/long-titles.spec.ts",
+      "scenario": "long unbroken titles and full UUIDs wrap within Home and Work at 320px",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "webkit",
+      "file": "tests/e2e/notification-permission.spec.ts",
+      "scenario": "explicit notification opt-in handles actual denied browser permission without registering a device",
+      "result": "skipped",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "webkit",
+      "file": "tests/e2e/notification-settings.spec.ts",
+      "scenario": "notification choices and Faroe quiet hours persist privately without prompting for push",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "webkit",
+      "file": "tests/e2e/offline-audit.spec.ts",
+      "scenario": "Work survives an offline create, hard reload and idempotent reconnect",
+      "result": "skipped",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "webkit",
+      "file": "tests/e2e/offline-audit.spec.ts",
+      "scenario": "Shopping survives an offline item create, hard reload and reconnect",
+      "result": "skipped",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "webkit",
+      "file": "tests/e2e/offline-audit.spec.ts",
+      "scenario": "Work conflict shows three versions and requires explicit discard",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "webkit",
+      "file": "tests/e2e/offline-audit.spec.ts",
+      "scenario": "Work conflict shows three versions and requires explicit reapply",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "webkit",
+      "file": "tests/e2e/offline-audit.spec.ts",
+      "scenario": "Revoked eligibility purges private offline data before disconnected navigation",
+      "result": "skipped",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "webkit",
+      "file": "tests/e2e/offline-audit.spec.ts",
+      "scenario": "Changing account in another tab removes old private work and rejects its principal",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "webkit",
+      "file": "tests/e2e/offline-audit.spec.ts",
+      "scenario": "Shopping conflict reapply keeps the list and one item identity",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "webkit",
+      "file": "tests/e2e/offline-audit.spec.ts",
+      "scenario": "Observed list permission loss cannot reappear from offline cache",
+      "result": "skipped",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "webkit",
+      "file": "tests/e2e/offline-chain.spec.ts",
+      "scenario": "Shopping offline reorder, complete, reopen and remove preserve the command chain",
+      "result": "skipped",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "webkit",
+      "file": "tests/e2e/offline-chain.spec.ts",
+      "scenario": "Work offline assignment, due date and status chain survives reload and sync",
+      "result": "skipped",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "webkit",
+      "file": "tests/e2e/offline-chain.spec.ts",
+      "scenario": "An expired offline lease removes private work and unsent commands",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "webkit",
+      "file": "tests/e2e/scope-conversion.spec.ts",
+      "scenario": "shopping visibility conversion requires deliberate confirmation, preserves the full identity and revokes the other reader",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "webkit",
+      "file": "tests/e2e/scope-conversion.spec.ts",
+      "scenario": "work visibility conversion requires deliberate confirmation, preserves the full identity and revokes the other reader",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "webkit",
+      "file": "tests/e2e/shared-refresh.spec.ts",
+      "scenario": "Visible Shopping directory refreshes shared lists within five seconds and never includes personal lists",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "webkit",
+      "file": "tests/e2e/shell.spec.ts",
+      "scenario": "Reduced motion and 200-percent equivalent layout retain usable navigation",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "webkit",
+      "file": "tests/e2e/shell.spec.ts",
+      "scenario": "Browser parses the installable named manifest and real icon sizes",
+      "result": "skipped",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "webkit",
+      "file": "tests/e2e/shell.spec.ts",
+      "scenario": "Heima installs and launches in a standalone app window",
+      "result": "skipped",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "webkit",
+      "file": "tests/e2e/stores.spec.ts",
+      "scenario": "Store search, offer, foreground suggestion and archived history at 1440px",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "webkit",
+      "file": "tests/e2e/stores.spec.ts",
+      "scenario": "Store search, offer, foreground suggestion and archived history at 320px",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "webkit",
+      "file": "tests/e2e/stores.spec.ts",
+      "scenario": "search stays disabled before hydration and filters after real scripts load at 1440px",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "webkit",
+      "file": "tests/e2e/stores.spec.ts",
+      "scenario": "search stays disabled before hydration and filters after real scripts load at 320px",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "webkit",
+      "file": "tests/e2e/swipe-actions.spec.ts",
+      "scenario": "Shopping swipe edit, full completion and named Undo stay reachable at 320px",
+      "result": "passed",
+      "receipt": "final-feature-regressions"
+    },
+    {
+      "project": "webkit",
+      "file": "tests/e2e/swipe-actions.spec.ts",
+      "scenario": "Work swipe Undo restores doing; recurring completion preserves its one successor",
+      "result": "passed",
+      "receipt": "final-feature-regressions"
+    },
+    {
+      "project": "webkit",
+      "file": "tests/e2e/swipe-actions.spec.ts",
+      "scenario": "Swipe cancellations, vertical intent, edges and keyboard alternatives do not mutate",
+      "result": "passed",
+      "receipt": "final-feature-regressions"
+    },
+    {
+      "project": "webkit",
+      "file": "tests/e2e/swipe-actions.spec.ts",
+      "scenario": "Busy swipe sends one command and stale versions expose recovery without a status change",
+      "result": "passed",
+      "receipt": "final-feature-regressions"
+    },
+    {
+      "project": "webkit",
+      "file": "tests/e2e/swipe-actions.spec.ts",
+      "scenario": "Consecutive completions keep named Undo history and queued actions tell the truth",
+      "result": "passed",
+      "receipt": "final-feature-regressions"
+    },
+    {
+      "project": "webkit",
+      "file": "tests/e2e/sync-failure.spec.ts",
+      "scenario": "a real rejected offline assignment creates one private generic sync activity with a safe area link",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "webkit",
+      "file": "tests/e2e/ux-audit.spec.ts",
+      "scenario": "independent UX audit at 1440px",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "webkit",
+      "file": "tests/e2e/ux-audit.spec.ts",
+      "scenario": "independent UX audit at 390px",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "webkit",
+      "file": "tests/e2e/ux-audit.spec.ts",
+      "scenario": "independent UX audit at 320px",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "webkit",
+      "file": "tests/e2e/work-lifecycle.spec.ts",
+      "scenario": "Occurrence edit, monthly successor, explicit series stop and removed history connect",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "webkit",
+      "file": "tests/e2e/capture-history.spec.ts",
+      "scenario": "category presets are optional, persist and preserve legacy categories",
+      "result": "passed",
+      "receipt": "final-feature-regressions"
+    },
+    {
+      "project": "webkit",
+      "file": "tests/e2e/capture-history.spec.ts",
+      "scenario": "shopping history deduplicates, limits and filters list and category without copying fields",
+      "result": "passed",
+      "receipt": "final-feature-regressions"
+    },
+    {
+      "project": "webkit",
+      "file": "tests/e2e/capture-history.spec.ts",
+      "scenario": "Home and Work history respects audience and touch selection never submits",
+      "result": "passed",
+      "receipt": "final-feature-regressions"
+    },
+    {
+      "project": "webkit",
+      "file": "tests/e2e/capture-history.spec.ts",
+      "scenario": "slow or unavailable history leaves manual entry usable",
+      "result": "passed",
+      "receipt": "final-feature-regressions"
+    },
+    {
+      "project": "webkit",
+      "file": "tests/e2e/capture-history.spec.ts",
+      "scenario": "suggestions fit narrow and desktop layouts, Escape dismisses and offline entries still queue",
+      "result": "passed",
+      "receipt": "final-feature-regressions"
+    },
+    {
+      "project": "webkit",
+      "file": "tests/e2e/finance.spec.ts",
+      "scenario": "account and manual financial fact show exact amount and provenance",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "webkit",
+      "file": "tests/e2e/home.spec.ts",
+      "scenario": "entry and Home keep their optimized illustration at mobile and desktop widths",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "webkit",
+      "file": "tests/e2e/home.spec.ts",
+      "scenario": "Home quick capture connects to the owning list and Work without duplicate entries",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "webkit",
+      "file": "tests/e2e/journeys.spec.ts",
+      "scenario": "shopping create, complete, history and undo survive navigation",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "webkit",
+      "file": "tests/e2e/journeys.spec.ts",
+      "scenario": "household task goes from creation through progress to done",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "webkit",
+      "file": "tests/e2e/mobile-capture.spec.ts",
+      "scenario": "one Home capture preserves separate drafts, destination and expanded fields",
+      "result": "passed",
+      "receipt": "final-feature-regressions"
+    },
+    {
+      "project": "webkit",
+      "file": "tests/e2e/mobile-capture.spec.ts",
+      "scenario": "capture stays reachable after long-list scrolling at narrow and desktop widths",
+      "result": "passed",
+      "receipt": "final-feature-regressions"
+    },
+    {
+      "project": "webkit",
+      "file": "tests/e2e/mobile-capture.spec.ts",
+      "scenario": "pending capture preserves next-entry typing and suppresses duplicate submission",
+      "result": "passed",
+      "receipt": "final-feature-regressions"
+    },
+    {
+      "project": "webkit",
+      "file": "tests/e2e/mobile-capture.spec.ts",
+      "scenario": "invalid capture stays editable and reports errors inside expanded details",
+      "result": "passed",
+      "receipt": "final-feature-regressions"
+    },
+    {
+      "project": "webkit",
+      "file": "tests/e2e/mobile-capture.spec.ts",
+      "scenario": "capture distinguishes offline queue and preserves accessible keyboard layout",
+      "result": "passed",
+      "receipt": "final-feature-regressions"
+    },
+    {
+      "project": "webkit",
+      "file": "tests/e2e/session.spec.ts",
+      "scenario": "opaque browser session is unusable after local and provider logout",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "mobile",
+      "file": "tests/e2e/bank-import.spec.ts",
+      "scenario": "Revolut guidance reviews exclusions, currency and explicit fee treatment before importing",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "mobile",
+      "file": "tests/e2e/bank-import.spec.ts",
+      "scenario": "Faroese-style headers recover without uploading again at 320px",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "mobile",
+      "file": "tests/e2e/feature-paths.spec.ts",
+      "scenario": "feature UI path evidence at 1440px",
+      "result": "passed",
+      "receipt": "feature-paths-final"
+    },
+    {
+      "project": "mobile",
+      "file": "tests/e2e/feature-paths.spec.ts",
+      "scenario": "feature UI path evidence at 320px",
+      "result": "passed",
+      "receipt": "feature-paths-final"
+    },
+    {
+      "project": "mobile",
+      "file": "tests/e2e/finance-import.spec.ts",
+      "scenario": "statement replacement immediately removes the previous confirmation while loading",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "mobile",
+      "file": "tests/e2e/finance-import.spec.ts",
+      "scenario": "statement replacement ignores an older read success without ending current loading",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "mobile",
+      "file": "tests/e2e/finance-import.spec.ts",
+      "scenario": "statement replacement ignores an older read failure without ending current loading",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "mobile",
+      "file": "tests/e2e/finance-import.spec.ts",
+      "scenario": "statement replacement ignores an older mapping success without ending current loading",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "mobile",
+      "file": "tests/e2e/finance-import.spec.ts",
+      "scenario": "statement replacement ignores an older mapping failure without ending current loading",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "mobile",
+      "file": "tests/e2e/finance-import.spec.ts",
+      "scenario": "statement replacement rejects files safely and invalidates pending work on account change",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "mobile",
+      "file": "tests/e2e/finance-import.spec.ts",
+      "scenario": "statement preview writes nothing, invalid mapping stays blocked, and reviewed rows require an exact zero reconciliation",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "mobile",
+      "file": "tests/e2e/finance-import.spec.ts",
+      "scenario": "category hierarchy and budget edits preserve exact actuals, deliberate zero, and archive history",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "mobile",
+      "file": "tests/e2e/household-profiles.spec.ts",
+      "scenario": "profile create, rename and archive preserve assigned work without granting a login",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "mobile",
+      "file": "tests/e2e/login-states.spec.ts",
+      "scenario": "access lifecycle states show safe next actions at 320px and desktop without exposing identity secrets",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "mobile",
+      "file": "tests/e2e/long-titles.spec.ts",
+      "scenario": "long unbroken titles and full UUIDs wrap within Home and Work at 320px",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "mobile",
+      "file": "tests/e2e/notification-permission.spec.ts",
+      "scenario": "explicit notification opt-in handles actual denied browser permission without registering a device",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "mobile",
+      "file": "tests/e2e/notification-settings.spec.ts",
+      "scenario": "notification choices and Faroe quiet hours persist privately without prompting for push",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "mobile",
+      "file": "tests/e2e/offline-audit.spec.ts",
+      "scenario": "Work survives an offline create, hard reload and idempotent reconnect",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "mobile",
+      "file": "tests/e2e/offline-audit.spec.ts",
+      "scenario": "Shopping survives an offline item create, hard reload and reconnect",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "mobile",
+      "file": "tests/e2e/offline-audit.spec.ts",
+      "scenario": "Work conflict shows three versions and requires explicit discard",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "mobile",
+      "file": "tests/e2e/offline-audit.spec.ts",
+      "scenario": "Work conflict shows three versions and requires explicit reapply",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "mobile",
+      "file": "tests/e2e/offline-audit.spec.ts",
+      "scenario": "Revoked eligibility purges private offline data before disconnected navigation",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "mobile",
+      "file": "tests/e2e/offline-audit.spec.ts",
+      "scenario": "Changing account in another tab removes old private work and rejects its principal",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "mobile",
+      "file": "tests/e2e/offline-audit.spec.ts",
+      "scenario": "Shopping conflict reapply keeps the list and one item identity",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "mobile",
+      "file": "tests/e2e/offline-audit.spec.ts",
+      "scenario": "Observed list permission loss cannot reappear from offline cache",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "mobile",
+      "file": "tests/e2e/offline-chain.spec.ts",
+      "scenario": "Shopping offline reorder, complete, reopen and remove preserve the command chain",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "mobile",
+      "file": "tests/e2e/offline-chain.spec.ts",
+      "scenario": "Work offline assignment, due date and status chain survives reload and sync",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "mobile",
+      "file": "tests/e2e/offline-chain.spec.ts",
+      "scenario": "An expired offline lease removes private work and unsent commands",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "mobile",
+      "file": "tests/e2e/scope-conversion.spec.ts",
+      "scenario": "shopping visibility conversion requires deliberate confirmation, preserves the full identity and revokes the other reader",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "mobile",
+      "file": "tests/e2e/scope-conversion.spec.ts",
+      "scenario": "work visibility conversion requires deliberate confirmation, preserves the full identity and revokes the other reader",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "mobile",
+      "file": "tests/e2e/shared-refresh.spec.ts",
+      "scenario": "Visible Shopping directory refreshes shared lists within five seconds and never includes personal lists",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "mobile",
+      "file": "tests/e2e/shell.spec.ts",
+      "scenario": "Reduced motion and 200-percent equivalent layout retain usable navigation",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "mobile",
+      "file": "tests/e2e/shell.spec.ts",
+      "scenario": "Browser parses the installable named manifest and real icon sizes",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "mobile",
+      "file": "tests/e2e/shell.spec.ts",
+      "scenario": "Heima installs and launches in a standalone app window",
+      "result": "skipped",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "mobile",
+      "file": "tests/e2e/stores.spec.ts",
+      "scenario": "Store search, offer, foreground suggestion and archived history at 1440px",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "mobile",
+      "file": "tests/e2e/stores.spec.ts",
+      "scenario": "Store search, offer, foreground suggestion and archived history at 320px",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "mobile",
+      "file": "tests/e2e/stores.spec.ts",
+      "scenario": "search stays disabled before hydration and filters after real scripts load at 1440px",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "mobile",
+      "file": "tests/e2e/stores.spec.ts",
+      "scenario": "search stays disabled before hydration and filters after real scripts load at 320px",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "mobile",
+      "file": "tests/e2e/swipe-actions.spec.ts",
+      "scenario": "Shopping swipe edit, full completion and named Undo stay reachable at 320px",
+      "result": "passed",
+      "receipt": "final-feature-regressions"
+    },
+    {
+      "project": "mobile",
+      "file": "tests/e2e/swipe-actions.spec.ts",
+      "scenario": "Work swipe Undo restores doing; recurring completion preserves its one successor",
+      "result": "passed",
+      "receipt": "final-feature-regressions"
+    },
+    {
+      "project": "mobile",
+      "file": "tests/e2e/swipe-actions.spec.ts",
+      "scenario": "Swipe cancellations, vertical intent, edges and keyboard alternatives do not mutate",
+      "result": "passed",
+      "receipt": "final-feature-regressions"
+    },
+    {
+      "project": "mobile",
+      "file": "tests/e2e/swipe-actions.spec.ts",
+      "scenario": "Busy swipe sends one command and stale versions expose recovery without a status change",
+      "result": "passed",
+      "receipt": "final-feature-regressions"
+    },
+    {
+      "project": "mobile",
+      "file": "tests/e2e/swipe-actions.spec.ts",
+      "scenario": "Consecutive completions keep named Undo history and queued actions tell the truth",
+      "result": "passed",
+      "receipt": "final-feature-regressions"
+    },
+    {
+      "project": "mobile",
+      "file": "tests/e2e/sync-failure.spec.ts",
+      "scenario": "a real rejected offline assignment creates one private generic sync activity with a safe area link",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "mobile",
+      "file": "tests/e2e/ux-audit.spec.ts",
+      "scenario": "independent UX audit at 1440px",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "mobile",
+      "file": "tests/e2e/ux-audit.spec.ts",
+      "scenario": "independent UX audit at 390px",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "mobile",
+      "file": "tests/e2e/ux-audit.spec.ts",
+      "scenario": "independent UX audit at 320px",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "mobile",
+      "file": "tests/e2e/work-lifecycle.spec.ts",
+      "scenario": "Occurrence edit, monthly successor, explicit series stop and removed history connect",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "mobile",
+      "file": "tests/e2e/capture-history.spec.ts",
+      "scenario": "category presets are optional, persist and preserve legacy categories",
+      "result": "passed",
+      "receipt": "final-feature-regressions"
+    },
+    {
+      "project": "mobile",
+      "file": "tests/e2e/capture-history.spec.ts",
+      "scenario": "shopping history deduplicates, limits and filters list and category without copying fields",
+      "result": "passed",
+      "receipt": "final-feature-regressions"
+    },
+    {
+      "project": "mobile",
+      "file": "tests/e2e/capture-history.spec.ts",
+      "scenario": "Home and Work history respects audience and touch selection never submits",
+      "result": "passed",
+      "receipt": "final-feature-regressions"
+    },
+    {
+      "project": "mobile",
+      "file": "tests/e2e/capture-history.spec.ts",
+      "scenario": "slow or unavailable history leaves manual entry usable",
+      "result": "passed",
+      "receipt": "final-feature-regressions"
+    },
+    {
+      "project": "mobile",
+      "file": "tests/e2e/capture-history.spec.ts",
+      "scenario": "suggestions fit narrow and desktop layouts, Escape dismisses and offline entries still queue",
+      "result": "passed",
+      "receipt": "final-feature-regressions"
+    },
+    {
+      "project": "mobile",
+      "file": "tests/e2e/finance.spec.ts",
+      "scenario": "account and manual financial fact show exact amount and provenance",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "mobile",
+      "file": "tests/e2e/home.spec.ts",
+      "scenario": "entry and Home keep their optimized illustration at mobile and desktop widths",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "mobile",
+      "file": "tests/e2e/home.spec.ts",
+      "scenario": "Home quick capture connects to the owning list and Work without duplicate entries",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "mobile",
+      "file": "tests/e2e/journeys.spec.ts",
+      "scenario": "shopping create, complete, history and undo survive navigation",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "mobile",
+      "file": "tests/e2e/journeys.spec.ts",
+      "scenario": "household task goes from creation through progress to done",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    },
+    {
+      "project": "mobile",
+      "file": "tests/e2e/mobile-capture.spec.ts",
+      "scenario": "one Home capture preserves separate drafts, destination and expanded fields",
+      "result": "passed",
+      "receipt": "final-feature-regressions"
+    },
+    {
+      "project": "mobile",
+      "file": "tests/e2e/mobile-capture.spec.ts",
+      "scenario": "capture stays reachable after long-list scrolling at narrow and desktop widths",
+      "result": "passed",
+      "receipt": "final-feature-regressions"
+    },
+    {
+      "project": "mobile",
+      "file": "tests/e2e/mobile-capture.spec.ts",
+      "scenario": "pending capture preserves next-entry typing and suppresses duplicate submission",
+      "result": "passed",
+      "receipt": "final-feature-regressions"
+    },
+    {
+      "project": "mobile",
+      "file": "tests/e2e/mobile-capture.spec.ts",
+      "scenario": "invalid capture stays editable and reports errors inside expanded details",
+      "result": "passed",
+      "receipt": "final-feature-regressions"
+    },
+    {
+      "project": "mobile",
+      "file": "tests/e2e/mobile-capture.spec.ts",
+      "scenario": "capture distinguishes offline queue and preserves accessible keyboard layout",
+      "result": "passed",
+      "receipt": "final-feature-regressions"
+    },
+    {
+      "project": "mobile",
+      "file": "tests/e2e/session.spec.ts",
+      "scenario": "opaque browser session is unusable after local and provider logout",
+      "result": "passed",
+      "receipt": "full-browser-matrix"
+    }
+  ]
+}

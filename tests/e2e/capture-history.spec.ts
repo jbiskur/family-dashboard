@@ -442,7 +442,27 @@ test("suggestions fit narrow and desktop layouts, Escape dismisses and offline e
         .getByRole("option"),
     ).toHaveCount(0);
     await expect(input).toBeFocused();
+    await expect(input).toHaveValue("Apples");
+    await input.press("Escape");
+    await expect(input).toHaveValue("Apples");
   }
+  await input.fill("A new shopping draft");
+  await input.press("Escape");
+  await expect(input).toHaveValue("A new shopping draft");
+  await capture.getByRole("button", { name: "Details", exact: true }).click();
+  const details = page.getByRole("dialog", {
+    name: "Shopping details",
+    exact: true,
+  });
+  const draft = details.getByRole("combobox", {
+    name: "What do we need?",
+    exact: true,
+  });
+  await expect(draft).toHaveValue("A new shopping draft");
+  await draft.focus();
+  await draft.press("Escape");
+  await expect(details).toBeHidden();
+  await expect(input).toHaveValue("A new shopping draft");
   const axe = await new AxeBuilder({ page }).include(".capture-dock").analyze();
   expect(axe.violations).toEqual([]);
   await context.setOffline(true);

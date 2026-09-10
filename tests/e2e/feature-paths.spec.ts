@@ -90,7 +90,7 @@ for (const width of [1440, 320]) {
       const screenshot = `${state}-${width}.png`;
       await page.screenshot({
         path: info.outputPath(screenshot),
-        fullPage: true,
+        fullPage: false,
       });
       receipts.push(
         ...features.map((feature) => ({
