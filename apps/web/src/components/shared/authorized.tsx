@@ -12,7 +12,7 @@ import { PurgePrivate } from "./purge-private";
 
 export async function Authorized({ children }: { children: ReactNode }) {
   const session = await auth();
-  if (!session) redirect("/");
+  if (!session?.sessionId) redirect("/");
   let access: AccessResponse;
   try {
     access = await backendJson<AccessResponse>("/v1/access/admit", {
