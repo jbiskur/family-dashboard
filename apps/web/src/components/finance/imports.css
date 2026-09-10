@@ -51,3 +51,49 @@
 .import-exclusions li {
   margin-bottom: 6px;
 }
+.statement-pages {
+  min-width: 0;
+  margin-bottom: 20px;
+}
+.statement-pages .table-scroll {
+  max-height: 360px;
+  overflow: auto;
+}
+.statement-pagination {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 10px 0;
+}
+.statement-pagination p {
+  font-size: 13px;
+  color: var(--muted-foreground);
+}
+.statement-pagination > div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.statement-pagination button {
+  min-height: 44px;
+}
+.import-locked {
+  border: 0;
+  margin: 0;
+  padding: 0;
+  min-width: 0;
+}
+.import-recovery {
+  margin: 16px 0;
+  overflow-wrap: anywhere;
+}
+.import-recovery p {
+  margin-bottom: 12px;
+}
+.import-counts {
+  font-size: 14px;
+  line-height: 1.6;
+  margin: 12px 0;
+}

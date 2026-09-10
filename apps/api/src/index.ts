@@ -48,6 +48,19 @@ if (config.NODE_ENV === "test" && config.TEST_TRANSFORMER_SECRET)
     )
       await pathways.process("heima.household.0/resource.changed.0", event);
     else if (
+      event.flowType === "heima.household.0" &&
+      event.eventType === "import.rows-staged.0"
+    )
+      await pathways.process("heima.household.0/import.rows-staged.0", event);
+    else if (
+      event.flowType === "heima.household.0" &&
+      event.eventType === "import.commit-requested.0"
+    )
+      await pathways.process(
+        "heima.household.0/import.commit-requested.0",
+        event,
+      );
+    else if (
       event.flowType === "heima.notifications.0" &&
       event.eventType === "notification.changed.0"
     )

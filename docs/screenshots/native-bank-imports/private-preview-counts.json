@@ -1,0 +1,46 @@
+{
+  "at": "2026-09-10T10:39:56.363Z",
+  "privacy": "Local read-only preview only. No actual rows confirmed, persisted, logged or copied to repository. Included-fee interpretation used only to exercise preview; not a financial recommendation.",
+  "importsUnchanged": true,
+  "results": [
+    {
+      "sample": "faroese-bookings",
+      "httpStatus": 200,
+      "sourceRecords": 405,
+      "previewRecords": 405,
+      "included": 405,
+      "excluded": 0,
+      "valid": true,
+      "errorCount": 0,
+      "headerIssue": false,
+      "errorCode": null,
+      "financialFactsUnchanged": true
+    },
+    {
+      "sample": "faroese-details",
+      "httpStatus": 200,
+      "sourceRecords": 405,
+      "previewRecords": 405,
+      "included": 405,
+      "excluded": 0,
+      "valid": true,
+      "errorCount": 0,
+      "headerIssue": false,
+      "errorCode": null,
+      "financialFactsUnchanged": true
+    },
+    {
+      "sample": "revolut-annual",
+      "httpStatus": 200,
+      "sourceRecords": 1198,
+      "previewRecords": 1198,
+      "included": 1192,
+      "excluded": 6,
+      "valid": true,
+      "errorCount": 0,
+      "headerIssue": false,
+      "errorCode": null,
+      "financialFactsUnchanged": true
+    }
+  ]
+}

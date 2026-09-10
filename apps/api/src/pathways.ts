@@ -7,6 +7,8 @@ import {
 import {
   type AccessEvent,
   accessEventSchema,
+  importBatchEventSchema,
+  importCommitEventSchema,
   type NotificationEvent,
   notificationEventSchema,
   type ResourceEvent,
@@ -17,9 +19,18 @@ import { projectAccess } from "./access-projection";
 import { createLocalClusterTransport } from "./cluster-transport";
 import { config } from "./config";
 import { db } from "./db/client";
-import { commands } from "./db/schema";
+import { commands, importTransfers } from "./db/schema";
 import { ApiFailure } from "./errors";
 import { eventStreams } from "./event-readiness";
+import {
+  projectImportBatch,
+  projectImportCommit,
+} from "./import-transfer-projection";
+import {
+  importDigest,
+  importIntent,
+  prepareImportTransfer,
+} from "./import-transport";
 import { projectNotification } from "./notification-projection";
 import { projectResource } from "./resource-projection";
 
@@ -71,6 +82,22 @@ export const pathways = new PathwaysBuilder({
     description: "Private recipient activity and notification delivery state",
   })
   .handle("heima.notifications.0/notification.changed.0", projectNotification)
+  .register({
+    ...eventStreams[3],
+    schema: importBatchEventSchema,
+    writable: true,
+    encrypted: true,
+    description: "A bounded private statement row batch was staged",
+  })
+  .handle("heima.household.0/import.rows-staged.0", projectImportBatch)
+  .register({
+    ...eventStreams[4],
+    schema: importCommitEventSchema,
+    writable: true,
+    encrypted: true,
+    description: "A complete private statement change was requested atomically",
+  })
+  .handle("heima.household.0/import.commit-requested.0", projectImportCommit)
   .withPathwayState(
     createPostgresPathwayState({
       connectionString: config.DATABASE_URL,
@@ -162,6 +189,26 @@ export async function emitAccess(event: AccessEvent) {
 }
 
 export async function emitResource(event: ResourceEvent) {
+  // Preflight the entire operation before publishing any event. Staging is
+  // written only by the registered handlers, never by this API service.
+  const transfer = prepareImportTransfer(event);
+  let stagedImport = false;
+  if (event.kind === "finance/imports") {
+    const staged = (
+      await db
+        .select()
+        .from(importTransfers)
+        .where(eq(importTransfers.commandId, event.commandId))
+        .limit(1)
+    )[0];
+    stagedImport = Boolean(staged);
+    if (staged && staged.header.digest !== importDigest(importIntent(event)))
+      throw new ApiFailure(
+        "command-conflict",
+        409,
+        "This statement retry differs from the original attempt. Review the statement before starting a new change.",
+      );
+  }
   const previous = (
     await db
       .select()
@@ -169,7 +216,12 @@ export async function emitResource(event: ResourceEvent) {
       .where(eq(commands.id, event.commandId))
       .limit(1)
   )[0];
-  if (previous && previous.actorId !== event.actorId)
+  if (
+    previous &&
+    (previous.actorId !== event.actorId ||
+      previous.householdId !== event.householdId ||
+      (transfer && !stagedImport))
+  )
     throw new ApiFailure(
       "command-conflict",
       409,
@@ -177,9 +229,19 @@ export async function emitResource(event: ResourceEvent) {
     );
   if (!previous) {
     try {
-      await pathways.write("heima.household.0/resource.changed.0", {
-        data: event,
-      });
+      if (transfer) {
+        for (const batch of transfer.batches)
+          await pathways.write("heima.household.0/import.rows-staged.0", {
+            data: batch,
+          });
+        await pathways.write("heima.household.0/import.commit-requested.0", {
+          data: transfer.commit,
+        });
+      } else {
+        await pathways.write("heima.household.0/resource.changed.0", {
+          data: event,
+        });
+      }
     } catch {
       throw new ApiFailure(
         "event-unavailable",

@@ -13,6 +13,8 @@ export const eventStreams = [
   { flowType: "heima.access.0", eventType: "access.changed.0" },
   { flowType: "heima.household.0", eventType: "resource.changed.0" },
   { flowType: "heima.notifications.0", eventType: "notification.changed.0" },
+  { flowType: "heima.household.0", eventType: "import.rows-staged.0" },
+  { flowType: "heima.household.0", eventType: "import.commit-requested.0" },
 ] as const;
 
 let client: FlowcoreClient | undefined;

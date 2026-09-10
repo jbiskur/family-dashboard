@@ -426,7 +426,7 @@ test("empty sources and malformed layouts remain explicit and invalid", async ()
 test("statements cannot silently truncate later transactions after blank rows", async () => {
   const content =
     "Date,Amount,Description\n2035-04-15,-1.00,First\n" +
-    "\n".repeat(1055) +
+    "\n".repeat(5055) +
     "2035-04-16,-2.00,Last\n";
   const response = await request("finance/imports/preview", owner, {
     accountId,

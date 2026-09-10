@@ -1,0 +1,371 @@
+{
+  "scope": "70 distinct public HTTP scenarios: full suite plus targeted fixes, not a single uninterrupted all-green run. The initial8 readiness failures were obsolete three-stream fixture assumptions; all five streams now probed and denied independently.",
+  "passed": 70,
+  "failed": 0,
+  "logs": [
+    {
+      "file": "native-http-full.log",
+      "sha256": "1b899e57cb2eda1dd3aaea82e379c0d157c7c9a9e40aac033817203dabe98372"
+    },
+    {
+      "file": "native-readiness-recheck.log",
+      "sha256": "ec353d404fabfd51a804a6863a891e95a5d4c0848bbba7c10232dbd1dcc77a92"
+    },
+    {
+      "file": "native-account-withdrawal-final.log",
+      "sha256": "7909818883ff04f0abec5dfde8d65824887c81c95e9b91b1e64b70ab1f900293"
+    }
+  ],
+  "scenarios": [
+    {
+      "test": "an attributed purchase can reopen without erasing its purchase history",
+      "status": "pass",
+      "source": "native-http-full.log"
+    },
+    {
+      "test": "one ledger transaction cannot reconcile two identical source rows",
+      "status": "pass",
+      "source": "native-http-full.log"
+    },
+    {
+      "test": "Heima admission and authorization public boundary > rejects anonymous, malformed and genuine other-client tokens",
+      "status": "pass",
+      "source": "native-http-full.log"
+    },
+    {
+      "test": "Heima admission and authorization public boundary > rejects a real Usable identity without the exact invitation group",
+      "status": "pass",
+      "source": "native-http-full.log"
+    },
+    {
+      "test": "Heima admission and authorization public boundary > concurrent configured-owner callbacks claim exactly one owner",
+      "status": "pass",
+      "source": "native-http-full.log"
+    },
+    {
+      "test": "Heima admission and authorization public boundary > invalid invitation stays invalid without creating a pending grant",
+      "status": "pass",
+      "source": "native-http-full.log"
+    },
+    {
+      "test": "Heima admission and authorization public boundary > eligibility revocation and outage deny an existing active member",
+      "status": "pass",
+      "source": "native-http-full.log"
+    },
+    {
+      "test": "Heima admission and authorization public boundary > Flowcore stores encrypted envelopes, never plaintext identity or invitation details",
+      "status": "pass",
+      "source": "native-http-full.log"
+    },
+    {
+      "test": "headerless bookings keep all 405 physical rows and editable native suggestions without writes",
+      "status": "pass",
+      "source": "native-http-full.log"
+    },
+    {
+      "test": "sixteen-column details retain blank metadata, unique source IDs and explicit optional dates",
+      "status": "pass",
+      "source": "native-http-full.log"
+    },
+    {
+      "test": "annual Revolut inspects 1198 records with explicit fees and six visible exclusions",
+      "status": "pass",
+      "source": "native-http-full.log"
+    },
+    {
+      "test": "headerless first-data-row recovery preserves physical error rows and Excel dates",
+      "status": "pass",
+      "source": "native-http-full.log"
+    },
+    {
+      "test": "5000-row boundary is explicit and unknown headerless layouts remain manually mappable",
+      "status": "pass",
+      "source": "native-http-full.log"
+    },
+    {
+      "test": "N5 sync failure activity is immediate while its push preference independently controls generic delivery",
+      "status": "pass",
+      "source": "native-http-full.log"
+    },
+    {
+      "test": "N6 finance push hides amounts and descriptions and excludes private accounts",
+      "status": "pass",
+      "source": "native-http-full.log"
+    },
+    {
+      "test": "N1 overnight quiet hours retain in-app activity and release one encrypted privacy-safe digest",
+      "status": "pass",
+      "source": "native-http-full.log"
+    },
+    {
+      "test": "N2 failed push never rolls back work; retry, expired device and disable remain independent",
+      "status": "pass",
+      "source": "native-http-full.log"
+    },
+    {
+      "test": "N3 personal work and profiles create no spouse push, and current eligibility blocks delivery",
+      "status": "pass",
+      "source": "native-http-full.log"
+    },
+    {
+      "test": "N4 upstream invitation failure is generic and retry creates no duplicate household admission",
+      "status": "pass",
+      "source": "native-http-full.log"
+    },
+    {
+      "test": "whole statement create and reconciliation publish bounded encrypted events and replay exactly once",
+      "status": "pass",
+      "source": "native-http-full.log"
+    },
+    {
+      "test": "an interrupted row batch exposes no partial facts and same-command retry resumes without duplication",
+      "status": "pass",
+      "source": "native-http-full.log"
+    },
+    {
+      "test": "a lost commit acknowledgment leaves one complete result recoverable through the public command query",
+      "status": "pass",
+      "source": "native-http-full.log"
+    },
+    {
+      "test": "oversized rows and normalized commands fail before any encrypted event is published",
+      "status": "pass",
+      "source": "native-http-full.log"
+    },
+    {
+      "test": "encrypted commit-before-parts, duplicate replay and conflicting parts preserve one atomic result",
+      "status": "pass",
+      "source": "native-http-full.log"
+    },
+    {
+      "test": "interrupted large reconciliation stays unchanged and a concurrent version update rejects its stale retry atomically",
+      "status": "pass",
+      "source": "native-http-full.log"
+    },
+    {
+      "test": "transport identity rejects completed-command reuse and actor or household changes without poisoning valid staged rows",
+      "status": "pass",
+      "source": "native-http-full.log"
+    },
+    {
+      "test": "fixture enforces the exact 64000-byte encrypted body boundary and unknown row fields fail before publication",
+      "status": "pass",
+      "source": "native-http-full.log"
+    },
+    {
+      "test": "complete but invalid assembly digests or overlapping row offsets never produce financial facts",
+      "status": "pass",
+      "source": "native-http-full.log"
+    },
+    {
+      "test": "more than 256 individually safe row parts fail preflight before any event",
+      "status": "pass",
+      "source": "native-http-full.log"
+    },
+    {
+      "test": "guided statements preserve dates and exact signed fees, and explain excluded states",
+      "status": "pass",
+      "source": "native-http-full.log"
+    },
+    {
+      "test": "currency, unknown states, malformed precision and missing Revolut safeguards block confirmation",
+      "status": "pass",
+      "source": "native-http-full.log"
+    },
+    {
+      "test": "Faroese-style statements recover physical header rows, separators and worksheets",
+      "status": "pass",
+      "source": "native-http-full.log"
+    },
+    {
+      "test": "real Excel numeric date cells retain calendar dates across workbook epochs without guessing numbers",
+      "status": "pass",
+      "source": "native-http-full.log"
+    },
+    {
+      "test": "preview writes nothing; explicit import retains file dedup and overlapping row review",
+      "status": "pass",
+      "source": "native-http-full.log"
+    },
+    {
+      "test": "empty sources and malformed layouts remain explicit and invalid",
+      "status": "pass",
+      "source": "native-http-full.log"
+    },
+    {
+      "test": "statements cannot silently truncate later transactions after blank rows",
+      "status": "pass",
+      "source": "native-http-full.log"
+    },
+    {
+      "test": "Household public resource boundaries > shopping privacy follows list conversion; retries and stale edits cannot overwrite",
+      "status": "pass",
+      "source": "native-http-full.log"
+    },
+    {
+      "test": "Household public resource boundaries > offers and purchase attribution preserve identities; archived stores reject new tags",
+      "status": "pass",
+      "source": "native-http-full.log"
+    },
+    {
+      "test": "Household public resource boundaries > work assignment, monthly recurrence and scope changes preserve responsibility boundaries",
+      "status": "pass",
+      "source": "native-http-full.log"
+    },
+    {
+      "test": "Household public resource boundaries > account details stay private while exact household aggregates include private facts",
+      "status": "pass",
+      "source": "native-http-full.log"
+    },
+    {
+      "test": "Household public resource boundaries > reviewed CSV imports validate interpretation and reconcile only at zero difference",
+      "status": "pass",
+      "source": "native-http-full.log"
+    },
+    {
+      "test": "Household public resource boundaries > preferences, device destinations and recipient activity stay private",
+      "status": "pass",
+      "source": "native-http-full.log"
+    },
+    {
+      "test": "Household public resource boundaries > calendar gaps, category depth and duplicate statement rows have explicit outcomes",
+      "status": "pass",
+      "source": "native-http-full.log"
+    },
+    {
+      "test": "Household public resource boundaries > corrections replace totals once, retain history and reject competing forks",
+      "status": "pass",
+      "source": "native-http-full.log"
+    },
+    {
+      "test": "Household public resource boundaries > budget taxonomy, review reopening and rejected imports preserve truthful totals",
+      "status": "pass",
+      "source": "native-http-full.log"
+    },
+    {
+      "test": "E1 invitation expires exactly at seven days through the real encrypted maintenance path",
+      "status": "pass",
+      "source": "native-http-full.log"
+    },
+    {
+      "test": "R1 empty streams are ready and concurrent probes share one bounded refresh",
+      "status": "pass",
+      "source": "native-readiness-recheck.log"
+    },
+    {
+      "test": "R2 stream 1 fetch denial makes readiness503 while liveness200",
+      "status": "pass",
+      "source": "native-readiness-recheck.log"
+    },
+    {
+      "test": "R2 stream 2 fetch denial makes readiness503 while liveness200",
+      "status": "pass",
+      "source": "native-readiness-recheck.log"
+    },
+    {
+      "test": "R2 stream 3 fetch denial makes readiness503 while liveness200",
+      "status": "pass",
+      "source": "native-readiness-recheck.log"
+    },
+    {
+      "test": "R3 missing event response cannot pass readiness",
+      "status": "pass",
+      "source": "native-readiness-recheck.log"
+    },
+    {
+      "test": "R3 malformed event response cannot pass readiness",
+      "status": "pass",
+      "source": "native-readiness-recheck.log"
+    },
+    {
+      "test": "R4 deadline aborts a stalled fetch, late success stays unready, and a later refresh recovers",
+      "status": "pass",
+      "source": "native-readiness-recheck.log"
+    },
+    {
+      "test": "R5 running API cluster accepts loopback WebSocket and refuses non-loopback TCP",
+      "status": "pass",
+      "source": "native-readiness-recheck.log"
+    },
+    {
+      "test": "refund and transfer links preserve full identities, exact taxonomy and private boundaries",
+      "status": "pass",
+      "source": "native-http-full.log"
+    },
+    {
+      "test": "A12 sync failures deduplicate, retain safe area fallbacks and never disclose another person's work",
+      "status": "pass",
+      "source": "native-http-full.log"
+    },
+    {
+      "test": "A1 occupied household rejects a third slot and spouse owner capabilities",
+      "status": "pass",
+      "source": "native-http-full.log"
+    },
+    {
+      "test": "A2 financial filters intersect and private rows never enter search results",
+      "status": "pass",
+      "source": "native-http-full.log"
+    },
+    {
+      "test": "A3 cross-currency provenance and period comparison remain exact",
+      "status": "pass",
+      "source": "native-http-full.log"
+    },
+    {
+      "test": "A4 category archive preserves history and budget zero differs from absence",
+      "status": "pass",
+      "source": "native-http-full.log"
+    },
+    {
+      "test": "A5 CSV, XLS and XLSX use explicit interpretation without mutating preview",
+      "status": "pass",
+      "source": "native-http-full.log"
+    },
+    {
+      "test": "A6 profile and removed work history retain identity, actor and prior values",
+      "status": "pass",
+      "source": "native-http-full.log"
+    },
+    {
+      "test": "A7 scope confirmation, deliberate stale reapply and recurrence rules preserve one identity",
+      "status": "pass",
+      "source": "native-http-full.log"
+    },
+    {
+      "test": "A8 timed work becomes overdue during its local due day and clearing a due date removes attention",
+      "status": "pass",
+      "source": "native-http-full.log"
+    },
+    {
+      "test": "A9 invitation cancellation, explicit restoration and signed UUID custody survive claim changes",
+      "status": "pass",
+      "source": "native-http-full.log"
+    },
+    {
+      "test": "A10 original currencies preserve zero and four fractional digit minor units",
+      "status": "pass",
+      "source": "native-http-full.log"
+    },
+    {
+      "test": "A11 explained exclusions cannot make unmatched money look reconciled",
+      "status": "pass",
+      "source": "native-http-full.log"
+    },
+    {
+      "test": "R2 stream 4 fetch denial makes readiness503 while liveness200",
+      "status": "pass",
+      "source": "native-readiness-recheck.log"
+    },
+    {
+      "test": "R2 stream 5 fetch denial makes readiness503 while liveness200",
+      "status": "pass",
+      "source": "native-readiness-recheck.log"
+    },
+    {
+      "test": "withdrawing the destination account after staging rejects the complete statement without partial financial facts",
+      "status": "pass",
+      "source": "native-account-withdrawal-final.log"
+    }
+  ]
+}

@@ -43,6 +43,7 @@ const fixture = new WebhookTestFixture({
         maintenanceClock = null;
         fixture.setInboundStatus(200);
         fixture.releaseWrites();
+        fixture.configureFault(null);
       }
       if ("maintenanceClock" in body) {
         if (
@@ -63,11 +64,37 @@ const fixture = new WebhookTestFixture({
         upstreamFailure = body.upstreamFailure;
       if (typeof body.webhookStatus === "number")
         fixture.setInboundStatus(body.webhookStatus);
+      if (Array.isArray(body.webhookStatuses))
+        fixture.setInboundStatuses(body.webhookStatuses);
+      if ("webhookFault" in body) fixture.configureFault(body.webhookFault);
       send(200, { ok: true });
       return true;
     }
     if (url.pathname === "/__events") {
       send(200, fixture.getEventLog());
+      return true;
+    }
+    if (url.pathname === "/__event-attempts") {
+      send(200, fixture.getAttempts());
+      return true;
+    }
+    if (
+      url.pathname === "/__deliver-event" &&
+      request.method === "POST" &&
+      process.env.NODE_ENV === "test"
+    ) {
+      const chunks: Buffer[] = [];
+      for await (const chunk of request) chunks.push(Buffer.from(chunk));
+      const envelope = JSON.parse(Buffer.concat(chunks).toString());
+      if (
+        Buffer.byteLength(JSON.stringify(envelope.payload)) > 64_000 ||
+        typeof envelope.payload?.encryptedPayload !== "string"
+      ) {
+        send(400, { error: "Replay requires a bounded encrypted envelope" });
+        return true;
+      }
+      const delivery = await fixture.deliverEvent(envelope);
+      send(delivery.status, { delivered: delivery.ok });
       return true;
     }
     if (!url.pathname.startsWith("/api/")) return false;
@@ -119,6 +146,8 @@ for (const scope of [
   fixture.addEndpoint(`heima.${scope}.0`, `${scope}.changed.0`);
 fixture.addEndpoint("heima.household.0", "resource.changed.0");
 fixture.addEndpoint("heima.notifications.0", "notification.changed.0");
+fixture.addEndpoint("heima.household.0", "import.rows-staged.0");
+fixture.addEndpoint("heima.household.0", "import.commit-requested.0");
 await fixture.start();
 const api = Bun.spawn(
   [

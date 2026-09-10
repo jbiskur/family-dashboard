@@ -1,0 +1,340 @@
+{
+  "scope": "Local production builds:42 import journeys acrossFirefox/WebKit/mobileChromium plus4 finalChromium native journeys; not the entire repository browser suite. Final pagination colour corrected after the42-case matrix and verified in current-source developmentWebKit screenshots and finalChromium axe colour-contrast check.",
+  "passed": 46,
+  "failed": 0,
+  "logs": [
+    {
+      "file": "native-browser-matrix.log",
+      "sha256": "17ff0a8141e2fbe8447885c23886a5df849165bc49fc21524dfdfe399d319e24"
+    },
+    {
+      "file": "native-browser-final.log",
+      "sha256": "6227f802855729d4716054ccfb0b8ab3ba3ac7d84103fc83f7c3e05875e3298d"
+    }
+  ],
+  "scenarios": [
+    {
+      "project": "firefox",
+      "file": "bank-import.spec.ts",
+      "test": "Revolut guidance reviews exclusions, currency and explicit fee treatment before importing",
+      "status": "pass",
+      "source": "native-browser-matrix.log"
+    },
+    {
+      "project": "firefox",
+      "file": "bank-import.spec.ts",
+      "test": "Faroese-style headers recover without uploading again at 320px",
+      "status": "pass",
+      "source": "native-browser-matrix.log"
+    },
+    {
+      "project": "firefox",
+      "file": "finance-import.spec.ts",
+      "test": "statement replacement timing \u203a statement replacement immediately removes the previous confirmation while loading",
+      "status": "pass",
+      "source": "native-browser-matrix.log"
+    },
+    {
+      "project": "firefox",
+      "file": "finance-import.spec.ts",
+      "test": "statement replacement timing \u203a statement replacement ignores an older read success without ending current loading",
+      "status": "pass",
+      "source": "native-browser-matrix.log"
+    },
+    {
+      "project": "firefox",
+      "file": "finance-import.spec.ts",
+      "test": "statement replacement timing \u203a statement replacement ignores an older read failure without ending current loading",
+      "status": "pass",
+      "source": "native-browser-matrix.log"
+    },
+    {
+      "project": "firefox",
+      "file": "finance-import.spec.ts",
+      "test": "statement replacement timing \u203a statement replacement ignores an older mapping success without ending current loading",
+      "status": "pass",
+      "source": "native-browser-matrix.log"
+    },
+    {
+      "project": "firefox",
+      "file": "finance-import.spec.ts",
+      "test": "statement replacement timing \u203a statement replacement ignores an older mapping failure without ending current loading",
+      "status": "pass",
+      "source": "native-browser-matrix.log"
+    },
+    {
+      "project": "firefox",
+      "file": "finance-import.spec.ts",
+      "test": "statement replacement timing \u203a statement replacement rejects files safely and invalidates pending work on account change",
+      "status": "pass",
+      "source": "native-browser-matrix.log"
+    },
+    {
+      "project": "firefox",
+      "file": "finance-import.spec.ts",
+      "test": "statement preview writes nothing, invalid mapping stays blocked, and reviewed rows require an exact zero reconciliation",
+      "status": "pass",
+      "source": "native-browser-matrix.log"
+    },
+    {
+      "project": "firefox",
+      "file": "finance-import.spec.ts",
+      "test": "category hierarchy and budget edits preserve exact actuals, deliberate zero, and archive history",
+      "status": "pass",
+      "source": "native-browser-matrix.log"
+    },
+    {
+      "project": "firefox",
+      "file": "native-bank-import.spec.ts",
+      "test": "405-row Faroese bookings preserve first row through whole-statement confirmation and reconciliation",
+      "status": "pass",
+      "source": "native-browser-matrix.log"
+    },
+    {
+      "project": "firefox",
+      "file": "native-bank-import.spec.ts",
+      "test": "payment-details layout recovers all 405 rows at 320px without creating financial facts",
+      "status": "pass",
+      "source": "native-browser-matrix.log"
+    },
+    {
+      "project": "firefox",
+      "file": "native-bank-import.spec.ts",
+      "test": "annual Revolut reviews 1198 records and six exclusions before confirming 1192 transactions",
+      "status": "pass",
+      "source": "native-browser-matrix.log"
+    },
+    {
+      "project": "firefox",
+      "file": "native-bank-import.spec.ts",
+      "test": "uncertain statement responses \u203a lost confirm and reconcile responses retry the same whole statement",
+      "status": "pass",
+      "source": "native-browser-matrix.log"
+    },
+    {
+      "project": "webkit",
+      "file": "bank-import.spec.ts",
+      "test": "Revolut guidance reviews exclusions, currency and explicit fee treatment before importing",
+      "status": "pass",
+      "source": "native-browser-matrix.log"
+    },
+    {
+      "project": "webkit",
+      "file": "bank-import.spec.ts",
+      "test": "Faroese-style headers recover without uploading again at 320px",
+      "status": "pass",
+      "source": "native-browser-matrix.log"
+    },
+    {
+      "project": "webkit",
+      "file": "finance-import.spec.ts",
+      "test": "statement replacement timing \u203a statement replacement immediately removes the previous confirmation while loading",
+      "status": "pass",
+      "source": "native-browser-matrix.log"
+    },
+    {
+      "project": "webkit",
+      "file": "finance-import.spec.ts",
+      "test": "statement replacement timing \u203a statement replacement ignores an older read success without ending current loading",
+      "status": "pass",
+      "source": "native-browser-matrix.log"
+    },
+    {
+      "project": "webkit",
+      "file": "finance-import.spec.ts",
+      "test": "statement replacement timing \u203a statement replacement ignores an older read failure without ending current loading",
+      "status": "pass",
+      "source": "native-browser-matrix.log"
+    },
+    {
+      "project": "webkit",
+      "file": "finance-import.spec.ts",
+      "test": "statement replacement timing \u203a statement replacement ignores an older mapping success without ending current loading",
+      "status": "pass",
+      "source": "native-browser-matrix.log"
+    },
+    {
+      "project": "webkit",
+      "file": "finance-import.spec.ts",
+      "test": "statement replacement timing \u203a statement replacement ignores an older mapping failure without ending current loading",
+      "status": "pass",
+      "source": "native-browser-matrix.log"
+    },
+    {
+      "project": "webkit",
+      "file": "finance-import.spec.ts",
+      "test": "statement replacement timing \u203a statement replacement rejects files safely and invalidates pending work on account change",
+      "status": "pass",
+      "source": "native-browser-matrix.log"
+    },
+    {
+      "project": "webkit",
+      "file": "finance-import.spec.ts",
+      "test": "statement preview writes nothing, invalid mapping stays blocked, and reviewed rows require an exact zero reconciliation",
+      "status": "pass",
+      "source": "native-browser-matrix.log"
+    },
+    {
+      "project": "webkit",
+      "file": "finance-import.spec.ts",
+      "test": "category hierarchy and budget edits preserve exact actuals, deliberate zero, and archive history",
+      "status": "pass",
+      "source": "native-browser-matrix.log"
+    },
+    {
+      "project": "webkit",
+      "file": "native-bank-import.spec.ts",
+      "test": "405-row Faroese bookings preserve first row through whole-statement confirmation and reconciliation",
+      "status": "pass",
+      "source": "native-browser-matrix.log"
+    },
+    {
+      "project": "webkit",
+      "file": "native-bank-import.spec.ts",
+      "test": "payment-details layout recovers all 405 rows at 320px without creating financial facts",
+      "status": "pass",
+      "source": "native-browser-matrix.log"
+    },
+    {
+      "project": "webkit",
+      "file": "native-bank-import.spec.ts",
+      "test": "annual Revolut reviews 1198 records and six exclusions before confirming 1192 transactions",
+      "status": "pass",
+      "source": "native-browser-matrix.log"
+    },
+    {
+      "project": "webkit",
+      "file": "native-bank-import.spec.ts",
+      "test": "uncertain statement responses \u203a lost confirm and reconcile responses retry the same whole statement",
+      "status": "pass",
+      "source": "native-browser-matrix.log"
+    },
+    {
+      "project": "mobile",
+      "file": "bank-import.spec.ts",
+      "test": "Revolut guidance reviews exclusions, currency and explicit fee treatment before importing",
+      "status": "pass",
+      "source": "native-browser-matrix.log"
+    },
+    {
+      "project": "mobile",
+      "file": "bank-import.spec.ts",
+      "test": "Faroese-style headers recover without uploading again at 320px",
+      "status": "pass",
+      "source": "native-browser-matrix.log"
+    },
+    {
+      "project": "mobile",
+      "file": "finance-import.spec.ts",
+      "test": "statement replacement timing \u203a statement replacement immediately removes the previous confirmation while loading",
+      "status": "pass",
+      "source": "native-browser-matrix.log"
+    },
+    {
+      "project": "mobile",
+      "file": "finance-import.spec.ts",
+      "test": "statement replacement timing \u203a statement replacement ignores an older read success without ending current loading",
+      "status": "pass",
+      "source": "native-browser-matrix.log"
+    },
+    {
+      "project": "mobile",
+      "file": "finance-import.spec.ts",
+      "test": "statement replacement timing \u203a statement replacement ignores an older read failure without ending current loading",
+      "status": "pass",
+      "source": "native-browser-matrix.log"
+    },
+    {
+      "project": "mobile",
+      "file": "finance-import.spec.ts",
+      "test": "statement replacement timing \u203a statement replacement ignores an older mapping success without ending current loading",
+      "status": "pass",
+      "source": "native-browser-matrix.log"
+    },
+    {
+      "project": "mobile",
+      "file": "finance-import.spec.ts",
+      "test": "statement replacement timing \u203a statement replacement ignores an older mapping failure without ending current loading",
+      "status": "pass",
+      "source": "native-browser-matrix.log"
+    },
+    {
+      "project": "mobile",
+      "file": "finance-import.spec.ts",
+      "test": "statement replacement timing \u203a statement replacement rejects files safely and invalidates pending work on account change",
+      "status": "pass",
+      "source": "native-browser-matrix.log"
+    },
+    {
+      "project": "mobile",
+      "file": "finance-import.spec.ts",
+      "test": "statement preview writes nothing, invalid mapping stays blocked, and reviewed rows require an exact zero reconciliation",
+      "status": "pass",
+      "source": "native-browser-matrix.log"
+    },
+    {
+      "project": "mobile",
+      "file": "finance-import.spec.ts",
+      "test": "category hierarchy and budget edits preserve exact actuals, deliberate zero, and archive history",
+      "status": "pass",
+      "source": "native-browser-matrix.log"
+    },
+    {
+      "project": "mobile",
+      "file": "native-bank-import.spec.ts",
+      "test": "405-row Faroese bookings preserve first row through whole-statement confirmation and reconciliation",
+      "status": "pass",
+      "source": "native-browser-matrix.log"
+    },
+    {
+      "project": "mobile",
+      "file": "native-bank-import.spec.ts",
+      "test": "payment-details layout recovers all 405 rows at 320px without creating financial facts",
+      "status": "pass",
+      "source": "native-browser-matrix.log"
+    },
+    {
+      "project": "mobile",
+      "file": "native-bank-import.spec.ts",
+      "test": "annual Revolut reviews 1198 records and six exclusions before confirming 1192 transactions",
+      "status": "pass",
+      "source": "native-browser-matrix.log"
+    },
+    {
+      "project": "mobile",
+      "file": "native-bank-import.spec.ts",
+      "test": "uncertain statement responses \u203a lost confirm and reconcile responses retry the same whole statement",
+      "status": "pass",
+      "source": "native-browser-matrix.log"
+    },
+    {
+      "project": "chromium",
+      "file": "native-bank-import.spec.ts",
+      "test": "405-row Faroese bookings preserve first row through whole-statement confirmation and reconciliation",
+      "status": "pass",
+      "source": "native-browser-final.log"
+    },
+    {
+      "project": "chromium",
+      "file": "native-bank-import.spec.ts",
+      "test": "payment-details layout recovers all 405 rows at 320px without creating financial facts",
+      "status": "pass",
+      "source": "native-browser-final.log"
+    },
+    {
+      "project": "chromium",
+      "file": "native-bank-import.spec.ts",
+      "test": "annual Revolut reviews 1198 records and six exclusions before confirming 1192 transactions",
+      "status": "pass",
+      "source": "native-browser-final.log"
+    },
+    {
+      "project": "chromium",
+      "file": "native-bank-import.spec.ts",
+      "test": "uncertain statement responses \u203a lost confirm and reconcile responses retry the same whole statement",
+      "status": "pass",
+      "source": "native-browser-final.log"
+    }
+  ],
+  "physicalIOS": "Not tested on physical iPhone hardware."
+}

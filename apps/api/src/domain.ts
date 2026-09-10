@@ -1,4 +1,8 @@
-import type { Recurrence, ResourceKind } from "@heima/contracts";
+import {
+  IMPORT_MAX_ROWS,
+  type Recurrence,
+  type ResourceKind,
+} from "@heima/contracts";
 import { Temporal } from "@js-temporal/polyfill";
 import { z } from "zod";
 import type { resources } from "./db/schema";
@@ -150,7 +154,7 @@ export const fields: Record<ResourceKind, z.AnyZodObject> = {
           original: z.record(z.string()),
         }),
       )
-      .max(1000),
+      .max(IMPORT_MAX_ROWS),
     status: z.enum(["needs-review", "reconciled"]).default("needs-review"),
     openingBalance: amount.nullable().default(null),
     closingBalance: amount.nullable().default(null),

@@ -1,0 +1,19 @@
+{
+  "mode": "Next development server",
+  "origin": "http://localhost:3013",
+  "engine": "WebKit",
+  "scenariosPassed": 4,
+  "source": "current implementation including pagination contrast and page-owned retry controllers",
+  "observations": [
+    "405-row headerless bookings confirm and reconcile as one statement",
+    "405-row payment-details layout and validation recovery at320 CSS pixels",
+    "Annual1198-record Revolut fee choice,1192included/sixexcluded,lastrow reachable and full confirmation",
+    "Real confirmation and reconciliation response loss, offline FinanceBoundary/reconnect,429 statuslookup failure, same statement and history1\u21922"
+  ],
+  "scope": "Fictional fixtures only; actual bank files never loaded into browser",
+  "testHarnessNote": "First three dev journeys passed in initial run. Fourth was interrupted because the helper awaited service-worker readiness while the test deliberately blocked workers; helper corrected, targeted recovery rerun passed37.5s. No application assertion weakened.",
+  "limits": [
+    "Desktop WebKit, not physical iPhone hardware",
+    "CI/production deployment not verified in this run"
+  ]
+}

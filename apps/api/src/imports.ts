@@ -27,6 +27,11 @@ const inputSchema = z.object({
   delimiter: z.enum([",", ";", "\t"]).optional(),
   sheet: z.string().optional(),
   headerRow: z.number().int().min(1).max(50).default(1),
+  hasHeaders: z.boolean().default(true),
+  firstDataRow: z.number().int().min(1).max(50).default(1),
+  layout: z
+    .enum(["custom", "faroese-bookings", "faroese-details"])
+    .default("custom"),
   mapping: z.record(z.string()).optional(),
   decimalSeparator: z.enum([".", ","]).default("."),
   dateFormat: z
@@ -91,7 +96,7 @@ importRoutes.post("/finance/imports/preview", async (c) => {
       raw: true,
       cellDates: false,
       cellNF: true,
-      sheetRows: 1052,
+      sheetRows: 5052,
       FS: delimiter,
       dense: true,
     });
@@ -114,37 +119,71 @@ importRoutes.post("/finance/imports/preview", async (c) => {
   // CSV stops at sheetRows without !fullref. Reaching the read boundary is
   // ambiguous, so reject rather than silently import only a prefix.
   if (
-    (fullRange && XLSX.utils.decode_range(fullRange).e.r >= 1052) ||
-    (readRange && XLSX.utils.decode_range(readRange).e.r >= 1051)
+    (fullRange && XLSX.utils.decode_range(fullRange).e.r >= 5052) ||
+    (readRange && XLSX.utils.decode_range(readRange).e.r >= 5051)
   )
     throw new ApiFailure(
       "too-many-rows",
       400,
-      "This statement exceeds the readable row limit. Split it into smaller files with no more than 1000 transaction rows.",
+      "This statement exceeds the readable row limit. Choose a shorter statement period with no more than 5,000 source rows.",
     );
   const matrix = XLSX.utils.sheet_to_json<string[]>(
     workbook.Sheets[sheetName]!,
     { header: 1, raw: false, defval: "", blankrows: true, range: 0 },
   );
-  const headers = (matrix[input.headerRow - 1] ?? []).map((v) =>
-    String(v).trim(),
-  );
+  const firstIndex = input.hasHeaders
+    ? input.headerRow
+    : input.firstDataRow - 1;
+  const dataMatrix = matrix.slice(firstIndex);
+  const width = Math.max(0, ...dataMatrix.map((cells) => cells.length));
+  const headers = input.hasHeaders
+    ? (matrix[input.headerRow - 1] ?? []).map((v) => String(v).trim())
+    : Array.from({ length: width }, (_, index) => `Column ${index + 1}`);
   const headerIssue =
     !headers.length ||
     new Set(headers).size !== headers.length ||
-    headers.some((h) => !h)
-      ? "Choose a header row with unique, non-empty column names. Adjust the worksheet, separator or header row below."
+    headers.some((h) => !h) ||
+    (input.hasHeaders && width > headers.length)
+      ? input.hasHeaders
+        ? "Choose a header row with unique, non-empty column names, or choose a no-headings layout. Adjust the worksheet, separator or header row below."
+        : "No columns were found. Check the separator, worksheet and first data row."
       : null;
-  const sourceRows = matrix
-    .slice(input.headerRow)
-    .map((cells, index) => ({ cells, rowNumber: index + input.headerRow + 1 }))
+  const sourceRows = dataMatrix
+    .map((cells, index) => ({ cells, rowNumber: index + firstIndex + 1 }))
     .filter(({ cells }) => cells.some((cell) => String(cell).trim()));
-  if (sourceRows.length > 1000)
+  if (sourceRows.length > 5000)
     throw new ApiFailure(
       "too-many-rows",
       400,
-      "Import no more than 1000 source rows at a time.",
+      "Import no more than 5,000 source rows at a time. Choose a shorter statement period.",
     );
+  const presetWidth =
+    input.layout === "faroese-bookings"
+      ? 5
+      : input.layout === "faroese-details"
+        ? 16
+        : null;
+  const layoutIssue =
+    presetWidth && (input.hasHeaders || width !== presetWidth)
+      ? `This layout needs ${presetWidth} columns and no headings. Choose the matching export or use custom mapping.`
+      : null;
+  const suggested =
+    input.layout === "faroese-bookings"
+      ? {
+          bookingDate: "Column 1",
+          description: "Column 2",
+          amount: "Column 3",
+          currency: "Column 5",
+        }
+      : input.layout === "faroese-details"
+        ? {
+            bookingDate: "Column 9",
+            description: "Column 2",
+            amount: "Column 5",
+          }
+        : input.provider === "other"
+          ? {}
+          : suggestStatementMapping(headers);
   const preview = sourceRows.map(({ cells }) =>
     Object.fromEntries(headers.map((h, i) => [h, String(cells[i] ?? "")])),
   );
@@ -155,8 +194,13 @@ importRoutes.post("/finance/imports/preview", async (c) => {
     delimiter,
     sheet: sheetName,
     headerRow: input.headerRow,
-    headerIssue,
+    hasHeaders: input.hasHeaders,
+    firstDataRow: input.firstDataRow,
+    layout: input.layout,
+    headerIssue: layoutIssue ?? headerIssue,
     sourceRowCount: sourceRows.length,
+    eligibleRowCount: 0,
+    excludedRowCount: 0,
     excluded: [] as {
       row: number;
       reason: string;
@@ -171,12 +215,10 @@ importRoutes.post("/finance/imports/preview", async (c) => {
     preview: preview.slice(0, 10),
     rows: [] as ImportRow[],
     errors: [] as { row: number; message: string }[],
-    mapping:
-      input.mapping ??
-      (input.provider === "other" ? {} : suggestStatementMapping(headers)),
+    mapping: input.mapping ?? suggested,
     valid: false,
   };
-  if (headerIssue || !input.mapping) return c.json(result);
+  if (result.headerIssue || !input.mapping) return c.json(result);
   if (
     input.provider === "revolut" &&
     (!input.mapping.currency || !input.mapping.state)
@@ -318,15 +360,17 @@ importRoutes.post("/finance/imports/preview", async (c) => {
   }
   if (!sourceRows.length)
     result.errors.push({
-      row: input.headerRow + 1,
+      row: firstIndex + 1,
       message: "This statement has no transaction rows.",
     });
   if (sourceRows.length && !result.rows.length && !result.errors.length)
     result.errors.push({
-      row: input.headerRow + 1,
+      row: firstIndex + 1,
       message:
         "No completed transactions remain to import. Excluded rows are listed for review.",
     });
   result.valid = result.rows.length > 0 && result.errors.length === 0;
+  result.eligibleRowCount = result.rows.length;
+  result.excludedRowCount = result.excluded.length;
   return c.json(result);
 });

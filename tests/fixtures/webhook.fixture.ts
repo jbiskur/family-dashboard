@@ -34,6 +34,7 @@ export type CapturedCall = {
   payload: unknown;
   metadata?: Record<string, string>;
   requestBytes: number;
+  payloadBytes?: number;
   eventTimes?: { eventTime?: string; validTime?: string };
 };
 
@@ -57,6 +58,16 @@ export class WebhookTestFixture {
   private inboundStatuses: number[] = [];
   private held = false;
   private releaseHeld?: () => void;
+  private faultAfterAccepted: number | null = null;
+  private faultAccepted = 0;
+  private faultEventType: string | null = null;
+  private loseAcknowledgments = false;
+  private readonly attempts: {
+    eventType: string;
+    payloadBytes: number;
+    accepted: boolean;
+    status: number;
+  }[] = [];
 
   constructor(private readonly options: WebhookFixtureOptions) {}
 
@@ -109,6 +120,23 @@ export class WebhookTestFixture {
 
   setInboundStatuses(statuses: number[]) {
     this.inboundStatuses = [...statuses];
+  }
+
+  configureFault(
+    options: {
+      afterAccepted?: number;
+      eventType?: string;
+      loseAcknowledgments?: boolean;
+    } | null,
+  ) {
+    this.faultAfterAccepted = options?.afterAccepted ?? null;
+    this.faultAccepted = 0;
+    this.faultEventType = options?.eventType ?? null;
+    this.loseAcknowledgments = options?.loseAcknowledgments ?? false;
+  }
+
+  getAttempts() {
+    return [...this.attempts];
   }
 
   holdWrites() {
@@ -180,13 +208,41 @@ export class WebhookTestFixture {
     const eventTime = header(request, "x-flowcore-event-time");
     const suppliedValidTime = header(request, "x-flowcore-valid-time");
     const validTime = suppliedValidTime ?? new Date().toISOString();
-    const { payload, requestBytes } = await readJson(request);
+    const { payload, requestBytes, payloadBytes } = await readJson(request);
+    if (payloadBytes > 64_000) {
+      this.attempts.push({
+        eventType: eventType!,
+        payloadBytes,
+        accepted: false,
+        status: 400,
+      });
+      sendJson(response, 400, {
+        message: "Event size exceeds maximum limit of 64000 bytes",
+        error: "Bad Request",
+        statusCode: 400,
+      });
+      return;
+    }
     if (this.held)
       await new Promise<void>((resolve) => {
         this.releaseHeld = resolve;
       });
-    const inboundStatus = this.inboundStatuses.shift() ?? this.inboundStatus;
+    const faultApplies =
+      this.faultEventType === null || this.faultEventType === eventType;
+    const injectedFailure =
+      faultApplies &&
+      this.faultAfterAccepted !== null &&
+      this.faultAccepted >= this.faultAfterAccepted;
+    const inboundStatus = injectedFailure
+      ? 503
+      : (this.inboundStatuses.shift() ?? this.inboundStatus);
     if (inboundStatus !== 200) {
+      this.attempts.push({
+        eventType: eventType!,
+        payloadBytes,
+        accepted: false,
+        status: inboundStatus,
+      });
       sendJson(response, inboundStatus, {
         error: "dependency unavailable",
       });
@@ -219,6 +275,7 @@ export class WebhookTestFixture {
       eventId: envelope.eventId,
       payload,
       requestBytes,
+      payloadBytes,
       ...(Object.keys(capturedMetadata).length > 0
         ? { metadata: capturedMetadata }
         : {}),
@@ -231,6 +288,17 @@ export class WebhookTestFixture {
           }
         : {}),
     });
+    this.attempts.push({
+      eventType: eventType!,
+      payloadBytes,
+      accepted: true,
+      status: 200,
+    });
+    if (faultApplies) this.faultAccepted++;
+    if (faultApplies && this.loseAcknowledgments) {
+      response.destroy();
+      return;
+    }
     sendJson(response, 200, { eventId: envelope.eventId });
   }
 }
@@ -266,6 +334,7 @@ async function readJson(request: IncomingMessage) {
     .join("")}\r\n`;
   return {
     payload: raw ? JSON.parse(raw) : {},
+    payloadBytes: body.length,
     requestBytes:
       Buffer.byteLength(requestLine) + Buffer.byteLength(headers) + body.length,
   };

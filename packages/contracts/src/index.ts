@@ -308,6 +308,72 @@ export const resourceEventSchema = z.object({
   data: z.record(z.unknown()),
 });
 export type ResourceEvent = z.infer<typeof resourceEventSchema>;
+
+export const IMPORT_MAX_ROWS = 5000;
+export const IMPORT_MAX_PARTS = 256;
+export const IMPORT_MAX_NORMALIZED_BYTES = 8 * 1024 * 1024;
+export const IMPORT_EVENT_PLAINTEXT_BYTES = 45_000;
+
+// Transport validation is structural; the existing financial projection also
+// validates calendar dates, amounts, references, authorization and reconciliation.
+export const importTransportRowSchema: z.ZodType<ImportRow> = z
+  .object({
+    id: uuidSchema,
+    sourceId: z.string().max(200).nullable(),
+    bookingDate: z.string(),
+    transactionDate: z.string().nullable(),
+    valueDate: z.string().nullable(),
+    amount: z.string(),
+    description: z.string().max(4000),
+    reference: z.string().max(500),
+    categoryId: uuidSchema.nullable(),
+    role: z.enum(["income", "spending", "transfer", "refund", "adjustment"]),
+    status: z.enum([
+      "matched",
+      "unmatched",
+      "possible-duplicate",
+      "invalid",
+      "explained",
+    ]),
+    explanation: z.string().max(1000),
+    transactionId: uuidSchema.nullable(),
+    original: z.record(z.string()),
+  })
+  .strict();
+export const importTransferHeaderSchema = z.object({
+  commandId: uuidSchema,
+  householdId: uuidSchema,
+  actorId: uuidSchema,
+  resourceId: uuidSchema,
+  action: z.enum(["create", "update", "reconcile"]),
+  baseVersion: z.number().int().nonnegative(),
+  digest: z.string().regex(/^[a-f0-9]{64}$/),
+  rowCount: z.number().int().min(1).max(IMPORT_MAX_ROWS),
+  partCount: z.number().int().min(1).max(IMPORT_MAX_PARTS),
+  normalizedBytes: z.number().int().min(1).max(IMPORT_MAX_NORMALIZED_BYTES),
+});
+export type ImportTransferHeader = z.infer<typeof importTransferHeaderSchema>;
+export const importBatchEventSchema = importTransferHeaderSchema.extend({
+  occurredAt: z.string().datetime(),
+  index: z
+    .number()
+    .int()
+    .min(0)
+    .max(IMPORT_MAX_PARTS - 1),
+  offset: z
+    .number()
+    .int()
+    .min(0)
+    .max(IMPORT_MAX_ROWS - 1),
+  partDigest: z.string().regex(/^[a-f0-9]{64}$/),
+  rows: z.array(importTransportRowSchema).min(1).max(IMPORT_MAX_ROWS),
+});
+export const importCommitEventSchema = importTransferHeaderSchema.extend({
+  occurredAt: z.string().datetime(),
+  data: z.record(z.unknown()),
+});
+export type ImportBatchEvent = z.infer<typeof importBatchEventSchema>;
+export type ImportCommitEvent = z.infer<typeof importCommitEventSchema>;
 export const notificationEventSchema = z.object({
   commandId: uuidSchema,
   householdId: uuidSchema,

@@ -1,0 +1,106 @@
+[
+  {
+    "file": "bookings-layout.png",
+    "sha256": "918067762225ad0a0b1c0ebb2ec6fe8433173866b0a22e247ebe090f307d3bab",
+    "route": "/finance/imports",
+    "mode": "Next development",
+    "browser": "WebKit",
+    "data": "fictional"
+  },
+  {
+    "file": "bookings-405-ready.png",
+    "sha256": "1d2460fe3c1cc10820e924833aa054a00016c5aec103353fe3b8989a03b3b620",
+    "route": "/finance/imports",
+    "mode": "Next development",
+    "browser": "WebKit",
+    "data": "fictional"
+  },
+  {
+    "file": "bookings-405-confirmed.png",
+    "sha256": "49d30681f73671df9a27024fad98704605ce88346bbfdf3539f8d9598f59c1a0",
+    "route": "/finance/imports",
+    "mode": "Next development",
+    "browser": "WebKit",
+    "data": "fictional"
+  },
+  {
+    "file": "bookings-405-reconciled.png",
+    "sha256": "f7a5156b257b4f741757d41f0510fdb27cd637545537dc7b172031b7dac3ac61",
+    "route": "/finance/imports",
+    "mode": "Next development",
+    "browser": "WebKit",
+    "data": "fictional"
+  },
+  {
+    "file": "details-header-error-320.png",
+    "sha256": "7ac411ab5b70ec7d7e42be31451b839c0fc4737a3448763244ce6419c3f8f356",
+    "route": "/finance/imports",
+    "mode": "Next development",
+    "browser": "WebKit",
+    "data": "fictional"
+  },
+  {
+    "file": "details-405-ready-320.png",
+    "sha256": "2dd4f29d4ec5f06a41015f62831002d15a840c856b26556c2f8ce3ef897e5399",
+    "route": "/finance/imports",
+    "mode": "Next development",
+    "browser": "WebKit",
+    "data": "fictional"
+  },
+  {
+    "file": "details-date-error-320.png",
+    "sha256": "fecc9587299a793019a8df248a38412e3069fa8ef545ed813a32e8c9a02414e3",
+    "route": "/finance/imports",
+    "mode": "Next development",
+    "browser": "WebKit",
+    "data": "fictional"
+  },
+  {
+    "file": "annual-revolut-fee-required.png",
+    "sha256": "4651c122b19b3e5fe576b91c9013fb1e611d2b69447473696c3cbd412e89354d",
+    "route": "/finance/imports",
+    "mode": "Next development",
+    "browser": "WebKit",
+    "data": "fictional"
+  },
+  {
+    "file": "annual-revolut-last-row.png",
+    "sha256": "240ba96cee38c286d4741ea658c7afaeb5362b8fc8a403baa7b81fa779878b53",
+    "route": "/finance/imports",
+    "mode": "Next development",
+    "browser": "WebKit",
+    "data": "fictional"
+  },
+  {
+    "file": "annual-revolut-1192-confirmed.png",
+    "sha256": "b04b21317fd65cf7f9e591bac72664869feb7e791d7fd45b51fd1f1f8b6ca970",
+    "route": "/finance/imports",
+    "mode": "Next development",
+    "browser": "WebKit",
+    "data": "fictional"
+  },
+  {
+    "file": "confirm-response-lost.png",
+    "sha256": "78aeddeb26dc8495d3dd195373de9ce964b5b21309dd68c5fd19c4af5ff803b8",
+    "route": "/finance/imports",
+    "mode": "Next development",
+    "browser": "WebKit",
+    "data": "fictional"
+  },
+  {
+    "file": "reconcile-response-lost.png",
+    "sha256": "1a25b6fa2f9e869d7f73e77bc21bfca9fb449f944d1c22c7b00488999c3fc61d",
+    "route": "/finance/imports",
+    "mode": "Next development",
+    "browser": "WebKit",
+    "data": "fictional"
+  },
+  {
+    "file": "same-statement-recovered.png",
+    "sha256": "ac40a8bb73c11fd6cbead674d0e4f4acc0ad1c06b70fb44ce373e1bd776c4184",
+    "route": "/finance/imports",
+    "mode": "Next development",
+    "browser": "WebKit",
+    "data": "fictional"
+  }
+]
