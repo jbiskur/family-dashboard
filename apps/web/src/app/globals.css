@@ -19,6 +19,7 @@
   --nav: #243b34;
   --nav-muted: #afc0b3;
   --radius: 16px;
+  --form-control-min-font-size: 0px;
 }
 @theme inline {
   --color-background: var(--background);
@@ -52,6 +53,11 @@ input,
 select,
 textarea {
   font: inherit;
+}
+input,
+select,
+textarea {
+  font-size: max(var(--form-control-min-font-size), 1em);
 }
 button,
 a,
@@ -213,7 +219,7 @@ main:focus {
   background: var(--card);
   border-radius: 10px;
   color: var(--foreground);
-  font-size: 14px;
+  font-size: max(var(--form-control-min-font-size), 14px);
   outline-offset: 2px;
 }
 .input::placeholder {
@@ -844,7 +850,7 @@ main:focus {
 }
 .quick-add .input {
   padding: 8px;
-  font-size: 13px;
+  font-size: max(var(--form-control-min-font-size), 13px);
 }
 .home-task {
   display: flex;
@@ -1610,6 +1616,13 @@ main:focus {
   }
   to {
     opacity: 1;
+  }
+}
+/* Prevent iOS focus zoom, including landscape phones and touch-enabled iPads.
+   Keep the viewport zoomable for accessibility. */
+@media (max-width: 767px), (any-pointer: coarse) {
+  :root {
+    --form-control-min-font-size: 16px;
   }
 }
 @media (min-width: 1450px) {
