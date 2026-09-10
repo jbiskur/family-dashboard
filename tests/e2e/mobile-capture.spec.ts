@@ -186,6 +186,83 @@ test("capture stays reachable after long-list scrolling at narrow and desktop wi
 
 test.describe("capture response timing", () => {
   test.use({ serviceWorkers: "block" });
+  test("closing details during a save restores the next-entry field", async ({
+    page,
+  }, info) => {
+    await login(page);
+    await page.goto("/work");
+    // Keep dismissal in progress while the saved command response arrives.
+    await page.addStyleTag({
+      content: `
+        @keyframes capture-test-exit { from { opacity: 1 } to { opacity: 0 } }
+        .capture-details[data-state="closed"] {
+          animation: capture-test-exit 250ms both;
+        }
+      `,
+    });
+    const capture = page.getByRole("region", {
+      name: "Quick add",
+      exact: true,
+    });
+    const input = capture.getByRole("combobox", {
+      name: "What needs doing?",
+      exact: true,
+    });
+    const title = `Prepare the picnic ${Date.now()}`;
+    await input.fill(title);
+    await capture.getByRole("button", { name: "Details", exact: true }).click();
+    const details = page.getByRole("dialog", {
+      name: "To-do details",
+      exact: true,
+    });
+    let captured = false;
+    let release = () => {};
+    const held = new Promise<void>((resolve) => {
+      release = resolve;
+    });
+    await page.route("**/work", async (route) => {
+      if (
+        route.request().method() !== "POST" ||
+        !route.request().postData()?.includes(title)
+      )
+        return route.continue();
+      const response = await route.fetch();
+      captured = true;
+      await held;
+      await route.fulfill({ response });
+    });
+    try {
+      await details
+        .getByRole("button", { name: "Add to-do", exact: true })
+        .click();
+      await expect.poll(() => captured).toBe(true);
+      await details
+        .getByRole("button", { name: "Close dialog", exact: true })
+        .click();
+      release();
+      await expect(details).toBeHidden();
+      await expect(
+        capture.locator(".capture-feedback[role=status]"),
+      ).toContainText(`${title} added.`);
+      await expect(input).toHaveValue("");
+      await expect(input).toBeFocused();
+      await screenshot(
+        page,
+        info.outputPath("capture-dismissed-save-focus.png"),
+      );
+      await capture
+        .getByRole("button", { name: "Details", exact: true })
+        .click();
+      await page.keyboard.press("Escape");
+      await expect(details).toBeHidden();
+      await expect(
+        capture.getByRole("button", { name: "Details", exact: true }),
+      ).toBeFocused();
+    } finally {
+      release();
+      await page.unroute("**/work");
+    }
+  });
   test("pending capture preserves next-entry typing and suppresses duplicate submission", async ({
     page,
   }, info) => {

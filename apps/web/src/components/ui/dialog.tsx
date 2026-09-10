@@ -1,7 +1,12 @@
 "use client";
 import * as Primitive from "@radix-ui/react-dialog";
 import { X } from "lucide-react";
-import { type ReactNode, useLayoutEffect, useRef } from "react";
+import {
+  type ComponentProps,
+  type ReactNode,
+  useLayoutEffect,
+  useRef,
+} from "react";
 import { Button } from "./button";
 
 let observers = 0;
@@ -24,6 +29,7 @@ export function Dialog({
   children,
   wide = false,
   className = "",
+  onCloseAutoFocus,
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -32,6 +38,9 @@ export function Dialog({
   children: ReactNode;
   wide?: boolean;
   className?: string;
+  onCloseAutoFocus?: ComponentProps<
+    typeof Primitive.Content
+  >["onCloseAutoFocus"];
 }) {
   const opener = useRef<HTMLElement | null>(null);
   const focusFallback = useRef<HTMLElement | null>(null);
@@ -74,6 +83,8 @@ export function Dialog({
               event.preventDefault();
           }}
           onCloseAutoFocus={(event) => {
+            onCloseAutoFocus?.(event);
+            if (event.defaultPrevented) return;
             const target = opener.current?.isConnected
               ? opener.current
               : focusFallback.current;
