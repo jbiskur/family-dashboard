@@ -1,5 +1,29 @@
 # Changelog
 
+## [0.3.0](https://github.com/jbiskur/family-dashboard/compare/v0.2.2...v0.3.0) (2026-09-10)
+
+
+### Features
+
+* guide Revolut and Faroese statement imports ([21b226f](https://github.com/jbiskur/family-dashboard/commit/21b226f1bb387a0d26f130f6a34260197dd8b178))
+* guide Revolut and Faroese statement imports ([ee073ce](https://github.com/jbiskur/family-dashboard/commit/ee073ce5276aa2656c9fababea950dc59dcda644))
+* guide Revolut and Faroese statement imports ([#13](https://github.com/jbiskur/family-dashboard/issues/13)) ([21b226f](https://github.com/jbiskur/family-dashboard/commit/21b226f1bb387a0d26f130f6a34260197dd8b178))
+* make shopping and work faster on mobile ([bf3f731](https://github.com/jbiskur/family-dashboard/commit/bf3f731fa65c949de129fb50668860a109499622))
+* make shopping and work faster on mobile ([85cf856](https://github.com/jbiskur/family-dashboard/commit/85cf856548ea400f2ddbccb3d83c4f67021ffb6e))
+* make shopping and work faster on mobile ([#14](https://github.com/jbiskur/family-dashboard/issues/14)) ([bf3f731](https://github.com/jbiskur/family-dashboard/commit/bf3f731fa65c949de129fb50668860a109499622))
+
+
+### Bug Fixes
+
+* harden sessions and capture focus with MIT licensing ([#1](https://github.com/jbiskur/family-dashboard/issues/1)) ([70cd4cb](https://github.com/jbiskur/family-dashboard/commit/70cd4cb8cea64b2b1f4ca9216ffaba820f5b457f))
+* import complete native bank statements safely ([bb87f18](https://github.com/jbiskur/family-dashboard/commit/bb87f18c03d58f99080453ce8104a03fe796c2c2))
+* import complete native bank statements safely ([77b6612](https://github.com/jbiskur/family-dashboard/commit/77b66126a0fe6d5d71866609baba8cdcdc83d21b))
+* import complete native bank statements safely ([#15](https://github.com/jbiskur/family-dashboard/issues/15)) ([bb87f18](https://github.com/jbiskur/family-dashboard/commit/bb87f18c03d58f99080453ce8104a03fe796c2c2))
+* preserve capture drafts when dismissing suggestions ([f40c861](https://github.com/jbiskur/family-dashboard/commit/f40c861ebf8ed68719b18ae448e0978ec1ef0731))
+* prevent iOS focus zoom across form fields ([8e0bb3c](https://github.com/jbiskur/family-dashboard/commit/8e0bb3c67fdeaab725c09e9e060622f2f8c59c7e))
+* prevent iOS focus zoom across form fields ([41d5026](https://github.com/jbiskur/family-dashboard/commit/41d5026512a745a5669aa00036afb8405745db73))
+* prevent iOS focus zoom across form fields ([#12](https://github.com/jbiskur/family-dashboard/issues/12)) ([8e0bb3c](https://github.com/jbiskur/family-dashboard/commit/8e0bb3c67fdeaab725c09e9e060622f2f8c59c7e))
+
 ## [0.2.2](https://github.com/jbiskur/family-dashboard/compare/v0.2.1...v0.2.2) (2026-09-08)
 
 
