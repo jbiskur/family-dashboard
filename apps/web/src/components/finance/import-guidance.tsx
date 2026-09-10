@@ -1,9 +1,11 @@
 "use client";
 import { FileSpreadsheet, Landmark } from "lucide-react";
+import { useState } from "react";
 import { EntityForm, type FormField } from "../shared/form";
 import { Select } from "../ui/input";
 
 export type StatementProvider = "other" | "revolut" | "faroese";
+export type StatementLayout = "custom" | "faroese-bookings" | "faroese-details";
 export function StatementGuidance({
   provider,
   onChange,
@@ -32,8 +34,8 @@ export function StatementGuidance({
       {provider === "revolut" ? (
         <p className="field-hint">
           In Revolut: Home → Accounts → choose a currency → More → Statement →
-          Excel. Choose the same currency here. We suggest columns for you to
-          check; only completed transactions are included.{" "}
+          CSV or Excel. Choose the same currency here. We suggest columns for
+          you to check; only completed transactions are included.{" "}
           <a
             className="text-link"
             href="https://help.revolut.com/help/profile-and-plan/managing-my-account/account-statement-per-chosen-currency/"
@@ -55,7 +57,11 @@ export function StatementGuidance({
             rel="noreferrer"
           >
             Føroya Banki export help
-          </a>
+          </a>{" "}
+          Choose either the bookings export or payment-details export for a
+          period. They describe the same transactions: importing both can create
+          duplicates. The simpler bookings export is usually enough. For files
+          without column names, choose the matching no-headings layout below.
         </p>
       ) : (
         <p className="field-hint">
@@ -72,6 +78,9 @@ export function StatementFormat({
   sheet,
   sheets,
   headerRow,
+  hasHeaders,
+  firstDataRow,
+  layout,
   issue,
   onSubmit,
   onChange,
@@ -80,11 +89,38 @@ export function StatementFormat({
   sheet?: string;
   sheets: string[];
   headerRow: number;
+  hasHeaders: boolean;
+  firstDataRow: number;
+  layout: StatementLayout;
   issue?: string | null;
   onSubmit: (values: Record<string, string>) => Promise<unknown>;
   onChange: () => void;
 }) {
+  const [headings, setHeadings] = useState(hasHeaders);
   const fields: FormField[] = [
+    {
+      name: "layout",
+      label: "Statement layout",
+      defaultValue:
+        layout === "custom"
+          ? hasHeaders
+            ? "headings"
+            : "no-headings"
+          : layout,
+      options: [
+        { value: "headings", label: "Column names in a heading row" },
+        { value: "no-headings", label: "No headings · custom mapping" },
+        {
+          value: "faroese-bookings",
+          label: "Faroese bookings · 5 columns, no headings",
+        },
+        {
+          value: "faroese-details",
+          label: "Faroese payment details · 16 columns, no headings",
+        },
+      ],
+      hint: "Presets suggest columns only. Check the source and edit the mapping before confirmation.",
+    },
     {
       name: "delimiter",
       label: "CSV separator",
@@ -98,14 +134,16 @@ export function StatementFormat({
     },
     {
       name: "headerRow",
-      label: "Header row",
+      label: headings ? "Header row" : "First data row",
       type: "number",
       min: "1",
       max: "50",
       step: "1",
       required: true,
-      defaultValue: String(headerRow),
-      hint: "Count rows from 1, including blank rows before the column names.",
+      defaultValue: String(hasHeaders ? headerRow : firstDataRow),
+      hint: headings
+        ? "Count rows from 1, including blank rows before the column names."
+        : "Count physical rows from 1. This row is a transaction and will be included.",
     },
     ...(sheets.length
       ? [
@@ -137,7 +175,10 @@ export function StatementFormat({
         fields={fields}
         submitLabel="Read with these settings"
         onSubmit={onSubmit}
-        onValuesChange={onChange}
+        onValuesChange={(values) => {
+          setHeadings(values.layout === "headings");
+          onChange();
+        }}
       />
     </details>
   );

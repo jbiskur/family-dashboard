@@ -1,11 +1,13 @@
 {
   "sourceTest": "tests/http/readiness.test.ts",
-  "sourceTestSha256": "526366e0644b07cf072bed06cd76b6fd8c7d65246f8886ee157ad2bd792878d8",
+  "sourceTestSha256": "3d9bde4cde5e3dda6c65e21c33f6d22ee1756c55560c769b9f77fcfb1956a2a0",
   "sourcePreload": "tests/fixtures/readiness-preload.ts",
   "sourcePreloadSha256": "52a63949c78b6e32b0836f8394760df9639a17b6032d894e5eef8f06e6b6a8e5",
   "extraction": "Verbatim metadata block type Mode through before isolated(), and fixture block const flowIds through before const reservation; only wrapper declares initial empty/selected0 and returns fixture/receipts/write count. No application imports.",
   "purpose": "Reviewed test-only extraction for an unchanged exact released API image",
   "issueId": "e4ee99f9-4405-4653-8408-8f34aa57d08d",
   "planId": "aaccb2c0-61f7-4c42-afd1-9742812693ea",
-  "adaptation": "Existing metadata/fixture blocks, normal formatting, initial/selected parameters defaulting to empty/0, unused log accumulator omitted. Three fixture-only production control-plane response cases; no application imports."
+  "adaptation": "Existing metadata/fixture blocks, normal formatting, initial/selected parameters defaulting to empty/0, unused log accumulator omitted. Three fixture-only production control-plane response cases; no application imports. Updated for five event types grouped under three unique flow types, including bounded statement staging and commit events; each event retains its own identity and readiness denial coverage.",
+  "compatibilityIssueId": "25f5be41-3819-4312-a42e-da3f3b044397",
+  "compatibilityPlanId": "b3da5eb4-4018-4277-a6b4-51161ce8cd8e"
 }

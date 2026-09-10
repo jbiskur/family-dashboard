@@ -35,14 +35,23 @@ import { FinanceBoundary, FinanceNav, Money } from "./finance-shared";
 import {
   StatementFormat,
   StatementGuidance,
+  type StatementLayout,
   type StatementProvider,
 } from "./import-guidance";
 import "./imports.css";
+import {
+  StatementConfirmation,
+  useStatementConfirmation,
+} from "./statement-confirmation";
+import { StatementPages } from "./statement-pages";
 
 type Preview = {
   delimiter: string;
   sheet: string;
   headerRow: number;
+  hasHeaders: boolean;
+  firstDataRow: number;
+  layout: StatementLayout;
   headerIssue?: string | null;
   sourceRowCount: number;
   excluded: { row: number; reason: string }[];
@@ -62,6 +71,9 @@ type Preview = {
 type Source = {
   provider: StatementProvider;
   headerRow: number;
+  hasHeaders: boolean;
+  firstDataRow: number;
+  layout: StatementLayout;
   feeTreatment?: string;
   accountId: string;
   fileName: string;
@@ -91,6 +103,9 @@ export function ImportsPage() {
   const renderedVersion = requestVersion.current;
   const [selected, setSelected] = useState<FinanceImport | null>(null);
   const [success, setSuccess] = useState("");
+  const importConfirmation = useStatementConfirmation();
+  const reconcileConfirmation = useStatementConfirmation();
+  const confirmationPending = importConfirmation.pending !== null;
   const manageable = (accounts.data?.items ?? []).filter(
     (a) => a.visibility === "household" || a.ownerId === access.member.userId,
   );
@@ -139,6 +154,9 @@ export function ImportsPage() {
       const input: Source = {
         provider,
         headerRow: 1,
+        hasHeaders: true,
+        firstDataRow: 1,
+        layout: "custom",
         accountId: chosen,
         fileName: file.name,
         contentBase64,
@@ -185,6 +203,18 @@ export function ImportsPage() {
       delimiter: values.delimiter ?? source.delimiter,
       sheet: values.sheet || undefined,
       headerRow: Number(values.headerRow),
+      hasHeaders: values.layout === "headings",
+      firstDataRow: Number(values.headerRow),
+      layout: (values.layout === "faroese-bookings" ||
+      values.layout === "faroese-details"
+        ? values.layout
+        : "custom") as StatementLayout,
+      ...(values.layout?.startsWith("faroese-")
+        ? {
+            decimalSeparator: ",",
+            dateFormat: "dd-MM-yyyy",
+          }
+        : {}),
     };
     setSource(next);
     setPreview(null);
@@ -382,84 +412,97 @@ export function ImportsPage() {
         </div>
         {error ? <ErrorState error={error} /> : null}
         <Card className="card-pad">
-          <StatementGuidance
-            provider={provider}
-            onChange={(value) => {
-              setProvider(value);
-              clearStatement();
-            }}
-          />
-          <div className="form-field" style={{ marginBottom: 20 }}>
-            <label htmlFor="import-account">Account for this statement</label>
-            {manageable.length ? (
-              <Select
-                id="import-account"
-                value={chosen}
-                onChange={(e) => {
-                  setAccountId(e.target.value);
-                  clearStatement();
-                }}
-              >
-                {manageable.map((a) => (
-                  <option value={a.id} key={a.id}>
-                    {a.name} · {a.currency}
-                  </option>
-                ))}
-              </Select>
-            ) : (
-              <p className="text-small muted">
-                Add an account before importing.{" "}
-                <Link className="text-link" href="/finance/accounts">
-                  Go to Accounts
-                  <ArrowRight size={13} />
-                </Link>
-              </p>
-            )}
-          </div>
-          <div className="drop-zone" ref={filePicker}>
-            <FileUp size={32} strokeWidth={1.5} />
-            <h3>
-              {source ? source.fileName : "Your statement has a home here"}
-            </h3>
-            <p>CSV, XLS or XLSX · up to 10 MB and 1,000 source rows</p>
-            <label className="button button-secondary" htmlFor="statement-file">
-              <Upload size={16} />
-              {source ? "Choose another file" : "Choose a statement"}
-            </label>
-            <Input
-              id="statement-file"
-              aria-label="Choose a statement file"
-              type="file"
-              accept=".csv,.xls,.xlsx"
-              style={{ maxWidth: 280, margin: "12px auto 0" }}
-              disabled={!chosen}
-              onChange={(e) => {
-                const file = e.target.files?.[0];
-                if (file) void read(file);
+          <fieldset className="import-locked" disabled={confirmationPending}>
+            <StatementGuidance
+              provider={provider}
+              onChange={(value) => {
+                setProvider(value);
+                clearStatement();
               }}
             />
-            <p className="field-hint">
-              Nothing becomes trusted until you review and reconcile it.
-            </p>
-          </div>
-          {reading && <LoadingState label="Reading your statement…" />}
-          {source && (
-            <StatementFormat
-              key={`${source.fileName}-${preview?.delimiter}-${preview?.sheet}-${preview?.headerRow}`}
-              delimiter={source.delimiter}
-              sheet={source.sheet}
-              sheets={preview?.sheets ?? []}
-              headerRow={source.headerRow}
-              issue={preview?.headerIssue}
-              onSubmit={reread}
-              onChange={invalidateReview}
-            />
-          )}
+            <div className="form-field" style={{ marginBottom: 20 }}>
+              <label htmlFor="import-account">Account for this statement</label>
+              {manageable.length ? (
+                <Select
+                  id="import-account"
+                  value={chosen}
+                  onChange={(e) => {
+                    setAccountId(e.target.value);
+                    clearStatement();
+                  }}
+                >
+                  {manageable.map((a) => (
+                    <option value={a.id} key={a.id}>
+                      {a.name} · {a.currency}
+                    </option>
+                  ))}
+                </Select>
+              ) : (
+                <p className="text-small muted">
+                  Add an account before importing.{" "}
+                  <Link className="text-link" href="/finance/accounts">
+                    Go to Accounts
+                    <ArrowRight size={13} />
+                  </Link>
+                </p>
+              )}
+            </div>
+            <div className="drop-zone" ref={filePicker}>
+              <FileUp size={32} strokeWidth={1.5} />
+              <h3>
+                {source ? source.fileName : "Your statement has a home here"}
+              </h3>
+              <p>CSV, XLS or XLSX · up to 10 MB and 5,000 source rows</p>
+              <label
+                className="button button-secondary"
+                htmlFor="statement-file"
+              >
+                <Upload size={16} />
+                {source ? "Choose another file" : "Choose a statement"}
+              </label>
+              <Input
+                id="statement-file"
+                aria-label="Choose a statement file"
+                type="file"
+                accept=".csv,.xls,.xlsx"
+                style={{ maxWidth: 280, margin: "12px auto 0" }}
+                disabled={!chosen}
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) void read(file);
+                }}
+              />
+              <p className="field-hint">
+                Nothing becomes trusted until you review and reconcile it.
+              </p>
+            </div>
+            {reading && <LoadingState label="Reading your statement…" />}
+            {source && (
+              <StatementFormat
+                key={`${source.fileName}-${preview?.delimiter}-${preview?.sheet}-${preview?.headerRow}-${preview?.hasHeaders}-${preview?.layout}`}
+                delimiter={source.delimiter}
+                sheet={source.sheet}
+                sheets={preview?.sheets ?? []}
+                headerRow={source.headerRow}
+                hasHeaders={source.hasHeaders}
+                firstDataRow={source.firstDataRow}
+                layout={source.layout}
+                issue={preview?.headerIssue}
+                onSubmit={reread}
+                onChange={invalidateReview}
+              />
+            )}
+          </fieldset>
         </Card>
         {preview && !preview.headerIssue && (
           <div className="section-gap">
             <SectionTitle title="A quick look at the source" />
             <Card>
+              <p className="import-review-context">
+                Showing the first {Math.min(5, preview.preview.length)} of{" "}
+                {preview.sourceRowCount.toLocaleString("en")} source rows.
+                Validate the mapping to review every eligible row below.
+              </p>
               <div className="table-scroll">
                 <table className="data-table">
                   <thead>
@@ -486,13 +529,27 @@ export function ImportsPage() {
             <div className="two-columns section-gap">
               <Card className="card-pad">
                 <SectionTitle title="Tell us which column is which" />
-                <EntityForm
-                  key={`${source?.fileName}-${preview.headers.join(",")}`}
-                  fields={mappingFields}
-                  onValuesChange={invalidateReview}
-                  submitLabel="Validate this mapping"
-                  onSubmit={map}
-                />
+                {source?.layout === "faroese-details" && (
+                  <p className="field-hint">
+                    Date columns 8 and 10, and identifier column 11, are
+                    available if your export documentation confirms their
+                    meaning. Optional fields stay unmapped until you choose
+                    them. Use this export instead of the bookings export, never
+                    alongside it.
+                  </p>
+                )}
+                <fieldset
+                  className="import-locked"
+                  disabled={confirmationPending}
+                >
+                  <EntityForm
+                    key={`${source?.fileName}-${source?.layout}-${preview.headers.join(",")}`}
+                    fields={mappingFields}
+                    onValuesChange={invalidateReview}
+                    submitLabel="Validate this mapping"
+                    onSubmit={map}
+                  />
+                </fieldset>
               </Card>
               <Card className="card-pad">
                 <SectionTitle title="The review" />
@@ -504,18 +561,47 @@ export function ImportsPage() {
                   }{" "}
                   · {preview.currency}
                 </p>
+                <p className="import-counts" role="status">
+                  {preview.sourceRowCount.toLocaleString("en")} source rows
+                  {preview.valid ||
+                  preview.errors.length ||
+                  preview.excluded.length ? (
+                    <>
+                      {" "}
+                      checked · {preview.rows.length.toLocaleString("en")}{" "}
+                      eligible · {preview.excluded.length.toLocaleString("en")}{" "}
+                      excluded
+                      {preview.errors.length > 0 && (
+                        <>
+                          {" "}
+                          · {preview.errors.length.toLocaleString("en")} need
+                          correction
+                        </>
+                      )}
+                    </>
+                  ) : (
+                    " · validate the mapping to check eligibility"
+                  )}
+                </p>
                 {!!preview.excluded?.length && (
                   <details className="import-exclusions" open>
                     <summary>
                       {preview.excluded.length} rows excluded from import
                     </summary>
-                    <ul>
-                      {preview.excluded.map((row) => (
-                        <li key={row.row}>
-                          Row {row.row}: {row.reason}
-                        </li>
-                      ))}
-                    </ul>
+                    <StatementPages
+                      items={preview.excluded}
+                      label="Excluded rows"
+                    >
+                      {(page) => (
+                        <ul>
+                          {page.map((row) => (
+                            <li key={row.row}>
+                              Row {row.row}: {row.reason}
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    </StatementPages>
                   </details>
                 )}
                 {validating ? (
@@ -527,11 +613,23 @@ export function ImportsPage() {
                       {preview.errors.length === 1 ? "issue" : "issues"} to
                       resolve before confirmation.
                     </div>
-                    {preview.errors.map((e) => (
-                      <p className="field-error" key={`${e.row}-${e.message}`}>
-                        Row {e.row}: {e.message}
-                      </p>
-                    ))}
+                    <StatementPages
+                      items={preview.errors}
+                      label="Validation issues"
+                    >
+                      {(page) => (
+                        <div>
+                          {page.map((e) => (
+                            <p
+                              className="field-error"
+                              key={`${e.row}-${e.message}`}
+                            >
+                              Row {e.row}: {e.message}
+                            </p>
+                          ))}
+                        </div>
+                      )}
+                    </StatementPages>
                   </>
                 ) : preview.valid ? (
                   <>
@@ -545,38 +643,43 @@ export function ImportsPage() {
                       className="text-small muted"
                       style={{ textAlign: "center", margin: "12px 0 24px" }}
                     >
-                      {preview.rows.length} source rows checked. Any uncertain
-                      duplicate will still need your review.
+                      Confirm the whole statement after checking the included
+                      rows. Any uncertain duplicate will still need your review.
                     </p>
-                    <div className="table-scroll import-normalized">
-                      <table className="data-table">
-                        <caption>
-                          Included rows · {preview.currency}
-                          {preview.feeTreatment
-                            ? ` · fees: ${preview.feeTreatment === "included" ? "already included" : preview.feeTreatment === "subtract-positive" ? "separate positive charge subtracted" : "signed adjustment added"}`
-                            : ""}
-                        </caption>
-                        <thead>
-                          <tr>
-                            <th>Booking date</th>
-                            <th>Description</th>
-                            <th>Signed amount</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {preview.rows.slice(0, 10).map((row) => (
-                            <tr key={row.id}>
-                              <td>{row.bookingDate}</td>
-                              <td>{row.description}</td>
-                              <td>
-                                {row.amount} {preview.currency}
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                    <EntityForm
+                    <StatementPages items={preview.rows} label="Included rows">
+                      {(page) => (
+                        <div className="table-scroll import-normalized">
+                          <table className="data-table">
+                            <caption>
+                              Included rows · {preview.currency}
+                              {preview.feeTreatment
+                                ? ` · fees: ${preview.feeTreatment === "included" ? "already included" : preview.feeTreatment === "subtract-positive" ? "separate positive charge subtracted" : "signed adjustment added"}`
+                                : ""}
+                            </caption>
+                            <thead>
+                              <tr>
+                                <th>Booking date</th>
+                                <th>Description</th>
+                                <th>Signed amount</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {page.map((row) => (
+                                <tr key={row.id}>
+                                  <td>{row.bookingDate}</td>
+                                  <td>{row.description}</td>
+                                  <td>
+                                    {row.amount} {preview.currency}
+                                  </td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                      )}
+                    </StatementPages>
+                    <StatementConfirmation
+                      controller={importConfirmation}
                       fields={[
                         {
                           name: "openingBalance",
@@ -591,7 +694,7 @@ export function ImportsPage() {
                       ]}
                       submitLabel="Confirm import"
                       footer="This records validated facts as needing review. Reconciliation is a separate, explicit step."
-                      onSubmit={async (values) => {
+                      request={(values) => {
                         if (
                           !source ||
                           reading ||
@@ -600,11 +703,10 @@ export function ImportsPage() {
                           preview.accountId !== chosen ||
                           renderedVersion !== requestVersion.current
                         )
-                          return;
-                        const version = requestVersion.current;
-                        const result = (await command.execute(
-                          "/v1/finance/imports",
-                          {
+                          return null;
+                        return {
+                          path: "/v1/finance/imports",
+                          body: {
                             accountId: preview.accountId,
                             fileName: preview.fileName,
                             sourceHash: preview.sourceHash,
@@ -614,8 +716,9 @@ export function ImportsPage() {
                             openingBalance: values.openingBalance || null,
                             closingBalance: values.closingBalance || null,
                           },
-                        )) as FinanceImport;
-                        if (version !== requestVersion.current) return;
+                        };
+                      }}
+                      onSuccess={(result) => {
                         setSelected(result);
                         clearStatement();
                         setSuccess(
@@ -675,7 +778,14 @@ export function ImportsPage() {
                       ? "Reconciled"
                       : "Needs review"}
                   </Badge>
-                  <Button variant="ghost" onClick={() => setSelected(batch)}>
+                  <Button
+                    variant="ghost"
+                    disabled={
+                      confirmationPending ||
+                      reconcileConfirmation.pending !== null
+                    }
+                    onClick={() => setSelected(batch)}
+                  >
                     Review
                     <ArrowRight size={15} />
                   </Button>
@@ -694,6 +804,7 @@ export function ImportsPage() {
           <ReviewImport
             key={selected.id}
             batch={selected}
+            confirmation={reconcileConfirmation}
             close={() => setSelected(null)}
           />
         )}
@@ -705,11 +816,14 @@ export function ImportsPage() {
 function ReviewImport({
   batch,
   close,
+  confirmation,
 }: {
   batch: FinanceImport;
   close: () => void;
+  confirmation: ReturnType<typeof useStatementConfirmation>;
 }) {
-  const command = useCommand();
+  const confirmationPending = confirmation.pending !== null;
+  const pendingBody = confirmation.pending?.body;
   const statementDates = batch.rows
     .flatMap((row) => [row.bookingDate, row.transactionDate, row.valueDate])
     .filter((date): date is string => Boolean(date))
@@ -717,13 +831,25 @@ function ReviewImport({
   const transactions = useHeima<{ items: FinanceTransaction[] }>(
     `/v1/finance/transactions?accountId=${batch.accountId}&from=${statementDates[0]}&to=${statementDates.at(-1)}`,
   );
-  const [rows, setRows] = useState<ImportRow[]>(batch.rows);
-  const [baseVersion] = useState(batch.version);
+  const [rows, setRows] = useState<ImportRow[]>(
+    pendingBody ? (pendingBody.rows as ImportRow[]) : batch.rows,
+  );
+  const [baseVersion] = useState(
+    pendingBody ? Number(pendingBody.baseVersion) : batch.version,
+  );
   const [editRow, setEditRow] = useState<ImportRow | null>(null);
-  const [result, setResult] = useState<FinanceImport | null>(null);
+  const result =
+    confirmation.result?.id === batch.id &&
+    confirmation.result.version >= batch.version
+      ? confirmation.result
+      : null;
   const [balances, setBalances] = useState({
-    openingBalance: batch.openingBalance ?? "",
-    closingBalance: batch.closingBalance ?? "",
+    openingBalance: String(
+      pendingBody?.openingBalance ?? batch.openingBalance ?? "",
+    ),
+    closingBalance: String(
+      pendingBody?.closingBalance ?? batch.closingBalance ?? "",
+    ),
   });
   const digits =
     new Intl.NumberFormat("en", {
@@ -773,7 +899,7 @@ function ReviewImport({
     <>
       <Dialog
         open
-        onOpenChange={(open) => !open && close()}
+        onOpenChange={(open) => !open && !confirmationPending && close()}
         title="Make the statement add up"
         description={`${batch.fileName} · ${rows.length} source rows · ${batch.currency}`}
         wide
@@ -796,46 +922,59 @@ function ReviewImport({
                 ? `${unresolved} source rows still need a match or explanation.`
                 : "Every source row is matched or explained. Check the exact balance difference below."}
             </div>
-            <div
-              className="table-scroll"
-              style={{ maxHeight: 340, overflowY: "auto" }}
-            >
-              <table className="data-table">
-                <thead>
-                  <tr>
-                    <th>Source row</th>
-                    <th>Amount</th>
-                    <th>Review</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {rows.map((row) => (
-                    <tr key={row.id}>
-                      <td>
-                        <strong>
-                          {row.description || "Unmapped description"}
-                        </strong>
-                        <small>
-                          {row.bookingDate || "Unmapped date"} ·{" "}
-                          {row.sourceId ?? "No source ID"}
-                        </small>
-                        {row.explanation && <small>{row.explanation}</small>}
-                      </td>
-                      <td>
-                        <Money value={row.amount} currency={batch.currency} />
-                      </td>
-                      <td>
-                        <Button variant="ghost" onClick={() => setEditRow(row)}>
-                          {row.status === "explained"
-                            ? "explained / excluded"
-                            : row.status.replaceAll("-", " ")}
-                        </Button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+            <StatementPages items={rows} label="Statement rows">
+              {(page) => (
+                <div
+                  className="table-scroll"
+                  style={{ maxHeight: 340, overflowY: "auto" }}
+                >
+                  <table className="data-table">
+                    <thead>
+                      <tr>
+                        <th>Source row</th>
+                        <th>Amount</th>
+                        <th>Review</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {page.map((row) => (
+                        <tr key={row.id}>
+                          <td>
+                            <strong>
+                              {row.description || "Unmapped description"}
+                            </strong>
+                            <small>
+                              {row.bookingDate || "Unmapped date"} ·{" "}
+                              {row.sourceId ?? "No source ID"}
+                            </small>
+                            {row.explanation && (
+                              <small>{row.explanation}</small>
+                            )}
+                          </td>
+                          <td>
+                            <Money
+                              value={row.amount}
+                              currency={batch.currency}
+                            />
+                          </td>
+                          <td>
+                            <Button
+                              variant="ghost"
+                              disabled={confirmationPending}
+                              onClick={() => setEditRow(row)}
+                            >
+                              {row.status === "explained"
+                                ? "explained / excluded"
+                                : row.status.replaceAll("-", " ")}
+                            </Button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </StatementPages>
             <hr className="separator" />
             <div
               className={`notice ${difference !== null && difference !== 0n ? "warning" : ""}`}
@@ -864,7 +1003,8 @@ function ReviewImport({
               must equal zero. Explained rows are excluded from the total; their
               source facts and reasons are kept.
             </p>
-            <EntityForm
+            <StatementConfirmation
+              controller={confirmation}
               onValuesChange={(values) =>
                 setBalances({
                   openingBalance: values.openingBalance ?? "",
@@ -887,17 +1027,15 @@ function ReviewImport({
               ]}
               submitLabel="Check & reconcile"
               footer="Every row needs a match or an explained/excluded disposition. Only matched ledger amounts count toward the exact zero difference. No tolerance is applied."
-              onSubmit={async (values) => {
+              request={(values) => {
                 if (unresolved)
                   throw new Error(
                     "Resolve every source row before reconciling.",
                   );
-                setResult(
-                  (await command.execute(
-                    `/v1/finance/imports/${batch.id}/reconcile`,
-                    { ...values, baseVersion, rows },
-                  )) as FinanceImport,
-                );
+                return {
+                  path: `/v1/finance/imports/${batch.id}/reconcile`,
+                  body: { ...values, baseVersion, rows },
+                };
               }}
               onCancel={close}
             />

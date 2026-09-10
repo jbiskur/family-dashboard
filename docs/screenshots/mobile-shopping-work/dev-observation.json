@@ -4,18 +4,12 @@
   "mode": "next dev",
   "origin": "http://localhost:3013",
   "engine": "webkit",
-  "widths": [
-    320,
-    390
-  ],
+  "widths": [320, 390],
   "observations": [
     {
       "feature": "bank",
       "passed": true,
-      "widths": [
-        390,
-        320
-      ],
+      "widths": [390, 320],
       "proof": [
         "Real upload and inferred editable mapping",
         "Nonzero fee blocks until explicitly interpreted",

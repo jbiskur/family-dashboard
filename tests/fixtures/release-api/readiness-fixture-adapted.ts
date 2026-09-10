@@ -20,13 +20,28 @@ const streams = [
     "Private household activity and notification delivery",
     "Private recipient activity and notification delivery state",
   ],
+  [
+    "heima.household.0",
+    "import.rows-staged.0",
+    "Private shopping, work and financial household facts",
+    "A bounded private statement row batch was staged",
+  ],
+  [
+    "heima.household.0",
+    "import.commit-requested.0",
+    "Private shopping, work and financial household facts",
+    "A complete private statement change was requested atomically",
+  ],
 ] as const;
 
 export function startExistingReadinessFixture(
   initial: Mode = "empty",
   selected = 0,
 ) {
-  const flowIds = streams.map(() => crypto.randomUUID());
+  const flows = [
+    ...new Map(streams.map((stream) => [stream[0], stream])).values(),
+  ];
+  const flowIds = flows.map(() => crypto.randomUUID());
   const eventIds = streams.map(() => crypto.randomUUID());
   const coreName = "heima-readiness-fixture";
   const mode = initial;
@@ -62,7 +77,7 @@ export function startExistingReadinessFixture(
             body.dataCore !== coreName ||
             body.type !== "virtual" ||
             JSON.stringify(body.virtualConfig?.flowTypes) !==
-              JSON.stringify(streams.map((stream) => stream[0]))
+              JSON.stringify(flows.map((stream) => stream[0]))
           )
             return json(
               { error: "Unexpected local pathway registration" },
@@ -111,7 +126,7 @@ export function startExistingReadinessFixture(
         ]);
       if (url.pathname === "/api/v1/flow-types")
         return json(
-          streams.map((stream, index) => ({
+          flows.map((stream, index) => ({
             id: flowIds[index],
             tenantId,
             dataCoreId: coreId,
@@ -127,20 +142,26 @@ export function startExistingReadinessFixture(
           ) as `${string}-${string}-${string}-${string}-${string}`,
         );
         if (index < 0) return json([], 404);
-        return json([
-          {
-            id: eventIds[index],
-            tenantId,
-            dataCoreId: coreId,
-            flowTypeId: flowIds[index],
-            name: streams[index][1],
-            description: streams[index][3],
-            isDeleting: false,
-            isTruncating: false,
-            createdAt: new Date().toISOString(),
-            updatedAt: null,
-          },
-        ]);
+        return json(
+          streams.flatMap((stream, eventIndex) =>
+            stream[0] === flows[index][0]
+              ? [
+                  {
+                    id: eventIds[eventIndex],
+                    tenantId,
+                    dataCoreId: coreId,
+                    flowTypeId: flowIds[index],
+                    name: stream[1],
+                    description: stream[3],
+                    isDeleting: false,
+                    isTruncating: false,
+                    createdAt: new Date().toISOString(),
+                    updatedAt: null,
+                  },
+                ]
+              : [],
+          ),
+        );
       }
       if (url.pathname === "/api/v1/events") {
         // The real pump uses its normal page size; observe only the bounded

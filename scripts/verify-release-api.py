@@ -245,8 +245,8 @@ def main():
                 raise RuntimeError("Private value detected in fixture receipt; raw content withheld")
             fixture = {key: raw_fixture[key] for key in allowed}
             save("fixture.json", fixture)
-            if fixture["unexpectedWrites"] != 0 or len({row["eventId"] for row in fixture["readinessReads"]}) != 3:
-                raise RuntimeError("Fixture must observe three distinct readiness streams and no unexpected writes")
+            if fixture["unexpectedWrites"] != 0 or len({row["eventId"] for row in fixture["readinessReads"]}) != 5:
+                raise RuntimeError("Fixture must observe five distinct readiness streams and no unexpected writes")
             result["coordinatorBeforeStop"] = coordinator()
             snapshot = result["coordinatorBeforeStop"]
             if len(snapshot["instances"]) != 1:

@@ -3,11 +3,7 @@
   "mode": "next dev",
   "origin": "http://localhost:3013",
   "engine": "webkit",
-  "widths": [
-    390,
-    320,
-    1440
-  ],
+  "widths": [390, 320, 1440],
   "metrics": {
     "dock": {
       "top": 643.5,
@@ -28,7 +24,5 @@
     "No horizontal overflow",
     "Scrolled work dock clears navigation"
   ],
-  "limits": [
-    "Desktop WebKit emulation; physical iOS keyboard untested"
-  ]
+  "limits": ["Desktop WebKit emulation; physical iOS keyboard untested"]
 }

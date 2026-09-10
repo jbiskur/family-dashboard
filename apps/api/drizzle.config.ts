@@ -13,5 +13,6 @@ export default defineConfig({
     "resources",
     "resource_history",
     "activity",
+    "import_transfers",
   ],
 });

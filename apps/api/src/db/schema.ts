@@ -1,4 +1,6 @@
+import type { ImportBatchEvent, ImportTransferHeader } from "@heima/contracts";
 import {
+  boolean,
   integer,
   jsonb,
   pgTable,
@@ -7,6 +9,23 @@ import {
   timestamp,
   uuid,
 } from "drizzle-orm/pg-core";
+
+// Application-owned projection of encrypted import events. No domain reader
+// exposes staging; only the event handler may write it. No foreign keys.
+export const importTransfers = pgTable("import_transfers", {
+  commandId: uuid("command_id").primaryKey(),
+  householdId: uuid("household_id").notNull(),
+  actorId: uuid("actor_id").notNull(),
+  header: jsonb("header").$type<ImportTransferHeader>().notNull(),
+  parts: jsonb("parts")
+    .$type<
+      Record<string, Pick<ImportBatchEvent, "offset" | "partDigest" | "rows">>
+    >()
+    .notNull(),
+  manifest: jsonb("manifest").$type<Record<string, unknown>>(),
+  commitReceived: boolean("commit_received").notNull().default(false),
+  occurredAt: timestamp("occurred_at", { withTimezone: true }).notNull(),
+});
 
 export const households = pgTable("households", {
   id: uuid("id").primaryKey(),

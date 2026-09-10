@@ -1,0 +1,35 @@
+{
+  "observedAt": "2026-09-10T10:50:25.306913+00:00",
+  "scope": "Read-only aggregate of retained local fixture attempts. Includes earlier and concurrently running fictional validation; counts are not isolated to the 10-test receipt. No statement values, ciphertext or secrets collected.",
+  "transportTests": {
+    "passed": 10,
+    "failed": 0,
+    "assertions": 300,
+    "seconds": 51.57
+  },
+  "limits": {
+    "encrypted_event_bytes": 64000,
+    "plaintext_event_bytes": 45000,
+    "normalized_command_bytes": 8388608,
+    "parts": 256,
+    "rows": 5000
+  },
+  "streams": {
+    "import.rows-staged.0": {
+      "observed_attempts": 183,
+      "accepted_attempts": 156,
+      "accepted_min_bytes": 1465,
+      "accepted_max_bytes": 60037,
+      "accepted_over_64000": 0,
+      "rejected_64001_boundary_attempts": 2
+    },
+    "import.commit-requested.0": {
+      "observed_attempts": 25,
+      "accepted_attempts": 25,
+      "accepted_min_bytes": 701,
+      "accepted_max_bytes": 1165,
+      "accepted_over_64000": 0,
+      "rejected_64001_boundary_attempts": 0
+    }
+  }
+}

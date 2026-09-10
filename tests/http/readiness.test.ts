@@ -24,6 +24,18 @@ const streams = [
     "Private household activity and notification delivery",
     "Private recipient activity and notification delivery state",
   ],
+  [
+    "heima.household.0",
+    "import.rows-staged.0",
+    "Private shopping, work and financial household facts",
+    "A bounded private statement row batch was staged",
+  ],
+  [
+    "heima.household.0",
+    "import.commit-requested.0",
+    "Private shopping, work and financial household facts",
+    "A complete private statement change was requested atomically",
+  ],
 ] as const;
 
 async function isolated(initial: Mode = "empty", selected = 0) {
@@ -34,7 +46,10 @@ async function isolated(initial: Mode = "empty", selected = 0) {
     const at = line.indexOf("=");
     if (at > 0) env[line.slice(0, at)] = line.slice(at + 1);
   }
-  const flowIds = streams.map(() => crypto.randomUUID());
+  const flows = [
+    ...new Map(streams.map((stream) => [stream[0], stream])).values(),
+  ];
+  const flowIds = flows.map(() => crypto.randomUUID());
   const eventIds = streams.map(() => crypto.randomUUID());
   const coreName = "heima-readiness-fixture";
   let mode = initial;
@@ -82,7 +97,7 @@ async function isolated(initial: Mode = "empty", selected = 0) {
         ]);
       if (url.pathname === "/api/v1/flow-types")
         return json(
-          streams.map((stream, index) => ({
+          flows.map((stream, index) => ({
             id: flowIds[index],
             tenantId,
             dataCoreId: coreId,
@@ -98,20 +113,26 @@ async function isolated(initial: Mode = "empty", selected = 0) {
           ) as `${string}-${string}-${string}-${string}-${string}`,
         );
         if (index < 0) return json([], 404);
-        return json([
-          {
-            id: eventIds[index],
-            tenantId,
-            dataCoreId: coreId,
-            flowTypeId: flowIds[index],
-            name: streams[index][1],
-            description: streams[index][3],
-            isDeleting: false,
-            isTruncating: false,
-            createdAt: new Date().toISOString(),
-            updatedAt: null,
-          },
-        ]);
+        return json(
+          streams.flatMap((stream, eventIndex) =>
+            stream[0] === flows[index][0]
+              ? [
+                  {
+                    id: eventIds[eventIndex],
+                    tenantId,
+                    dataCoreId: coreId,
+                    flowTypeId: flowIds[index],
+                    name: stream[1],
+                    description: stream[3],
+                    isDeleting: false,
+                    isTruncating: false,
+                    createdAt: new Date().toISOString(),
+                    updatedAt: null,
+                  },
+                ]
+              : [],
+          ),
+        );
       }
       if (url.pathname === "/api/v1/events") {
         // The real pump uses its normal page size; observe only the bounded
@@ -229,7 +250,7 @@ test("R1 empty streams are ready and concurrent probes share one bounded refresh
       expect(response.headers.get("cache-control")).toBe("no-store");
       expect(await response.json()).toEqual({ status: "ready" });
     }
-    expect(fixture.receipts).toHaveLength(3);
+    expect(fixture.receipts).toHaveLength(streams.length);
     expect(new Set(fixture.receipts.map((receipt) => receipt.eventId))).toEqual(
       new Set(fixture.eventIds),
     );
@@ -242,7 +263,7 @@ test("R1 empty streams are ready and concurrent probes share one bounded refresh
   }
 }, 30000);
 
-for (let index = 0; index < 3; index++)
+for (let index = 0; index < streams.length; index++)
   test(`R2 stream ${index + 1} fetch denial makes readiness503 while liveness200`, async () => {
     const fixture = await isolated("denied", index);
     try {
@@ -281,13 +302,13 @@ test("R4 deadline aborts a stalled fetch, late success stays unready, and a late
     );
     expect(Date.now() - start).toBeLessThan(6000);
     for (const response of responses) expect(response.status).toBe(503);
-    expect(fixture.receipts).toHaveLength(3);
+    expect(fixture.receipts).toHaveLength(streams.length);
     await Bun.sleep(2000);
     expect((await fetch(`${fixture.origin}/health/ready`)).status).toBe(503);
     fixture.setMode("empty");
     await Bun.sleep(13200);
     expect((await fetch(`${fixture.origin}/health/ready`)).status).toBe(200);
-    expect(fixture.receipts).toHaveLength(6);
+    expect(fixture.receipts).toHaveLength(streams.length * 2);
     fixture.setMode("denied");
     await Bun.sleep(15200);
     expect((await fetch(`${fixture.origin}/health/ready`)).status).toBe(503);

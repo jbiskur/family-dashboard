@@ -1,0 +1,32 @@
+{
+  "checks": [
+    {
+      "log": "native-frozen-install.log",
+      "sha256": "3a76f942821e74a2ec682851079bcb4a5a490ccdfdee49412e8de5872120cdac",
+      "result": "pass"
+    },
+    {
+      "log": "native-migration.log",
+      "sha256": "aa45a010a800f13c9171cc55dc8a48a100e1db4d23b4a4d9b140b1c80dc578ca",
+      "result": "pass"
+    },
+    {
+      "log": "native-typecheck-final.log",
+      "sha256": "7687bfe529d94ef4a6e07787cd597a3032680a991f039c653fcc1a8514b85142",
+      "result": "pass"
+    },
+    {
+      "log": "native-lint-final.log",
+      "sha256": "841b22ca98ccad5b7b9a80f8b31a1c217bd7d91b8219e2a7b8b099ba47701183",
+      "result": "pass"
+    },
+    {
+      "log": "native-build-production-final.log",
+      "sha256": "3ce3ac57f0b3539e40d65882d7410adc04801da7d7e4d99f0ddfeed48e24ad5e",
+      "result": "pass"
+    }
+  ],
+  "lint": "68 warnings and1 info; no errors.",
+  "migration": "Additive0004 applied and repeated successfully; no resets, drops or runtime-table migration.",
+  "delivery": "CI, merge, release and deployment deferred by user."
+}
