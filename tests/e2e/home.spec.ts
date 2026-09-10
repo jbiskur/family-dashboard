@@ -87,19 +87,18 @@ test("Home quick capture connects to the owning list and Work without duplicate 
   ).toBeVisible();
   const listPath = new URL(page.url()).pathname;
   await page.goto("/");
-  await page
-    .getByRole("button", { name: "Shopping item", exact: true })
-    .click();
+  await page.getByRole("button", { name: "Shopping", exact: true }).click();
   await page
     .getByRole("combobox", { name: "Shopping list", exact: true })
-    .selectOption({ label: list });
+    .selectOption({ label: `${list} · Household` });
   await page
-    .getByRole("textbox", { name: "What do we need?", exact: true })
+    .getByRole("combobox", { name: "What do we need?", exact: true })
     .fill("Apples for lunch");
-  await page.getByLabel("Quantity", { exact: true }).fill("6");
-  await page.getByRole("button", { name: "Add it", exact: true }).click();
-  await expect(page.locator(".notice")).toContainText(
-    "Added to your shopping list.",
+  await page.getByRole("button", { name: "Details", exact: true }).click();
+  await page.getByLabel("Quantity or amount", { exact: true }).fill("6");
+  await page.getByRole("button", { name: "Add shopping", exact: true }).click();
+  await expect(page.locator(".capture-feedback")).toContainText(
+    "Apples for lunch added.",
   );
   await page.goto(listPath);
   await expect(
@@ -115,10 +114,12 @@ test("Home quick capture connects to the owning list and Work without duplicate 
   const title = `Book family dentist ${crypto.randomUUID()}`;
   await page.getByRole("button", { name: "To-do", exact: true }).click();
   await page
-    .getByRole("textbox", { name: "What needs doing?", exact: true })
+    .getByRole("combobox", { name: "What needs doing?", exact: true })
     .fill(title);
-  await page.getByRole("button", { name: "Add it", exact: true }).click();
-  await expect(page.locator(".notice")).toContainText("Added to Work.");
+  await page.getByRole("button", { name: "Add to-do", exact: true }).click();
+  await expect(page.locator(".capture-feedback")).toContainText(
+    `${title} added.`,
+  );
   await page.getByRole("link", { name: "See what's on today" }).click();
   await expect(page).toHaveURL(/\/work$/);
   await expect(

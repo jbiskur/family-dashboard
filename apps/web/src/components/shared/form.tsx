@@ -5,6 +5,8 @@ import { useState } from "react";
 import { z } from "zod";
 import { Button } from "../ui/button";
 import { Input, Select, Textarea } from "../ui/input";
+import { type ColourChoice, ColourChoiceField } from "./colour-choice";
+import { type EntryHistory, HistoryInput } from "./history-input";
 import { ErrorState } from "./page";
 import { SearchableSelect } from "./searchable-select";
 
@@ -22,6 +24,8 @@ export type FormField = {
   step?: string;
   optional?: boolean;
   searchable?: boolean;
+  history?: (values: Record<string, string>) => EntryHistory;
+  colourChoices?: ColourChoice[];
 };
 export function EntityForm({
   fields,
@@ -30,8 +34,10 @@ export function EntityForm({
   onCancel,
   footer,
   onValuesChange,
+  scrollBody = false,
 }: {
   fields: FormField[];
+  scrollBody?: boolean;
   submitLabel?: string;
   onSubmit: (values: Record<string, string>) => Promise<unknown>;
   onCancel?: () => void;
@@ -98,11 +104,42 @@ export function EntityForm({
         };
         return (
           <div className="form-field">
-            <label htmlFor={id}>
-              {config.label}
-              {config.required && <span aria-hidden="true"> *</span>}
-            </label>
-            {config.options && config.searchable ? (
+            {!config.colourChoices && (
+              <label htmlFor={id}>
+                {config.label}
+                {config.required && <span aria-hidden="true"> *</span>}
+              </label>
+            )}
+            {config.colourChoices ? (
+              <ColourChoiceField
+                id={id}
+                label={config.label}
+                value={field.state.value}
+                choices={config.colourChoices}
+                describedBy={props["aria-describedby"]}
+                onChange={(value) => {
+                  field.handleChange(value);
+                  onValuesChange?.({
+                    ...form.state.values,
+                    [config.name]: value,
+                  });
+                }}
+              />
+            ) : config.history ? (
+              <form.Subscribe selector={(state) => state.values}>
+                {(values) => (
+                  <HistoryInput
+                    {...props}
+                    placeholder={config.placeholder}
+                    history={config.history?.(values) ?? { names: [] }}
+                    onValueChange={(value) => {
+                      field.handleChange(value);
+                      onValuesChange?.({ ...values, [config.name]: value });
+                    }}
+                  />
+                )}
+              </form.Subscribe>
+            ) : config.options && config.searchable ? (
               <SearchableSelect
                 {...props}
                 options={config.options}
@@ -141,15 +178,8 @@ export function EntityForm({
       }}
     </form.Field>
   );
-  return (
-    <form
-      className="entity-form"
-      onSubmit={(event) => {
-        event.preventDefault();
-        event.stopPropagation();
-        void form.handleSubmit();
-      }}
-    >
+  const body = (
+    <>
       {fields.filter((f) => !f.optional).map(renderField)}
       {fields.some((f) => f.optional) && (
         <details>
@@ -161,6 +191,18 @@ export function EntityForm({
       )}
       {error ? <ErrorState error={error} /> : null}
       {footer && <p className="field-hint">{footer}</p>}
+    </>
+  );
+  return (
+    <form
+      className={`entity-form ${scrollBody ? "entity-form-scroll" : ""}`}
+      onSubmit={(event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        void form.handleSubmit();
+      }}
+    >
+      {scrollBody ? <div className="entity-form-fields">{body}</div> : body}
       <div className="form-actions">
         {onCancel && (
           <Button type="button" variant="ghost" onClick={onCancel}>

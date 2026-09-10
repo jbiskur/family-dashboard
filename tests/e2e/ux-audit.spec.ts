@@ -89,7 +89,7 @@ for (const width of [1440, 390, 320]) {
     await assertAccessible(page, info, `home-${width}`);
     for (const [name, path, button] of [
       ["Shopping", "/shopping", "New list"],
-      ["Work", "/work", "Add a to-do"],
+      ["Work", "/work", "Details"],
     ]) {
       await navigation.getByRole("link", { name, exact: true }).click();
       await expect(page).toHaveURL(`http://localhost:3010${path}`);

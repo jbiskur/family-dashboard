@@ -26,15 +26,15 @@ test("Occurrence edit, monthly successor, explicit series stop and removed histo
   await page.goto("/work");
   const base = `Monthly recycling ${crypto.randomUUID()}`;
   const once = `This collection only ${crypto.randomUUID()}`;
-  await page.getByRole("button", { name: "Add a to-do", exact: true }).click();
-  await page.getByRole("textbox", { name: /What needs doing/ }).fill(base);
+  await page.getByRole("button", { name: "Details", exact: true }).click();
+  await page.getByRole("combobox", { name: /What needs doing/ }).fill(base);
   await page.getByText("More details & options", { exact: true }).click();
   await page
     .getByRole("combobox", { name: "Repeat", exact: true })
     .selectOption("month");
   await page.getByRole("button", { name: "Add to-do", exact: true }).click();
   await expect(
-    page.getByRole("dialog", { name: "New to-do" }).getByRole("alert"),
+    page.getByRole("dialog", { name: "To-do details" }).getByRole("alert"),
   ).toBeVisible();
   const unanchored = await page.request.get("/api/backend/work/items", {
     headers: { "x-heima-actor-id": "00000000-0000-4000-8000-000000000001" },
@@ -48,7 +48,9 @@ test("Occurrence edit, monthly successor, explicit series stop and removed histo
     .getByLabel("Due date (optional)", { exact: true })
     .fill("2036-01-31");
   await page.getByRole("button", { name: "Add to-do", exact: true }).click();
-  await page.getByRole("heading", { name: base, exact: true }).click();
+  await page
+    .getByRole("button", { name: `Details ${base}`, exact: true })
+    .click();
   await expect(page).toHaveURL(/\/work\?item=[0-9a-f-]{36}$/);
   const originalId = new URL(page.url()).searchParams.get("item");
   expect(originalId).toMatch(/^[0-9a-f-]{36}$/);
@@ -61,7 +63,9 @@ test("Occurrence edit, monthly successor, explicit series stop and removed histo
   ).toHaveCount(0);
   await page.getByRole("textbox", { name: /What needs doing/ }).fill(once);
   await page.getByRole("button", { name: "Save changes", exact: true }).click();
-  await page.getByRole("heading", { name: once, exact: true }).click();
+  await page
+    .getByRole("button", { name: `Details ${once}`, exact: true })
+    .click();
   await page
     .getByRole("dialog", { name: once })
     .getByRole("button", { name: "Done", exact: true })

@@ -23,6 +23,7 @@ export function Dialog({
   description,
   children,
   wide = false,
+  className = "",
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -30,6 +31,7 @@ export function Dialog({
   description?: string;
   children: ReactNode;
   wide?: boolean;
+  className?: string;
 }) {
   const opener = useRef<HTMLElement | null>(null);
   const focusFallback = useRef<HTMLElement | null>(null);
@@ -62,7 +64,15 @@ export function Dialog({
       <Primitive.Portal>
         <Primitive.Overlay className="dialog-overlay" />
         <Primitive.Content
-          className={`dialog-content ${wide ? "dialog-wide" : ""}`}
+          className={`dialog-content ${wide ? "dialog-wide" : ""} ${className}`}
+          onEscapeKeyDown={(event) => {
+            const focused = document.activeElement;
+            if (
+              focused?.getAttribute("role") === "combobox" &&
+              focused.getAttribute("aria-expanded") === "true"
+            )
+              event.preventDefault();
+          }}
           onCloseAutoFocus={(event) => {
             const target = opener.current?.isConnected
               ? opener.current

@@ -1,0 +1,109 @@
+{
+  "capturedAt": "2026-09-10",
+  "receipts": [
+    {
+      "feature": "b0798491-cfc3-4bed-bd2a-76e57dbe5fa6",
+      "route": "/",
+      "screenshot": "capture-home-390.png",
+      "sha256": "e00cc930d11fb909ea4a7bfecf1a7093da76e7e947273a16e0a770840e0454cc",
+      "engine": "WebKit",
+      "fixture": "Fictional local household; real Keycloak/API/Postgres/encrypted event projection fixture"
+    },
+    {
+      "feature": "b0798491-cfc3-4bed-bd2a-76e57dbe5fa6",
+      "route": "/work",
+      "screenshot": "capture-reachable-320.png",
+      "sha256": "e7b5143ba185eb476aa7525f9de93506f7d571da80e21a8ea717b4d2b7e819cc",
+      "engine": "Chromium",
+      "fixture": "Fictional local household; real Keycloak/API/Postgres/encrypted event projection fixture"
+    },
+    {
+      "feature": "b0798491-cfc3-4bed-bd2a-76e57dbe5fa6",
+      "route": "/ \u2192 Shopping \u2192 Details",
+      "screenshot": "shopping-details-draft.png",
+      "sha256": "8f65d2c1ddeb2faa2f7d4fbdf23d8696e724a5bb51c6dd217c7170eb3ddb3642",
+      "engine": "Chromium",
+      "fixture": "Fictional local household; real Keycloak/API/Postgres/encrypted event projection fixture"
+    },
+    {
+      "feature": "6d6bbece-cde3-4c40-a9f4-503831213613",
+      "route": "/shopping/{listId}",
+      "screenshot": "shopping-history-320.png",
+      "sha256": "128d434cbd1e4374ae3bee687553f8e7fdaada27785306ee62b8519606c865f3",
+      "engine": "Chromium",
+      "fixture": "Fictional local household; real Keycloak/API/Postgres/encrypted event projection fixture"
+    },
+    {
+      "feature": "6d6bbece-cde3-4c40-a9f4-503831213613",
+      "route": "/work \u2192 Details",
+      "screenshot": "work-history-work-details.png",
+      "sha256": "37ed959f2cf24a916f3a4b475abdefdbc20ca7c322a8c722c2ff1a11f248fe63",
+      "engine": "Chromium",
+      "fixture": "Fictional local household; real Keycloak/API/Postgres/encrypted event projection fixture"
+    },
+    {
+      "feature": "6d6bbece-cde3-4c40-a9f4-503831213613",
+      "route": "/shopping/{listId} \u2192 Details",
+      "screenshot": "shopping-category-picker-mobile.png",
+      "sha256": "6fb5c07d2dcceae425ab2c9ab2b51a12aa27010fe24cf114378e958e420a0fb8",
+      "engine": "Chromium",
+      "fixture": "Fictional local household; real Keycloak/API/Postgres/encrypted event projection fixture"
+    },
+    {
+      "feature": "6d6bbece-cde3-4c40-a9f4-503831213613",
+      "route": "/shopping/{listId}",
+      "screenshot": "shopping-colours-persisted-mobile.png",
+      "sha256": "9b54d24e4f13b0717ceb3bacc61655d0bd5767b4cb48160778f9f43938efff4d",
+      "engine": "Chromium",
+      "fixture": "Fictional local household; real Keycloak/API/Postgres/encrypted event projection fixture"
+    },
+    {
+      "feature": "6d6bbece-cde3-4c40-a9f4-503831213613",
+      "route": "/shopping/{listId}",
+      "screenshot": "history-offline-manual-queue.png",
+      "sha256": "4f6acf09be21b9011fdab05abcd7fdf1d5ebafd207b2d1b56dec30db315a97ad",
+      "engine": "Chromium",
+      "fixture": "Fictional local household; real Keycloak/API/Postgres/encrypted event projection fixture"
+    },
+    {
+      "feature": "3f23dfd1-918f-4055-a85b-a8957b0260c3",
+      "route": "/shopping/{listId} \u2192 swipe left",
+      "screenshot": "shopping-swipe-edit-320.png",
+      "sha256": "c424a07ddebf79cc4c044791cec6a1973e8be8ff1e767c223af19b929eecaac8",
+      "engine": "Chromium",
+      "fixture": "Fictional local household; real Keycloak/API/Postgres/encrypted event projection fixture"
+    },
+    {
+      "feature": "3f23dfd1-918f-4055-a85b-a8957b0260c3",
+      "route": "/shopping/{listId} \u2192 swipe right",
+      "screenshot": "shopping-completed-undo-320.png",
+      "sha256": "f5564afaeeb5ff1961209f60554280897fcd988fd5ba753a465b46f66facd19b",
+      "engine": "Chromium",
+      "fixture": "Fictional local household; real Keycloak/API/Postgres/encrypted event projection fixture"
+    },
+    {
+      "feature": "3f23dfd1-918f-4055-a85b-a8957b0260c3",
+      "route": "/work \u2192 swipe right",
+      "screenshot": "work-complete-undo-390.png",
+      "sha256": "c0f63c9bd3b4c8c488920842f689c83a37adf954c8c989a19ebc2e3ed4cbbad3",
+      "engine": "Chromium",
+      "fixture": "Fictional local household; real Keycloak/API/Postgres/encrypted event projection fixture"
+    },
+    {
+      "feature": "3f23dfd1-918f-4055-a85b-a8957b0260c3",
+      "route": "/shopping/{listId} \u2192 Undo while offline",
+      "screenshot": "shopping-queued-undo-honest-390.png",
+      "sha256": "ed817d211b57246f661749017ca7db2fa6a8ae7d2182e55809ccf955cc50c3bb",
+      "engine": "Chromium",
+      "fixture": "Fictional local household; real Keycloak/API/Postgres/encrypted event projection fixture"
+    },
+    {
+      "feature": "3f23dfd1-918f-4055-a85b-a8957b0260c3",
+      "route": "/work \u2192 conflict \u2192 Try again \u2192 Retry",
+      "screenshot": "swipe-version-conflict-recovery-desktop.png",
+      "sha256": "b7c9b74976bdb8bf4eaac959b9bee52893660aba08219175c6a6cef7cdcdb6fe",
+      "engine": "Chromium",
+      "fixture": "Fictional local household; real Keycloak/API/Postgres/encrypted event projection fixture"
+    }
+  ]
+}

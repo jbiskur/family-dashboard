@@ -32,12 +32,12 @@ test("shopping create, complete, history and undo survive navigation", async ({
     .fill(name);
   await page.getByRole("button", { name: "Create list", exact: true }).click();
   await expect(page.getByRole("heading", { name, exact: true })).toBeVisible();
-  await page.getByRole("button", { name: "Add item", exact: true }).click();
+  await page.getByRole("button", { name: "Details", exact: true }).click();
   await page
-    .getByRole("textbox", { name: "Item", exact: true })
+    .getByRole("combobox", { name: "What do we need?", exact: true })
     .fill("Fresh bread");
   await page.getByLabel("Quantity or amount").fill("2 loaves");
-  await page.getByRole("button", { name: "Add to list", exact: true }).click();
+  await page.getByRole("button", { name: "Add shopping", exact: true }).click();
   await expect(
     page.getByRole("button", { name: "Complete Fresh bread" }),
   ).toBeVisible();
@@ -86,9 +86,9 @@ test("household task goes from creation through progress to done", async ({
   await login(page);
   const title = `Water the plants ${crypto.randomUUID()}`;
   await page.goto("/work");
-  await page.getByRole("button", { name: "Add a to-do", exact: true }).click();
+  await page.getByRole("button", { name: "Details", exact: true }).click();
   await page
-    .getByRole("textbox", { name: "What needs doing?", exact: true })
+    .getByRole("combobox", { name: "What needs doing?", exact: true })
     .fill(title);
   await page.getByText("More details & options", { exact: true }).click();
   await page
@@ -96,8 +96,7 @@ test("household task goes from creation through progress to done", async ({
     .fill("Check the kitchen herbs too.");
   await page.getByRole("button", { name: "Add to-do", exact: true }).click();
   await page
-    .getByRole("button")
-    .filter({ has: page.getByRole("heading", { name: title, exact: true }) })
+    .getByRole("button", { name: `Details ${title}`, exact: true })
     .click();
   await page
     .getByRole("dialog")

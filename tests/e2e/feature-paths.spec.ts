@@ -133,7 +133,7 @@ for (const width of [1440, 320]) {
         timeout: 30_000,
       });
       await capture("home", ids.home, ids.shell, ids.activity);
-      await dialog("Quick add", "home-quick-add", ids.home);
+      await dialog("Details", "home-quick-add", ids.home);
       await visit("/shopping", "shopping-directory", ids.lists);
       await dialog("New list", "shopping-create-list", ids.lists);
       const list = page.locator('a.list-card[href^="/shopping/"]').first();
@@ -148,12 +148,7 @@ for (const width of [1440, 320]) {
         ids.offers,
         ids.purchases,
       );
-      await dialog(
-        "Add item",
-        "shopping-add-item-offer",
-        ids.items,
-        ids.offers,
-      );
+      await dialog("Details", "shopping-add-item-offer", ids.items, ids.offers);
       await page
         .getByRole("button", { name: /^Change list visibility/ })
         .click();
@@ -197,9 +192,7 @@ for (const width of [1440, 320]) {
       await visit("/shopping/stores", "stores", ids.stores);
       await dialog("Add store", "store-create-location", ids.stores);
       await visit("/work", "work-board", ids.work);
-      await page
-        .getByRole("button", { name: "Add a to-do", exact: true })
-        .click();
+      await page.getByRole("button", { name: "Details", exact: true }).click();
       await page.getByText("More details & options", { exact: true }).click();
       await page.getByLabel("Repeat", { exact: true }).selectOption("week");
       await capture(
@@ -214,7 +207,7 @@ for (const width of [1440, 320]) {
         task,
         "Fixture has a work item for detail evidence",
       ).toBeVisible();
-      await task.click();
+      await task.getByRole("button", { name: /^Details / }).click();
       await capture("work-detail", ids.work, ids.assignment, ids.recurrence);
       await dialog("History", "work-history", ids.workHistory);
       await dialog(

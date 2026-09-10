@@ -1,0 +1,172 @@
+.swipe-row {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  min-width: 0;
+  border-radius: 14px;
+  background: var(--card);
+  touch-action: pan-y pinch-zoom;
+  user-select: none;
+}
+.swipe-foreground {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  background: var(--card);
+  touch-action: pan-y pinch-zoom;
+}
+.swipe-content {
+  flex: 1;
+  min-width: 0;
+}
+.swipe-content > .card {
+  margin: 0;
+}
+.swipe-visible-edit {
+  flex-shrink: 0;
+  margin-right: 4px;
+}
+.swipe-action {
+  position: absolute;
+  inset-block: 0;
+  width: 96px;
+  display: flex;
+}
+.swipe-action .button {
+  width: 100%;
+  height: 100%;
+  min-height: 44px;
+  border: 0;
+  border-radius: 0;
+  flex-direction: column;
+  gap: 4px;
+  padding: 8px;
+  font-size: 13px;
+  white-space: normal;
+}
+.swipe-leading {
+  left: 0;
+  width: 100%;
+  background: var(--primary);
+}
+.swipe-leading .button {
+  width: 96px;
+  background: var(--primary);
+  color: var(--primary-foreground);
+}
+.swipe-leading.swipe-armed,
+.swipe-leading.swipe-armed .button {
+  background: var(--teal);
+}
+.swipe-trailing {
+  right: 0;
+  background: var(--muted);
+}
+.swipe-trailing .button {
+  background: var(--muted);
+  color: var(--foreground);
+}
+.swipe-action[aria-hidden="true"] {
+  visibility: hidden;
+  pointer-events: none;
+}
+.swipe-row .button,
+.action-notice .button {
+  min-width: 44px;
+  min-height: 44px;
+}
+.swipe-row :focus-visible,
+.action-notice :focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: -3px;
+}
+.swipe-error {
+  position: relative;
+  z-index: 2;
+  padding: 10px;
+  color: var(--destructive);
+  background: var(--card);
+}
+.swipe-saving {
+  animation: swipe-saving 1s linear infinite;
+}
+@keyframes swipe-saving {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.action-notice.notice {
+  position: fixed;
+  z-index: 49;
+  bottom: 20px;
+  right: 24px;
+  width: min(430px, calc(100vw - 32px));
+  max-height: 40dvh;
+  overflow: auto;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--teal-soft);
+  color: var(--foreground);
+  box-shadow: 0 6px 24px color-mix(in srgb, var(--foreground) 14%, transparent);
+}
+.action-notice > p {
+  flex: 1 1 150px;
+  font-size: 14px;
+}
+.action-notice-buttons {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+html[data-action-notice="true"] .sync-tray {
+  bottom: calc(var(--action-notice-height, 0px) + 28px);
+}
+@media (max-width: 767px) {
+  .action-notice.notice {
+    right: 12px;
+    width: calc(100vw - 24px);
+    bottom: calc(
+      var(--mobile-nav-height, 63px) +
+      var(--capture-height, 0px) +
+      8px
+    );
+  }
+  html[data-action-notice="true"] .sync-tray,
+  html[data-action-notice="true"][data-capture="true"] .sync-tray {
+    bottom: calc(
+      var(--mobile-nav-height, 63px) +
+      var(--capture-height, 0px) +
+      var(--action-notice-height, 0px) +
+      16px
+    );
+  }
+  html[data-capture-keyboard="true"] .action-notice.notice {
+    bottom: calc(
+      var(--capture-keyboard-offset, 0px) +
+      var(--capture-height, 0px) +
+      8px
+    );
+  }
+  html[data-action-notice="true"][data-capture-keyboard="true"] .sync-tray {
+    bottom: calc(
+      var(--capture-keyboard-offset, 0px) +
+      var(--capture-height, 0px) +
+      var(--action-notice-height, 0px) +
+      16px
+    );
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .swipe-saving {
+    animation: none;
+  }
+}

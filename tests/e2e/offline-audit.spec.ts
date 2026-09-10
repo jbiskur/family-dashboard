@@ -63,10 +63,8 @@ test("Work survives an offline create, hard reload and idempotent reconnect", as
   const title = `Offline task ${crypto.randomUUID()}`;
   try {
     await context.setOffline(true);
-    await page
-      .getByRole("button", { name: "Add a to-do", exact: true })
-      .click();
-    await page.getByRole("textbox", { name: /What needs doing/ }).fill(title);
+    await page.getByRole("button", { name: "Details", exact: true }).click();
+    await page.getByRole("combobox", { name: /What needs doing/ }).fill(title);
     await page.getByRole("button", { name: "Add to-do", exact: true }).click();
     await expect(
       page.getByRole("heading", { name: title, exact: true }),
@@ -130,10 +128,10 @@ test("Shopping survives an offline item create, hard reload and reconnect", asyn
   const item = `Offline bread ${crypto.randomUUID()}`;
   try {
     await context.setOffline(true);
-    await page.getByRole("button", { name: "Add item", exact: true }).click();
-    await page.getByRole("textbox", { name: /^Item/ }).fill(item);
+    await page.getByRole("button", { name: "Details", exact: true }).click();
+    await page.getByRole("combobox", { name: /What do we need/ }).fill(item);
     await page
-      .getByRole("button", { name: "Add to list", exact: true })
+      .getByRole("button", { name: "Add shopping", exact: true })
       .click();
     await expect(
       page.getByRole("button", { name: `Complete ${item}`, exact: true }),
@@ -186,11 +184,9 @@ for (const choice of ["discard", "reapply"] as const) {
       const original = `Conflict original ${crypto.randomUUID()}`;
       const local = `My offline edit ${crypto.randomUUID()}`;
       const remote = `Changed elsewhere ${crypto.randomUUID()}`;
+      await page.getByRole("button", { name: "Details", exact: true }).click();
       await page
-        .getByRole("button", { name: "Add a to-do", exact: true })
-        .click();
-      await page
-        .getByRole("textbox", { name: /What needs doing/ })
+        .getByRole("combobox", { name: /What needs doing/ })
         .fill(original);
       await page
         .getByRole("button", { name: "Add to-do", exact: true })
@@ -205,7 +201,9 @@ for (const choice of ["discard", "reapply"] as const) {
       ).toBeVisible();
       await page.bringToFront();
       await context.setOffline(true);
-      await page.getByRole("heading", { name: original, exact: true }).click();
+      await page
+        .getByRole("button", { name: `Details ${original}`, exact: true })
+        .click();
       await page.getByRole("button", { name: "Edit", exact: true }).click();
       await page.getByRole("textbox", { name: /What needs doing/ }).fill(local);
       await page
@@ -215,7 +213,9 @@ for (const choice of ["discard", "reapply"] as const) {
         page.getByRole("heading", { name: local, exact: true }),
       ).toBeVisible();
       await other.bringToFront();
-      await other.getByRole("heading", { name: original, exact: true }).click();
+      await other
+        .getByRole("button", { name: `Details ${original}`, exact: true })
+        .click();
       await other.getByRole("button", { name: "Edit", exact: true }).click();
       await other
         .getByRole("textbox", { name: /What needs doing/ })
@@ -383,8 +383,8 @@ test("Changing account in another tab removes old private work and rejects its p
   await login(page);
   await page.goto("/work");
   const title = `Private owner task ${crypto.randomUUID()}`;
-  await page.getByRole("button", { name: "Add a to-do", exact: true }).click();
-  await page.getByRole("textbox", { name: /What needs doing/ }).fill(title);
+  await page.getByRole("button", { name: "Details", exact: true }).click();
+  await page.getByRole("combobox", { name: /What needs doing/ }).fill(title);
   await page
     .getByRole("combobox", { name: "Who can see it?", exact: true })
     .selectOption("personal");
@@ -452,10 +452,12 @@ test("Shopping conflict reapply keeps the list and one item identity", async ({
     const original = `Bread ${crypto.randomUUID()}`;
     const local = `Wholegrain bread ${crypto.randomUUID()}`;
     const remote = `Rye bread ${crypto.randomUUID()}`;
-    await page.getByRole("button", { name: "Add item", exact: true }).click();
-    await page.getByRole("textbox", { name: /^Item/ }).fill(original);
+    await page.getByRole("button", { name: "Details", exact: true }).click();
     await page
-      .getByRole("button", { name: "Add to list", exact: true })
+      .getByRole("combobox", { name: /What do we need/ })
+      .fill(original);
+    await page
+      .getByRole("button", { name: "Add shopping", exact: true })
       .click();
     await expect(
       page.getByRole("button", { name: `Edit ${original}`, exact: true }),
@@ -571,10 +573,12 @@ test("Observed list permission loss cannot reappear from offline cache", async (
     await expect(page).toHaveURL(/\/shopping\/[0-9a-f-]{36}$/);
     const path = new URL(page.url()).pathname;
     const privateItem = `Private shopping item ${crypto.randomUUID()}`;
-    await page.getByRole("button", { name: "Add item", exact: true }).click();
-    await page.getByRole("textbox", { name: /^Item/ }).fill(privateItem);
+    await page.getByRole("button", { name: "Details", exact: true }).click();
     await page
-      .getByRole("button", { name: "Add to list", exact: true })
+      .getByRole("combobox", { name: /What do we need/ })
+      .fill(privateItem);
+    await page
+      .getByRole("button", { name: "Add shopping", exact: true })
       .click();
     await warmOffline(spouse, path);
     await expect(
