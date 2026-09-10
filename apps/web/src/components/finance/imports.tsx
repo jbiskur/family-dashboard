@@ -32,8 +32,21 @@ import { Badge, Card } from "../ui/card";
 import { Dialog } from "../ui/dialog";
 import { Input, Select } from "../ui/input";
 import { FinanceBoundary, FinanceNav, Money } from "./finance-shared";
+import {
+  StatementFormat,
+  StatementGuidance,
+  type StatementProvider,
+} from "./import-guidance";
+import "./imports.css";
 
 type Preview = {
+  delimiter: string;
+  sheet: string;
+  headerRow: number;
+  headerIssue?: string | null;
+  sourceRowCount: number;
+  excluded: { row: number; reason: string }[];
+  feeTreatment?: string | null;
   fileName: string;
   sourceHash: string;
   accountId: string;
@@ -47,6 +60,9 @@ type Preview = {
   valid: boolean;
 };
 type Source = {
+  provider: StatementProvider;
+  headerRow: number;
+  feeTreatment?: string;
   accountId: string;
   fileName: string;
   contentBase64: string;
@@ -65,11 +81,13 @@ export function ImportsPage() {
   const command = useCommand();
   const [accountId, setAccountId] = useState(params.get("accountId") ?? "");
   const [source, setSource] = useState<Source | null>(null);
+  const [provider, setProvider] = useState<StatementProvider>("other");
   const [preview, setPreview] = useState<Preview | null>(null);
   const [error, setError] = useState<unknown>(null);
   const [reading, setReading] = useState(false);
   const [validating, setValidating] = useState(false);
   const requestVersion = useRef(0);
+  const filePicker = useRef<HTMLDivElement>(null);
   const renderedVersion = requestVersion.current;
   const [selected, setSelected] = useState<FinanceImport | null>(null);
   const [success, setSuccess] = useState("");
@@ -77,7 +95,12 @@ export function ImportsPage() {
     (a) => a.visibility === "household" || a.ownerId === access.member.userId,
   );
   const chosen = accountId || manageable[0]?.id || "";
-  function clearStatement() {
+  function clearStatement(resetPicker = true) {
+    if (resetPicker) {
+      const input =
+        filePicker.current?.querySelector<HTMLInputElement>("input[type=file]");
+      if (input) input.value = "";
+    }
     const version = ++requestVersion.current;
     setSource(null);
     setPreview(null);
@@ -89,7 +112,7 @@ export function ImportsPage() {
   }
   async function read(file: File) {
     // A replacement is new intent even when the chosen file is rejected.
-    const version = clearStatement();
+    const version = clearStatement(false);
     if (!chosen) {
       setError(new Error("Choose an account before selecting a statement."));
       return;
@@ -113,22 +136,76 @@ export function ImportsPage() {
         reader.readAsDataURL(file);
       });
       if (version !== requestVersion.current) return;
-      const input = {
+      const input: Source = {
+        provider,
+        headerRow: 1,
         accountId: chosen,
         fileName: file.name,
         contentBase64,
-        delimiter: ",",
-        decimalSeparator: ".",
-        dateFormat: "yyyy-MM-dd",
+        delimiter: "auto",
+        decimalSeparator: provider === "faroese" ? "," : ".",
+        dateFormat:
+          provider === "revolut"
+            ? "yyyy-MM-dd HH:mm:ss"
+            : provider === "faroese"
+              ? "dd-MM-yyyy"
+              : "yyyy-MM-dd",
       };
       setSource(input);
-      const result = (await command.execute(
-        "/v1/finance/imports/preview",
-        input,
-      )) as Preview;
-      if (version === requestVersion.current) setPreview(result);
+      const result = (await command.execute("/v1/finance/imports/preview", {
+        ...input,
+        delimiter: undefined,
+      })) as Preview;
+      if (version === requestVersion.current) {
+        setPreview(result);
+        setSource({
+          ...input,
+          delimiter: result.delimiter,
+          sheet: result.sheet,
+        });
+      }
     } catch (e) {
       if (version === requestVersion.current) setError(e);
+    } finally {
+      if (version === requestVersion.current) setReading(false);
+    }
+  }
+  function invalidateReview() {
+    ++requestVersion.current;
+    setReading(false);
+    setPreview((current) => (current ? { ...current, valid: false } : null));
+    setValidating(false);
+    setError(null);
+  }
+  async function reread(values: Record<string, string>) {
+    if (!source || source.accountId !== chosen) return;
+    const version = ++requestVersion.current;
+    const next = {
+      ...source,
+      delimiter: values.delimiter ?? source.delimiter,
+      sheet: values.sheet || undefined,
+      headerRow: Number(values.headerRow),
+    };
+    setSource(next);
+    setPreview(null);
+    setError(null);
+    setReading(true);
+    setValidating(false);
+    try {
+      const result = (await command.execute("/v1/finance/imports/preview", {
+        ...next,
+        delimiter: next.delimiter === "auto" ? undefined : next.delimiter,
+      })) as Preview;
+      if (version === requestVersion.current) {
+        setPreview(result);
+        setSource({
+          ...next,
+          delimiter: result.delimiter,
+          sheet: result.sheet,
+        });
+      }
+    } catch (error) {
+      if (version === requestVersion.current) setError(error);
     } finally {
       if (version === requestVersion.current) setReading(false);
     }
@@ -159,13 +236,16 @@ export function ImportsPage() {
             "transactionDate",
             "valueDate",
             "reference",
+            "currency",
+            "state",
+            "fee",
           ].includes(k) && v,
       ),
     );
     const next = {
       ...source,
-      delimiter: values.delimiter ?? source.delimiter,
-      sheet: values.sheet || undefined,
+      delimiter: source.delimiter,
+      feeTreatment: values.feeTreatment || undefined,
       decimalSeparator: values.decimalSeparator ?? source.decimalSeparator,
       dateFormat: values.dateFormat ?? source.dateFormat,
     };
@@ -173,6 +253,7 @@ export function ImportsPage() {
     try {
       const result = (await command.execute("/v1/finance/imports/preview", {
         ...next,
+        delimiter: next.delimiter === "auto" ? undefined : next.delimiter,
         mapping,
       })) as Preview;
       if (version === requestVersion.current) setPreview(result);
@@ -193,6 +274,9 @@ export function ImportsPage() {
             "transactionDate",
             "valueDate",
             "reference",
+            "currency",
+            "state",
+            "fee",
           ] as const
         ).map((name) => ({
           name,
@@ -204,24 +288,22 @@ export function ImportsPage() {
             transactionDate: "Transaction date",
             valueDate: "Value date",
             reference: "Reference",
+            currency: "Row currency",
+            state: "Transaction state",
+            fee: "Fee",
           }[name],
-          required: ["bookingDate", "amount", "description"].includes(name),
+          required: [
+            "bookingDate",
+            "amount",
+            "description",
+            ...(provider === "revolut" ? ["currency", "state"] : []),
+          ].includes(name),
           defaultValue: preview.mapping[name] ?? "",
           options: [
             { value: "", label: "Not supplied / choose column" },
             ...preview.headers.map((h) => ({ value: h, label: h })),
           ],
         })),
-        {
-          name: "delimiter",
-          label: "CSV separator",
-          defaultValue: source?.delimiter ?? ",",
-          options: [
-            { value: ",", label: "Comma" },
-            { value: ";", label: "Semicolon" },
-            { value: "\t", label: "Tab" },
-          ],
-        },
         {
           name: "decimalSeparator",
           label: "Decimal mark",
@@ -237,20 +319,37 @@ export function ImportsPage() {
           defaultValue: source?.dateFormat ?? "yyyy-MM-dd",
           options: [
             { value: "yyyy-MM-dd", label: "Year-month-day · 2026-09-08" },
+            {
+              value: "yyyy-MM-dd HH:mm:ss",
+              label: "Year-month-day + time · 2026-09-08 14:30:00",
+            },
+            { value: "dd-MM-yyyy", label: "Day-month-year · 08-09-2026" },
+            { value: "dd.MM.yyyy", label: "Day.month.year · 08.09.2026" },
             { value: "dd/MM/yyyy", label: "Day/month/year · 08/09/2026" },
             { value: "MM/dd/yyyy", label: "Month/day/year · 09/08/2026" },
           ],
         },
-        ...(preview.sheets.length
-          ? [
-              {
-                name: "sheet",
-                label: "Worksheet",
-                defaultValue: source?.sheet ?? preview.sheets[0],
-                options: preview.sheets.map((s) => ({ value: s, label: s })),
-              },
-            ]
-          : []),
+        {
+          name: "feeTreatment",
+          label: "How fees affect the amount",
+          defaultValue: source?.feeTreatment ?? "",
+          hint: "Check your statement. We never guess whether fees are included or how they are signed.",
+          options: [
+            { value: "", label: "Choose if the file has nonzero fees" },
+            {
+              value: "included",
+              label: "Fees are already included in the amount",
+            },
+            {
+              value: "subtract-positive",
+              label: "Subtract a separate positive fee",
+            },
+            {
+              value: "add-signed",
+              label: "Add a separately signed fee adjustment",
+            },
+          ],
+        },
       ]
     : [];
   return (
@@ -283,6 +382,13 @@ export function ImportsPage() {
         </div>
         {error ? <ErrorState error={error} /> : null}
         <Card className="card-pad">
+          <StatementGuidance
+            provider={provider}
+            onChange={(value) => {
+              setProvider(value);
+              clearStatement();
+            }}
+          />
           <div className="form-field" style={{ marginBottom: 20 }}>
             <label htmlFor="import-account">Account for this statement</label>
             {manageable.length ? (
@@ -310,7 +416,7 @@ export function ImportsPage() {
               </p>
             )}
           </div>
-          <div className="drop-zone">
+          <div className="drop-zone" ref={filePicker}>
             <FileUp size={32} strokeWidth={1.5} />
             <h3>
               {source ? source.fileName : "Your statement has a home here"}
@@ -337,8 +443,20 @@ export function ImportsPage() {
             </p>
           </div>
           {reading && <LoadingState label="Reading your statement…" />}
+          {source && (
+            <StatementFormat
+              key={`${source.fileName}-${preview?.delimiter}-${preview?.sheet}-${preview?.headerRow}`}
+              delimiter={source.delimiter}
+              sheet={source.sheet}
+              sheets={preview?.sheets ?? []}
+              headerRow={source.headerRow}
+              issue={preview?.headerIssue}
+              onSubmit={reread}
+              onChange={invalidateReview}
+            />
+          )}
         </Card>
-        {preview && (
+        {preview && !preview.headerIssue && (
           <div className="section-gap">
             <SectionTitle title="A quick look at the source" />
             <Card>
@@ -371,12 +489,35 @@ export function ImportsPage() {
                 <EntityForm
                   key={`${source?.fileName}-${preview.headers.join(",")}`}
                   fields={mappingFields}
+                  onValuesChange={invalidateReview}
                   submitLabel="Validate this mapping"
                   onSubmit={map}
                 />
               </Card>
               <Card className="card-pad">
                 <SectionTitle title="The review" />
+                <p className="import-review-context">
+                  {
+                    manageable.find(
+                      (account) => account.id === preview.accountId,
+                    )?.name
+                  }{" "}
+                  · {preview.currency}
+                </p>
+                {!!preview.excluded?.length && (
+                  <details className="import-exclusions" open>
+                    <summary>
+                      {preview.excluded.length} rows excluded from import
+                    </summary>
+                    <ul>
+                      {preview.excluded.map((row) => (
+                        <li key={row.row}>
+                          Row {row.row}: {row.reason}
+                        </li>
+                      ))}
+                    </ul>
+                  </details>
+                )}
                 {validating ? (
                   <LoadingState label="Checking your mapping…" />
                 ) : preview.errors.length ? (
@@ -407,6 +548,34 @@ export function ImportsPage() {
                       {preview.rows.length} source rows checked. Any uncertain
                       duplicate will still need your review.
                     </p>
+                    <div className="table-scroll import-normalized">
+                      <table className="data-table">
+                        <caption>
+                          Included rows · {preview.currency}
+                          {preview.feeTreatment
+                            ? ` · fees: ${preview.feeTreatment === "included" ? "already included" : preview.feeTreatment === "subtract-positive" ? "separate positive charge subtracted" : "signed adjustment added"}`
+                            : ""}
+                        </caption>
+                        <thead>
+                          <tr>
+                            <th>Booking date</th>
+                            <th>Description</th>
+                            <th>Signed amount</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {preview.rows.slice(0, 10).map((row) => (
+                            <tr key={row.id}>
+                              <td>{row.bookingDate}</td>
+                              <td>{row.description}</td>
+                              <td>
+                                {row.amount} {preview.currency}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
                     <EntityForm
                       fields={[
                         {
@@ -541,8 +710,12 @@ function ReviewImport({
   close: () => void;
 }) {
   const command = useCommand();
+  const statementDates = batch.rows
+    .flatMap((row) => [row.bookingDate, row.transactionDate, row.valueDate])
+    .filter((date): date is string => Boolean(date))
+    .sort();
   const transactions = useHeima<{ items: FinanceTransaction[] }>(
-    `/v1/finance/transactions?accountId=${batch.accountId}`,
+    `/v1/finance/transactions?accountId=${batch.accountId}&from=${statementDates[0]}&to=${statementDates.at(-1)}`,
   );
   const [rows, setRows] = useState<ImportRow[]>(batch.rows);
   const [baseVersion] = useState(batch.version);
