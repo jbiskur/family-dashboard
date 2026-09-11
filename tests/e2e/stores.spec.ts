@@ -253,6 +253,9 @@ for (const width of [1440, 320]) {
       .getByRole("button", { name: "Archive store", exact: true })
       .click();
     await expect(
+      page.getByRole("dialog", { name: "Archive this store?", exact: true }),
+    ).toBeHidden();
+    await expect(
       page.getByRole("heading", { name: store, exact: true }),
     ).toHaveCount(0);
     await page.goto(listPath);

@@ -243,6 +243,7 @@ test("Work swipe Undo restores doing; recurring completion preserves its one suc
   expect((await api(page, token, `work/items/${item.id}`)).status).toBe(
     "doing",
   );
+  await expect(target).toHaveAttribute("aria-busy", "false");
   await drag(page, target, -70);
   await target
     .getByRole("button", { name: `Swipe edit ${title}`, exact: true })
