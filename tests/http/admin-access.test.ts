@@ -202,6 +202,11 @@ test("administrators use shared and own resources without reading another member
 });
 
 test("administrator financial summaries and budget responses exclude other people's private aggregates", async () => {
+  // Opening Finance initializes its default taxonomy before custom categories.
+  const defaults = await read("finance/categories");
+  expect(defaults.items.map((row: { name: string }) => row.name)).toEqual(
+    expect.arrayContaining(["Housing", "Groceries", "Health", "Other"]),
+  );
   const stamp = crypto.randomUUID();
   const category = await create(
     "finance/categories",
