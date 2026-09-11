@@ -253,6 +253,7 @@ function CaptureForm({
                     {(values) => (
                       <HistoryInput
                         ref={input}
+                        suggestionsEnabled={!expanded}
                         disabled={!ready}
                         id={`${id}-name`}
                         name={choice.title.name}

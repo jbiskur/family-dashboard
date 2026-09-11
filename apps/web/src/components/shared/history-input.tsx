@@ -1,6 +1,6 @@
 "use client";
 import { History } from "lucide-react";
-import { type ComponentPropsWithRef, useRef, useState } from "react";
+import { type ComponentPropsWithRef, useEffect, useRef, useState } from "react";
 import { Autocomplete } from "../ui/autocomplete";
 import { Input } from "../ui/input";
 
@@ -14,16 +14,21 @@ export function HistoryInput({
   value,
   onValueChange,
   history,
+  suggestionsEnabled = true,
   ref,
   ...props
 }: Omit<ComponentPropsWithRef<"input">, "value" | "onChange"> & {
   value: string;
   onValueChange: (value: string) => void;
   history: EntryHistory;
+  suggestionsEnabled?: boolean;
 }) {
   const input = useRef<HTMLInputElement | null>(null);
   const [open, setOpen] = useState(false);
   const [container, setContainer] = useState<HTMLElement | null>(null);
+  useEffect(() => {
+    if (!suggestionsEnabled) setOpen(false);
+  }, [suggestionsEnabled]);
   const normalize = (name: string) =>
     name.normalize("NFKC").trim().replace(/\s+/g, " ").toLocaleLowerCase();
   const query = normalize(value);
@@ -41,7 +46,7 @@ export function HistoryInput({
         Number(normalize(a).startsWith(query)),
     )
     .slice(0, 5);
-  const visible = open && matches.length > 0;
+  const visible = suggestionsEnabled && open && matches.length > 0;
   return (
     <Autocomplete.Root<string>
       items={matches}
@@ -61,7 +66,7 @@ export function HistoryInput({
         setContainer(
           input.current?.closest<HTMLElement>('[role="dialog"]') ?? null,
         );
-        setOpen(next);
+        setOpen(suggestionsEnabled && next);
       }}
       openOnInputClick
     >
@@ -78,7 +83,7 @@ export function HistoryInput({
           setContainer(
             input.current?.closest<HTMLElement>('[role="dialog"]') ?? null,
           );
-          setOpen(true);
+          setOpen(suggestionsEnabled);
           props.onFocus?.(event);
         }}
       />
@@ -112,7 +117,7 @@ export function HistoryInput({
         </Autocomplete.Positioner>
       </Autocomplete.Portal>
       <Autocomplete.Status className="sr-only">
-        {query
+        {suggestionsEnabled && query
           ? history.loading
             ? "Loading previous entries."
             : history.unavailable

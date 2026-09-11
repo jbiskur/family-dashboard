@@ -46,6 +46,197 @@ async function screenshot(page: Page, path: string) {
   await page.screenshot({ path, animations: "disabled", fullPage: false });
 }
 
+for (const width of [320, 390, 1440]) {
+  test(`saved shopping history stays accessible when Details reopens at ${width}px`, async ({
+    page,
+  }, info) => {
+    await login(page);
+    await page.setViewportSize({ width, height: 844 });
+    const list = await create("shopping/lists", {
+      name: "Picnic groceries",
+      visibility: "personal",
+    });
+    await page.goto(`/shopping/${list.id}`);
+    const capture = page.getByRole("region", {
+      name: "Quick add",
+      exact: true,
+    });
+    const dock = capture.getByRole("combobox", {
+      name: "What do we need?",
+      exact: true,
+    });
+    const opener = capture.getByRole("button", {
+      name: "Details",
+      exact: true,
+    });
+    const details = page.getByRole("dialog");
+    const input = details.getByLabel(/What do we need/);
+    const suggestions = page.getByRole("listbox", { name: "Previous entries" });
+    const name = "Milk for the picnic";
+    await opener.click();
+    await input.fill(name);
+    await details
+      .getByRole("button", { name: "Dairy & eggs", exact: true })
+      .click();
+    await details
+      .getByRole("button", { name: "Add shopping", exact: true })
+      .click();
+    await expect(details).toBeHidden();
+    await expect(dock).toBeFocused();
+    // Reopen immediately: a navigation would reset the stale dock popup state.
+    await opener.click();
+    await details
+      .getByRole("button", { name: "Dairy & eggs", exact: true })
+      .click();
+    await input.fill("Milk");
+    await input.focus();
+    await expect(suggestions).toHaveCount(1);
+    const option = suggestions.getByRole("option", { name, exact: true });
+    await expect(option).toBeVisible();
+    await expect(input).toHaveAccessibleName(/What (do we need|needs doing)\?/);
+    expect(
+      await option.evaluate(
+        (element) => element.closest('[aria-hidden="true"]') === null,
+      ),
+    ).toBe(true);
+    await expect(page.locator('[role="listbox"]:visible')).toHaveCount(1);
+    await expect(
+      page.locator('.capture-entry input[role="combobox"]'),
+    ).toHaveAttribute("aria-expanded", "false");
+    await screenshot(page, info.outputPath(`details-suggestions-${width}.png`));
+    await input.press("Escape");
+    await expect(suggestions).toHaveCount(0);
+    await expect(details).toBeVisible();
+    await expect(input).toHaveValue("Milk");
+    await input.press("Escape");
+    await expect(details).toBeHidden();
+    await expect(opener).toBeFocused();
+    await expect(dock).toHaveValue("Milk");
+    await screenshot(page, info.outputPath(`details-dismissed-${width}.png`));
+    await opener.click();
+    await expect(input).toHaveValue("Milk");
+    await details
+      .getByLabel("Quantity or amount", { exact: true })
+      .fill("2 cartons");
+    await details.getByLabel("A note", { exact: true }).fill("For breakfast");
+    await input.focus();
+    await expect(option).toBeVisible();
+    await expect(input).toHaveAccessibleName(/What (do we need|needs doing)\?/);
+    if (width === 390) await option.click();
+    else {
+      await input.press("ArrowDown");
+      await input.press("Enter");
+    }
+    await expect(input).toHaveValue(name);
+    await expect(details).toBeVisible();
+    await expect(
+      details.getByLabel("Quantity or amount", { exact: true }),
+    ).toHaveValue("2 cartons");
+    await expect(details.getByLabel("A note", { exact: true })).toHaveValue(
+      "For breakfast",
+    );
+    await expect(
+      details.getByRole("button", { name: "Dairy & eggs", exact: true }),
+    ).toHaveAttribute("aria-pressed", "true");
+    expect(
+      (await (await request(`shopping/items?listId=${list.id}`, owner)).json())
+        .items,
+    ).toHaveLength(1);
+    await screenshot(page, info.outputPath(`details-selected-${width}.png`));
+    await details
+      .getByRole("button", { name: "Add shopping", exact: true })
+      .click();
+    await expect(details).toBeHidden();
+    await expect(dock).toBeFocused();
+    await expect(dock).toHaveValue("");
+    await expect(page.locator(".shopping-row")).toHaveCount(2);
+    await screenshot(page, info.outputPath(`details-saved-${width}.png`));
+    await dock.fill("An unmatched next entry");
+    await expect(suggestions).toHaveCount(0);
+    await expect(dock).toBeEditable();
+  });
+}
+
+test("Home and Work expose only the active draft suggestions through repeated Details transitions", async ({
+  page,
+}, info) => {
+  await login(page);
+  const title = `Pack picnic plates ${Date.now()}`;
+  await create("work/items", { title, visibility: "personal" });
+  for (const [route, width] of [
+    ["/", 390],
+    ["/work", 1440],
+  ] as const) {
+    await page.setViewportSize({ width, height: 844 });
+    await page.goto(route);
+    const capture = page.getByRole("region", {
+      name: "Quick add",
+      exact: true,
+    });
+    await capture
+      .getByLabel("Who can see it?", { exact: true })
+      .selectOption("personal");
+    const dock = capture.getByRole("combobox", {
+      name: "What needs doing?",
+      exact: true,
+    });
+    const opener = capture.getByRole("button", {
+      name: "Details",
+      exact: true,
+    });
+    const details = page.getByRole("dialog");
+    const input = details.getByLabel(/What needs doing/);
+    const suggestions = page.getByRole("listbox", { name: "Previous entries" });
+    for (let transition = 0; transition < 2; transition++) {
+      await dock.fill(title);
+      await dock.focus();
+      await expect(
+        suggestions.getByRole("option", { name: title, exact: true }),
+      ).toBeVisible();
+      await dock.press("Escape");
+      await expect(suggestions).toHaveCount(0);
+      await opener.click();
+      await input.fill(title);
+      await input.focus();
+      await expect(suggestions).toHaveCount(1);
+      const option = suggestions.getByRole("option", {
+        name: title,
+        exact: true,
+      });
+      await expect(option).toBeVisible();
+      await expect(input).toHaveAccessibleName(
+        /What (do we need|needs doing)\?/,
+      );
+      expect(
+        await option.evaluate(
+          (element) => element.closest('[aria-hidden="true"]') === null,
+        ),
+      ).toBe(true);
+      await expect(page.locator('[role="listbox"]:visible')).toHaveCount(1);
+      await expect(
+        page.locator('.capture-entry input[role="combobox"]'),
+      ).toHaveAttribute("aria-expanded", "false");
+      await screenshot(
+        page,
+        info.outputPath(
+          `${route === "/" ? "home" : "work"}-active-details-${transition}.png`,
+        ),
+      );
+      await input.press("Escape");
+      await expect(details).toBeVisible();
+      await input.fill("A new unmatched draft");
+      await expect(suggestions).toHaveCount(0);
+      await expect(input).toBeEditable();
+      await details
+        .getByRole("button", { name: "Close dialog", exact: true })
+        .click();
+      await expect(details).toBeHidden();
+      await expect(opener).toBeFocused();
+      await expect(dock).toHaveValue("A new unmatched draft");
+    }
+  }
+});
+
 test("category presets are optional, persist and preserve legacy categories", async ({
   page,
 }, info) => {
