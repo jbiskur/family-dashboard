@@ -23,6 +23,24 @@ const schema = z.object({
     .string()
     .uuid()
     .default("4c681d95-26f0-4702-b33a-2d452aca2ec4"),
+  APP_ADMIN_USER_IDS: z
+    .string()
+    .default("")
+    .transform((value) =>
+      value.trim() ? value.split(",").map((id) => id.trim()) : [],
+    )
+    .pipe(
+      z.array(
+        z
+          .string()
+          .uuid()
+          .transform((id) => id.toLowerCase()),
+      ),
+    )
+    .refine(
+      (ids) => new Set(ids).size === ids.length,
+      "Administrator UUIDs must be unique",
+    ),
   HOUSEHOLD_ID: z
     .string()
     .uuid()
@@ -64,6 +82,10 @@ const schema = z.object({
 });
 
 export const config = schema.parse(process.env);
+if (config.APP_ADMIN_USER_IDS.includes(config.APP_OWNER_USER_ID.toLowerCase()))
+  throw new Error(
+    "The household owner cannot also be configured as an administrator",
+  );
 if (config.NODE_ENV !== "test" && config.TEST_MAINTENANCE_CLOCK_URL)
   throw new Error("Maintenance clock fixture is test-only");
 if (

@@ -1,0 +1,222 @@
+{
+  "productionData": false,
+  "credentialsIncluded": false,
+  "screenshots": [
+    {
+      "file": "admin-home-320.png",
+      "path": "/",
+      "state": "admitted admin",
+      "width": 320,
+      "browser": "chromium",
+      "source": "real local Keycloak, API and PostgreSQL; synthetic household fixtures"
+    },
+    {
+      "file": "admin-home-390.png",
+      "path": "/",
+      "state": "admitted admin",
+      "width": 390,
+      "browser": "chromium",
+      "source": "real local Keycloak, API and PostgreSQL; synthetic household fixtures"
+    },
+    {
+      "file": "admin-home-1440.png",
+      "path": "/",
+      "state": "admitted admin",
+      "width": 1440,
+      "browser": "chromium",
+      "source": "real local Keycloak, API and PostgreSQL; synthetic household fixtures"
+    },
+    {
+      "file": "admin-shopping-320.png",
+      "path": "/shopping",
+      "state": "admitted admin",
+      "width": 320,
+      "browser": "chromium",
+      "source": "real local Keycloak, API and PostgreSQL; synthetic household fixtures"
+    },
+    {
+      "file": "admin-shopping-390.png",
+      "path": "/shopping",
+      "state": "admitted admin",
+      "width": 390,
+      "browser": "chromium",
+      "source": "real local Keycloak, API and PostgreSQL; synthetic household fixtures"
+    },
+    {
+      "file": "admin-shopping-1440.png",
+      "path": "/shopping",
+      "state": "admitted admin",
+      "width": 1440,
+      "browser": "chromium",
+      "source": "real local Keycloak, API and PostgreSQL; synthetic household fixtures"
+    },
+    {
+      "file": "admin-work-320.png",
+      "path": "/work",
+      "state": "admitted admin",
+      "width": 320,
+      "browser": "chromium",
+      "source": "real local Keycloak, API and PostgreSQL; synthetic household fixtures"
+    },
+    {
+      "file": "admin-work-390.png",
+      "path": "/work",
+      "state": "admitted admin",
+      "width": 390,
+      "browser": "chromium",
+      "source": "real local Keycloak, API and PostgreSQL; synthetic household fixtures"
+    },
+    {
+      "file": "admin-work-1440.png",
+      "path": "/work",
+      "state": "admitted admin",
+      "width": 1440,
+      "browser": "chromium",
+      "source": "real local Keycloak, API and PostgreSQL; synthetic household fixtures"
+    },
+    {
+      "file": "admin-finance-320.png",
+      "path": "/finance",
+      "state": "admitted admin",
+      "width": 320,
+      "browser": "chromium",
+      "source": "real local Keycloak, API and PostgreSQL; synthetic household fixtures"
+    },
+    {
+      "file": "admin-finance-390.png",
+      "path": "/finance",
+      "state": "admitted admin",
+      "width": 390,
+      "browser": "chromium",
+      "source": "real local Keycloak, API and PostgreSQL; synthetic household fixtures"
+    },
+    {
+      "file": "admin-finance-1440.png",
+      "path": "/finance",
+      "state": "admitted admin",
+      "width": 1440,
+      "browser": "chromium",
+      "source": "real local Keycloak, API and PostgreSQL; synthetic household fixtures"
+    },
+    {
+      "file": "admin-household-320.png",
+      "path": "/settings/household",
+      "state": "admitted admin",
+      "width": 320,
+      "browser": "chromium",
+      "source": "real local Keycloak, API and PostgreSQL; synthetic household fixtures"
+    },
+    {
+      "file": "admin-household-390.png",
+      "path": "/settings/household",
+      "state": "admitted admin",
+      "width": 390,
+      "browser": "chromium",
+      "source": "real local Keycloak, API and PostgreSQL; synthetic household fixtures"
+    },
+    {
+      "file": "admin-household-1440.png",
+      "path": "/settings/household",
+      "state": "admitted admin",
+      "width": 1440,
+      "browser": "chromium",
+      "source": "real local Keycloak, API and PostgreSQL; synthetic household fixtures"
+    },
+    {
+      "file": "invited-unassigned-320.png",
+      "path": "/",
+      "state": "invited-unassigned",
+      "width": 320,
+      "browser": "chromium",
+      "source": "real local auth; existing external Usable eligibility fixture controls for negative states"
+    },
+    {
+      "file": "invited-unassigned-390.png",
+      "path": "/",
+      "state": "invited-unassigned",
+      "width": 390,
+      "browser": "chromium",
+      "source": "real local auth; existing external Usable eligibility fixture controls for negative states"
+    },
+    {
+      "file": "invited-unassigned-1440.png",
+      "path": "/",
+      "state": "invited-unassigned",
+      "width": 1440,
+      "browser": "chromium",
+      "source": "real local auth; existing external Usable eligibility fixture controls for negative states"
+    },
+    {
+      "file": "access-unavailable-320.png",
+      "path": "/settings/household",
+      "state": "access-unavailable",
+      "width": 320,
+      "browser": "chromium",
+      "source": "real local auth; existing external Usable eligibility fixture controls for negative states"
+    },
+    {
+      "file": "access-unavailable-390.png",
+      "path": "/settings/household",
+      "state": "access-unavailable",
+      "width": 390,
+      "browser": "chromium",
+      "source": "real local auth; existing external Usable eligibility fixture controls for negative states"
+    },
+    {
+      "file": "access-unavailable-1440.png",
+      "path": "/settings/household",
+      "state": "access-unavailable",
+      "width": 1440,
+      "browser": "chromium",
+      "source": "real local auth; existing external Usable eligibility fixture controls for negative states"
+    },
+    {
+      "file": "access-app-invitation-withdrawn-320.png",
+      "path": "/",
+      "state": "access-app-invitation-withdrawn",
+      "width": 320,
+      "browser": "chromium",
+      "source": "real local auth; existing external Usable eligibility fixture controls for negative states"
+    },
+    {
+      "file": "access-app-invitation-withdrawn-390.png",
+      "path": "/",
+      "state": "access-app-invitation-withdrawn",
+      "width": 390,
+      "browser": "chromium",
+      "source": "real local auth; existing external Usable eligibility fixture controls for negative states"
+    },
+    {
+      "file": "access-app-invitation-withdrawn-1440.png",
+      "path": "/",
+      "state": "access-app-invitation-withdrawn",
+      "width": 1440,
+      "browser": "chromium",
+      "source": "real local auth; existing external Usable eligibility fixture controls for negative states"
+    },
+    {
+      "file": "access-session-ended-320.png",
+      "path": "/",
+      "state": "access-session-ended",
+      "width": 320,
+      "browser": "chromium",
+      "source": "real local auth; existing external Usable eligibility fixture controls for negative states"
+    },
+    {
+      "file": "access-session-ended-390.png",
+      "path": "/",
+      "state": "access-session-ended",
+      "width": 390,
+      "browser": "chromium",
+      "source": "real local auth; existing external Usable eligibility fixture controls for negative states"
+    },
+    {
+      "file": "access-session-ended-1440.png",
+      "path": "/",
+      "state": "access-session-ended",
+      "width": 1440,
+      "browser": "chromium",
+      "source": "real local auth; existing external Usable eligibility fixture controls for negative states"
+    }
+  ]
+}

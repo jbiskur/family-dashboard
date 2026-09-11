@@ -146,7 +146,7 @@ export function AccountsPage() {
                 options: [
                   {
                     value: "household",
-                    label: "Joint · full detail for both spouses",
+                    label: "Joint · full detail for household members",
                   },
                   {
                     value: "personal",
@@ -157,7 +157,7 @@ export function AccountsPage() {
             ]}
             submitLabel="Add account"
             onCancel={() => setCreating(false)}
-            footer="Personal accounts still contribute to combined household totals. Their details remain private unless you explicitly share them."
+            footer="Personal account details stay private unless you share them. Household owners and spouses can see combined totals; admins see only shared accounts and their own."
             onSubmit={async (values) => {
               const account = (await command.execute(
                 "/v1/finance/accounts",
@@ -220,9 +220,9 @@ export function AccountDetailPage({ id }: { id: string }) {
                 }
                 detail={
                   account.visibility === "household"
-                    ? "Both spouses can see account detail"
+                    ? "Household members can see account detail"
                     : account.shared
-                      ? "Explicitly shared with your spouse"
+                      ? "Explicitly shared with household members"
                       : "Account detail is private to you"
                 }
                 icon={<ShieldCheck size={18} />}
@@ -337,8 +337,8 @@ export function AccountDetailPage({ id }: { id: string }) {
             >
               <p className="confirm-copy">
                 {account.shared
-                  ? "Your spouse will lose access to this account's name, balance and transaction details. Its contribution to combined household totals stays the same."
-                  : "Your spouse will be able to see this account's name, balance and all transaction details. You remain the owner."}
+                  ? "Other household members will lose access to this account's name, balance and transaction details. Household owners and spouses retain combined totals; admins see only shared accounts and their own."
+                  : "Household members, including admins, will be able to see this account's name, balance and all transaction details. You remain the owner."}
               </p>
               {command.error && <ErrorState error={command.error} />}
               <div className="form-actions">

@@ -55,12 +55,12 @@ async function signIn(page: Page, user: string) {
   await page.getByRole("button", { name: "Continue with Usable" }).click();
   await page.locator("#username").fill(`${user}@heima.test`);
   await page.locator("#password").fill(settings.TEST_USER_PASSWORD ?? "");
-  await page.locator("#kc-login").click();
+  await page.locator("#kc-login").click({ timeout: 30000 });
   await expect(page).toHaveURL(/^http:\/\/localhost:3010\//, {
     timeout: 30000,
   });
 }
-test.afterEach(async () => {
+async function restoreHousehold() {
   // A timed-out browser body still gets an independent cleanup budget and fresh real JWTs.
   test.setTimeout(45000);
   await controls({ reset: true });
@@ -100,13 +100,15 @@ test.afterEach(async () => {
   const restored = await api("access", spouseToken);
   expect(restored.status).toBe(200);
   expect(restored.data.member.status).toBe("active");
-});
+}
+test.beforeEach(restoreHousehold);
+test.afterEach(restoreHousehold);
 test("access lifecycle states show safe next actions at 320px and desktop without exposing identity secrets", async ({
   page,
   browser,
   browserName,
 }, info) => {
-  test.setTimeout(180000);
+  test.setTimeout(240000);
   // Exclusive fixture-control window: no other browser/HTTP suite may mutate eligibility or scheduler time.
   const spouseContext = await browser.newContext({
     baseURL: "http://localhost:3010",
@@ -126,7 +128,7 @@ test("access lifecycle states show safe next actions at 320px and desktop withou
   const ownerToken = await bearer("owner");
   let releaseConflictAccess: () => void = () => {};
   const inspect = async (target: Page, state: string) => {
-    for (const width of [320, 1440]) {
+    for (const width of [320, 390, 1440]) {
       await target.setViewportSize({ width, height: 900 });
       await expect
         .poll(() => target.evaluate(() => window.innerWidth))
@@ -269,7 +271,7 @@ test("access lifecycle states show safe next actions at 320px and desktop withou
     await inspect(page, "revoked-empty");
     await signIn(spouse, "spouse");
     await expect(
-      spouse.getByRole("heading", { name: /check.*invitation/i }),
+      spouse.getByRole("heading", { name: "Household access is needed." }),
     ).toBeVisible();
     await inspect(spouse, "revoked-denied");
     // Install before navigation so no in-flight refresh can bypass the barrier.
@@ -385,7 +387,7 @@ test("access lifecycle states show safe next actions at 320px and desktop withou
     await secondOwner.unrouteAll({ behavior: "wait" });
     await spouse.reload();
     await expect(
-      spouse.getByRole("heading", { name: /check.*invitation/i }),
+      spouse.getByRole("heading", { name: "Household access is needed." }),
     ).toBeVisible();
     await inspect(spouse, "mismatched");
     await page
@@ -468,12 +470,31 @@ test("access lifecycle states show safe next actions at 320px and desktop withou
     await controls({ upstreamFailure: true });
     await page.reload();
     await expect(
-      page.getByRole("heading", { name: /check.*invitation/i }),
+      page.getByRole("heading", { name: "We can't check access right now." }),
     ).toBeVisible();
     await inspect(page, "unavailable");
     await controls({ reset: true });
     await page.getByRole("link", { name: "Try again", exact: true }).click();
     await expect(page.locator("#main-content")).toBeVisible();
+    await controls({ denyUser: "00000000-0000-4000-8000-000000000001" });
+    await page.reload();
+    await expect(
+      page.getByRole("heading", { name: "An invitation is needed." }),
+    ).toBeVisible();
+    await inspect(page, "app-invitation-withdrawn");
+    await controls({ reset: true, checkAccessStatus: 401 });
+    await page.reload();
+    await expect(
+      page.getByRole("heading", { name: "Your session has ended." }),
+    ).toBeVisible();
+    await expect(page.getByRole("link", { name: "Try again" })).toHaveCount(0);
+    await inspect(page, "session-ended");
+    await controls({ reset: true });
+    await page.getByRole("button", { name: "Back to sign in" }).click();
+    await expect(
+      page.getByRole("button", { name: "Continue with Usable" }),
+    ).toBeVisible();
+    await signIn(page, "owner");
     await page.goto("/settings/household");
     await page.getByRole("button", { name: "Sign out", exact: true }).click();
     await expect(

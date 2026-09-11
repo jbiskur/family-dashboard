@@ -332,7 +332,7 @@ test("Revoked eligibility purges private offline data before disconnected naviga
     expect(denial.ok).toBe(true);
     await page.reload();
     await expect(
-      page.getByRole("heading", { name: /check.*invitation/i }),
+      page.getByRole("heading", { name: "An invitation is needed." }),
     ).toBeVisible();
     await expect
       .poll(() =>
@@ -588,6 +588,12 @@ test("Observed list permission loss cannot reappear from offline cache", async (
     await page
       .getByRole("button", { name: "Confirm change", exact: true })
       .click();
+    await expect(
+      page.getByRole("dialog", {
+        name: "Make this list personal?",
+        exact: true,
+      }),
+    ).not.toBeVisible();
     await spouse.reload();
     await expect(
       spouse.getByRole("heading", { name: title, exact: true }),

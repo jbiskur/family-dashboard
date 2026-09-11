@@ -19,6 +19,7 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { useCommand, useHeima } from "@/lib/client";
+import { memberLabel } from "@/lib/member-label";
 import { CaptureComposer } from "../shared/capture-composer";
 import {
   shoppingDetails,
@@ -59,7 +60,8 @@ export function HomePage() {
       .filter((member) => member.status === "active")
       .map((member) => ({
         value: member.userId,
-        label: member.userId === access.member.userId ? "Me" : "My spouse",
+        label:
+          member.userId === access.member.userId ? "Me" : memberLabel(member),
       })),
     ...(profiles.data?.items ?? [])
       .filter((profile) => !profile.archived)

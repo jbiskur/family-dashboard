@@ -15,6 +15,7 @@ import { db } from "./db/client";
 import { activity, commands, members, resources } from "./db/schema";
 import { fields, TIMEZONE } from "./domain";
 import { ApiFailure } from "./errors";
+import { memberEnabled } from "./member-access";
 import { emitNotification } from "./pathways";
 import { confirmRecipient } from "./recipient-session";
 import { semanticId } from "./security";
@@ -138,15 +139,17 @@ export async function processNotifications() {
   if (running) return;
   running = true;
   try {
-    const active = await db
-      .select()
-      .from(members)
-      .where(
-        and(
-          eq(members.householdId, config.HOUSEHOLD_ID),
-          eq(members.status, "active"),
-        ),
-      );
+    const active = (
+      await db
+        .select()
+        .from(members)
+        .where(
+          and(
+            eq(members.householdId, config.HOUSEHOLD_ID),
+            eq(members.status, "active"),
+          ),
+        )
+    ).filter(memberEnabled);
     const owner = active.find((m) => m.role === "owner");
     if (!owner) return;
     const all = await db

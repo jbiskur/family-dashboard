@@ -1,0 +1,89 @@
+{
+  "uniqueBrowserCasesVerified": 30,
+  "remainingFailures": 0,
+  "checks": [
+    {
+      "files": ["admin-access.spec.ts"],
+      "projects": ["chromium", "firefox", "webkit", "mobile"],
+      "passed": 8,
+      "seconds": 84
+    },
+    {
+      "files": ["session.spec.ts"],
+      "projects": ["chromium", "firefox", "webkit", "mobile"],
+      "passed": 8
+    },
+    {
+      "files": ["login-states.spec.ts"],
+      "projects": ["chromium", "mobile"],
+      "passed": 2
+    },
+    {
+      "files": ["login-states.spec.ts"],
+      "projects": ["firefox", "webkit"],
+      "passed": 2,
+      "seconds": 59.9
+    },
+    {
+      "files": ["scope-conversion.spec.ts", "offline-audit.spec.ts"],
+      "projects": ["chromium"],
+      "passed": 9
+    },
+    {
+      "files": ["offline-audit.spec.ts"],
+      "filter": "Observed list permission loss",
+      "projects": ["chromium"],
+      "passed": 1,
+      "seconds": 6.3
+    }
+  ],
+  "screenshots": "manifest.json",
+  "curatedScreenshotCount": 27,
+  "productionDataIncluded": false,
+  "investigatedTestFailures": [
+    {
+      "test": "Firefox login lifecycle",
+      "observation": "Real spouse Keycloak login remained pending and the 240-second test deadline elapsed. Owner read showed temporary-unavailable; runtime logs had generic request/auth failures without timestamps. No root cause established.",
+      "followup": "Bound login click to30seconds, initialize household through existing public HTTP fixture flow before as well as after test. Rerun passed30.8seconds."
+    },
+    {
+      "test": "WebKit login lifecycle",
+      "observation": "Initial family-connected precondition failed after Firefox cleanup timed out leaving spouse revoked.",
+      "followup": "Same public HTTP initialization before each lifecycle; rerun passed27.7seconds."
+    },
+    {
+      "test": "Chromium observed list permission loss",
+      "observation": "Test reloaded spouse page immediately after clicking async visibility submit before owner command completion, observing previous shared list.",
+      "followup": "Wait for owner confirmation dialog to close, retaining all denied/private-cache assertions. Targeted rerun passed5.8seconds."
+    }
+  ],
+  "verifiedAt": "2026-09-11",
+  "scope": "Local composed verification; CI, release and production verification are separate gates.",
+  "http": {
+    "passed": 78,
+    "failed": 0,
+    "assertions": 1430,
+    "seconds": 179.09
+  },
+  "staticChecks": {
+    "lint": "passed",
+    "typecheck": "passed",
+    "productionWebBuild": "passed"
+  },
+  "migration": {
+    "freshSchema": "passed",
+    "populatedUpgrade": "existing owner, spouse and resources retained; role/index constraints verified",
+    "limit": "Not byte-for-byte equivalence"
+  },
+  "backgroundRevocation": {
+    "scheduledReminderSuppression": "passed with positive owner control",
+    "outboundAdminWebPush": "code reviewed; not executed in this new case"
+  },
+  "authorization": {
+    "exactAppInvitationRequired": true,
+    "currentAdminConfigurationRequired": true,
+    "ownerOnlyAccessManagementPreserved": true,
+    "otherPeoplesPrivateDetailsAndAggregatesExcluded": true,
+    "domainWrites": "encrypted Flowcore events; no direct database fallback"
+  }
+}

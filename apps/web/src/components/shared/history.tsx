@@ -1,6 +1,7 @@
 "use client";
 import type { HistoryEntry, HouseholdProfile } from "@heima/contracts";
 import { useHeima } from "@/lib/client";
+import { memberLabel } from "@/lib/member-label";
 import { Dialog } from "../ui/dialog";
 import { EmptyState, ErrorState, LoadingState } from "./page";
 import { useHousehold } from "./providers";
@@ -62,14 +63,11 @@ export function HistoryDialog({
     open && path.includes("shopping"),
   );
   function person(id: unknown) {
+    const member = access.members.find((m) => m.userId === id);
     return id === access.member.userId
       ? "You"
       : (profiles.data?.items.find((p) => p.id === id)?.name ??
-          (access.members.find((m) => m.userId === id)?.role === "owner"
-            ? "Household owner"
-            : access.members.some((m) => m.userId === id)
-              ? "Your spouse"
-              : "Former household member"));
+          (member ? memberLabel(member) : "Former household member"));
   }
   function show(key: string, value: unknown): string {
     if (value === null || value === undefined || value === "") return "Not set";

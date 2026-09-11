@@ -10,6 +10,7 @@ for (const line of (
 }
 const denied = new Set<string>();
 let upstreamFailure = false;
+let checkAccessStatus = 200;
 let inviteStatus = 201;
 let maintenanceClock: string | null = null;
 const pushFixture = new PushServiceFixture();
@@ -39,6 +40,7 @@ const fixture = new WebhookTestFixture({
       if (body.reset) {
         denied.clear();
         upstreamFailure = false;
+        checkAccessStatus = 200;
         inviteStatus = 201;
         maintenanceClock = null;
         fixture.setInboundStatus(200);
@@ -62,6 +64,8 @@ const fixture = new WebhookTestFixture({
       if (typeof body.denyUser === "string") denied.add(body.denyUser);
       if (typeof body.upstreamFailure === "boolean")
         upstreamFailure = body.upstreamFailure;
+      if ([200, 401, 403, 503].includes(body.checkAccessStatus))
+        checkAccessStatus = body.checkAccessStatus;
       if (typeof body.webhookStatus === "number")
         fixture.setInboundStatus(body.webhookStatus);
       if (Array.isArray(body.webhookStatuses))
@@ -109,6 +113,10 @@ const fixture = new WebhookTestFixture({
     }
     const token = decodeJwt(bearer);
     if (url.pathname.endsWith("/check-access")) {
+      if (checkAccessStatus !== 200) {
+        send(checkAccessStatus, { error: "Test eligibility response" });
+        return true;
+      }
       send(200, {
         installed:
           !denied.has(String(token.usable_user_id)) &&

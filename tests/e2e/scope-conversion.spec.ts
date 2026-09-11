@@ -108,7 +108,9 @@ for (const area of ["shopping", "work"] as const) {
         name: area === "shopping" ? "Share this list?" : "Share this to-do?",
         exact: true,
       });
-      await expect(dialog).toContainText("Your spouse will be able");
+      await expect(dialog).toContainText(
+        "Household members, including admins, will be able",
+      );
       await expect(dialog).toContainText("history");
       await dialog.getByRole("button", { name: cancel, exact: true }).click();
       expect(await read(page, actorId, path)).toMatchObject({
@@ -148,7 +150,9 @@ for (const area of ["shopping", "work"] as const) {
             : "Keep this one personal?",
         exact: true,
       });
-      await expect(dialog).toContainText(/spouse (will lose|loses) access/);
+      await expect(dialog).toContainText(
+        /household members (will lose|lose) access/,
+      );
       await expect(dialog).toContainText(/attribut/);
       await dialog.getByRole("button", { name: cancel, exact: true }).click();
       expect(await read(page, actorId, path)).toMatchObject({

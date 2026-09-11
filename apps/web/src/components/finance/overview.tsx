@@ -18,6 +18,7 @@ import {
   PageHeader,
   SectionTitle,
 } from "../shared/page";
+import { useHousehold } from "../shared/providers";
 import { Button } from "../ui/button";
 import { Card } from "../ui/card";
 import {
@@ -34,6 +35,7 @@ export function FinanceOverviewPage({
 }: {
   spending?: boolean;
 }) {
+  const admin = useHousehold().member.role === "admin";
   const period = usePeriod();
   const query = useHeima<FinanceOverview>(
     `/v1/finance/${spending ? "spending" : "overview"}${period ? `?${period}` : ""}`,
@@ -43,11 +45,19 @@ export function FinanceOverviewPage({
     <>
       <PageHeader
         eyebrow="A CLEARER PICTURE"
-        title={spending ? "Household spending" : "Financial overview"}
-        description={
+        title={
           spending
-            ? "Household spending, thoughtfully brought together."
-            : "The bigger picture, without losing sight of the everyday."
+            ? admin
+              ? "Spending overview"
+              : "Household spending"
+            : "Financial overview"
+        }
+        description={
+          admin
+            ? "Shared accounts and your own. Other people's private finances are excluded."
+            : spending
+              ? "Household spending, thoughtfully brought together."
+              : "The bigger picture, without losing sight of the everyday."
         }
         action={
           <Button variant="secondary" asChild>
@@ -76,7 +86,15 @@ export function FinanceOverviewPage({
               )}
               <div className="metric-grid">
                 <Metric
-                  label={spending ? "Household spending" : "Household balance"}
+                  label={
+                    spending
+                      ? admin
+                        ? "Spending"
+                        : "Household spending"
+                      : admin
+                        ? "Account balance"
+                        : "Household balance"
+                  }
                   value={
                     <Money
                       value={spending ? data.spending : data.balance}
@@ -86,7 +104,9 @@ export function FinanceOverviewPage({
                   detail={
                     spending
                       ? "Refunds included · transfers excluded"
-                      : "All household accounts combined"
+                      : admin
+                        ? "Shared accounts and your own"
+                        : "All household accounts combined"
                   }
                   icon={<Wallet size={18} />}
                 />
@@ -250,8 +270,9 @@ export function FinanceOverviewPage({
                       />
                     )}
                     <p className="field-hint">
-                      Includes combined household contributions. Private account
-                      details remain private.
+                      {admin
+                        ? "Includes shared accounts and your own. Other people's private accounts do not contribute to these totals."
+                        : "Includes combined household contributions. Private account details remain private."}
                     </p>
                   </Card>
                 </div>

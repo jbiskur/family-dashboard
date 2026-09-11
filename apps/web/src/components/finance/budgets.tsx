@@ -19,6 +19,7 @@ import {
   LoadingState,
   PageHeader,
 } from "../shared/page";
+import { useHousehold } from "../shared/providers";
 import { Button } from "../ui/button";
 import { Badge, Card } from "../ui/card";
 import { Dialog } from "../ui/dialog";
@@ -26,6 +27,7 @@ import { Input } from "../ui/input";
 import { FinanceBoundary, FinanceNav, Money, money } from "./finance-shared";
 
 export function BudgetsPage() {
+  const admin = useHousehold().member.role === "admin";
   const params = useSearchParams();
   const router = useRouter();
   const month = params.get("month") ?? new Date().toISOString().slice(0, 7);
@@ -209,8 +211,10 @@ export function BudgetsPage() {
           )}
         </Card>
         <p className="field-hint" style={{ marginTop: 15 }}>
-          Budgets use combined household spending. Income, transfers and
-          adjustments are excluded. Private transaction details stay private.
+          {admin
+            ? "Your budget view counts spending from shared accounts and your own. Other people's private spending is excluded."
+            : "Budgets use combined household spending. Private transaction details stay private."}{" "}
+          Income, transfers and adjustments are excluded.
         </p>
         <Dialog
           open={editing !== null}
@@ -323,7 +327,7 @@ export function BudgetsPage() {
         >
           <div className="row-between" style={{ marginBottom: 13 }}>
             <p className="text-small muted">
-              Both spouses can manage categories.
+              Household members can manage categories.
             </p>
             <Button variant="secondary" onClick={() => setCategory("new")}>
               <Plus size={15} />

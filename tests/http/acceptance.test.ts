@@ -221,7 +221,10 @@ test("A1 occupied household rejects a third slot and spouse owner capabilities",
   const after = await read("access");
   expect(after.members).toEqual(before.members);
   expect(
-    after.members.filter((m: { status: string }) => m.status === "active"),
+    after.members.filter(
+      (m: { status: string; role: string }) =>
+        m.status === "active" && m.role !== "admin",
+    ),
   ).toHaveLength(2);
   expect(JSON.stringify((await read("access", spouse)).members)).not.toContain(
     "@heima.test",
@@ -886,7 +889,10 @@ test("A9 invitation cancellation, explicit restoration and signed UUID custody s
     expect(admitted.every((r) => r.status === 200)).toBe(true);
     const state = await read("access");
     expect(
-      state.members.filter((m: { status: string }) => m.status === "active"),
+      state.members.filter(
+        (m: { status: string; role: string }) =>
+          m.status === "active" && m.role !== "admin",
+      ),
     ).toHaveLength(2);
     expect(
       state.members.find((m: { userId: string }) => m.userId === spouseId).role,
