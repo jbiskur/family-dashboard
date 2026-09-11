@@ -123,6 +123,12 @@ test("a real rejected offline assignment creates one private generic sync activi
       .getByRole("button", { name: "Archive profile", exact: true })
       .click();
     await expect(
+      other.getByRole("dialog", {
+        name: "Archive this profile?",
+        exact: true,
+      }),
+    ).toBeHidden();
+    await expect(
       other.getByRole("button", {
         name: `Archive ${profileName}`,
         exact: true,

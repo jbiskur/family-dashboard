@@ -92,15 +92,28 @@ function CaptureForm({
 }) {
   const id = useId();
   const input = useRef<HTMLInputElement>(null);
+  const detailsTrigger = useRef<HTMLButtonElement>(null);
+  const closeFocusTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const saving = useRef(false);
   const detailsOpen = useRef(false);
   const focusInputOnClose = useRef(false);
   const [expanded, setExpanded] = useState(false);
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
+  useEffect(
+    () => () => {
+      if (closeFocusTimer.current !== null)
+        clearTimeout(closeFocusTimer.current);
+    },
+    [],
+  );
   function changeExpanded(open: boolean) {
     detailsOpen.current = open;
-    if (open) focusInputOnClose.current = false;
+    if (open) {
+      focusInputOnClose.current = false;
+      if (closeFocusTimer.current !== null)
+        clearTimeout(closeFocusTimer.current);
+    }
     setExpanded(open);
   }
   const fields = [choice.title, ...(choice.context ?? []), ...choice.details];
@@ -318,7 +331,10 @@ function CaptureForm({
             size="icon"
             aria-label="Details"
             disabled={!ready || saving.current}
-            onClick={() => changeExpanded(true)}
+            onClick={(event) => {
+              detailsTrigger.current = event.currentTarget;
+              changeExpanded(true);
+            }}
           >
             <SlidersHorizontal size={20} />
           </Button>
@@ -346,10 +362,18 @@ function CaptureForm({
         open={expanded}
         onOpenChange={changeExpanded}
         onCloseAutoFocus={(event) => {
-          if (!focusInputOnClose.current) return;
-          focusInputOnClose.current = false;
           event.preventDefault();
-          input.current?.focus({ preventScroll: true });
+          // A save can finish after dismissal queues its focus restoration.
+          // Choose the target when that work runs, using the latest outcome.
+          closeFocusTimer.current = setTimeout(() => {
+            closeFocusTimer.current = null;
+            if (detailsOpen.current) return;
+            const target = focusInputOnClose.current
+              ? input.current
+              : detailsTrigger.current;
+            focusInputOnClose.current = false;
+            if (target?.isConnected) target.focus({ preventScroll: true });
+          }, 0);
         }}
         title={`${choice.label} details`}
         description="Keep it simple, or add a little more."

@@ -1,0 +1,193 @@
+{
+  "issue": "384e0145-e9c8-4c71-bef3-f15abb5ecc45",
+  "environment": "Fresh local production build; synthetic fixture data only; no user statements or production account data.",
+  "origin": "http://localhost:3010",
+  "buildId": "eFWT_ymqwUo7nwqWpNK2F",
+  "screenshots": [
+    {
+      "file": "work-cancel-draft-390.png",
+      "route": "/work",
+      "uiPath": "Work \u2192 Quick add \u2192 Details \u2192 edit private draft and note \u2192 Cancel \u2192 Details",
+      "state": "Retained note scrolled into view after Cancel and reopen; name and private audience preservation asserted in the same test; no item created.",
+      "project": "mobile",
+      "viewport": {
+        "width": 390,
+        "height": 664
+      },
+      "pixelSize": {
+        "width": 1170,
+        "height": 1992
+      },
+      "deviceScaleFactor": 3,
+      "scenarios": ["S3"],
+      "sourceArtifact": "production-evidence-final/mobile-capture-capture-res-4d79d-xt-entry-field-queued-close-mobile/capture-cancel-draft-restored.png",
+      "sha256": "3dcc76440e012e1ed8a6a8b6a39dd64e1fa97766608caf495de5adb90f05b49d",
+      "testTitle": "capture response timing \u203a closing details during a save restores the next-entry field: queued close"
+    },
+    {
+      "file": "work-pending-390.png",
+      "route": "/work",
+      "uiPath": "Work \u2192 Quick add \u2192 Details \u2192 Add to-do",
+      "state": "pending",
+      "project": "mobile",
+      "viewport": {
+        "width": 390,
+        "height": 664
+      },
+      "pixelSize": {
+        "width": 1170,
+        "height": 1992
+      },
+      "deviceScaleFactor": 3,
+      "scenarios": ["S1"],
+      "sourceArtifact": "production-evidence-final/mobile-capture-capture-res-4d79d-xt-entry-field-queued-close-mobile/capture-details-pending.png",
+      "sha256": "0e865a7f7452e1dd8538f89438a6b428b0ea14c761f917fbfece8e243decceea",
+      "testTitle": "capture response timing \u203a closing details during a save restores the next-entry field: queued close"
+    },
+    {
+      "file": "work-saved-focus-390.png",
+      "route": "/work",
+      "uiPath": "Work \u2192 Quick add \u2192 Details \u2192 Add \u2192 close before response",
+      "state": "successful add; empty focused quick-add after queued close callbacks",
+      "project": "mobile",
+      "viewport": {
+        "width": 390,
+        "height": 664
+      },
+      "pixelSize": {
+        "width": 1170,
+        "height": 1992
+      },
+      "deviceScaleFactor": 3,
+      "scenarios": ["S1"],
+      "sourceArtifact": "production-evidence-final/mobile-capture-capture-res-4d79d-xt-entry-field-queued-close-mobile/capture-dismissed-save-focus.png",
+      "sha256": "c286bb96a3daccf368a3191b65e55fe1e827ea59f3a082896ef1e090074a252b",
+      "testTitle": "capture response timing \u203a closing details during a save restores the next-entry field: queued close"
+    },
+    {
+      "file": "work-cancel-focus-390.png",
+      "route": "/work",
+      "uiPath": "Work \u2192 Quick add \u2192 Details \u2192 Escape",
+      "state": "cancel after reopening; Details trigger focused",
+      "project": "mobile",
+      "viewport": {
+        "width": 390,
+        "height": 664
+      },
+      "pixelSize": {
+        "width": 1170,
+        "height": 1992
+      },
+      "deviceScaleFactor": 3,
+      "scenarios": ["S3"],
+      "sourceArtifact": "production-evidence-final/mobile-capture-capture-res-4d79d-xt-entry-field-queued-close-mobile/capture-cancel-trigger-focus.png",
+      "sha256": "24ab9e8dbb47e129e69cb73e7aa25d9664d18612f0428d6e3137f18beb4b1c3b",
+      "testTitle": "capture response timing \u203a closing details during a save restores the next-entry field: queued close"
+    },
+    {
+      "file": "work-saved-focus-1280.png",
+      "route": "/work",
+      "uiPath": "Work \u2192 Quick add \u2192 Details \u2192 Add \u2192 close before response",
+      "state": "successful add; empty focused quick-add after queued close callbacks",
+      "project": "chromium",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "pixelSize": {
+        "width": 1280,
+        "height": 720
+      },
+      "deviceScaleFactor": 1,
+      "scenarios": ["S1"],
+      "sourceArtifact": "production-queued-final/mobile-capture-capture-res-4d79d-xt-entry-field-queued-close-chromium/capture-dismissed-save-focus.png",
+      "sha256": "d96c3c500d8907f5fbb4c41f27f94378e5b671c69c8a519a71d2acfe6179c8b6",
+      "testTitle": "capture response timing \u203a closing details during a save restores the next-entry field: queued close"
+    },
+    {
+      "file": "work-validation-390.png",
+      "route": "/work",
+      "uiPath": "Work \u2192 Quick add \u2192 Details \u2192 Repeat weekly \u2192 Add without due date",
+      "state": "Validation error scrolled into view; editable draft retained.",
+      "project": "mobile",
+      "viewport": {
+        "width": 390,
+        "height": 664
+      },
+      "pixelSize": {
+        "width": 1170,
+        "height": 1992
+      },
+      "deviceScaleFactor": 3,
+      "scenarios": ["S4"],
+      "sourceArtifact": "production-evidence-final/mobile-capture-invalid-cap-f8772-ors-inside-expanded-details-mobile/capture-server-validation.png",
+      "sha256": "08504465298c2be78daafaa5fd1fc0ad99e8e41664a5a6492b7949b02afb4282",
+      "testTitle": "invalid capture stays editable and reports errors inside expanded details"
+    },
+    {
+      "file": "home-shopping-draft-1280.png",
+      "route": "/",
+      "uiPath": "Home \u2192 Shopping quick add \u2192 Details \u2192 close \u2192 switch kind \u2192 return \u2192 Details",
+      "state": "unsaved quantity and note restored after close and kind switch",
+      "project": "chromium",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "pixelSize": {
+        "width": 1280,
+        "height": 720
+      },
+      "deviceScaleFactor": 1,
+      "scenarios": ["S2", "S3"],
+      "sourceArtifact": "production/mobile-capture-one-Home-ca-dbcb4-ination-and-expanded-fields-chromium/shopping-details-draft.png",
+      "sha256": "8e8c9cdf30e5117012caf6d1a452e3f71430975bad4948429e0c2d4c4a0106a7",
+      "testTitle": "one Home capture preserves separate drafts, destination and expanded fields"
+    },
+    {
+      "file": "shopping-saved-focus-320.png",
+      "routeTemplate": "/shopping/[listId]",
+      "uiPath": "Shopping \u2192 synthetic list \u2192 Details \u2192 Add item",
+      "state": "successful add; quick-add focused",
+      "project": "webkit",
+      "viewport": {
+        "width": 320,
+        "height": 844
+      },
+      "pixelSize": {
+        "width": 640,
+        "height": 1688
+      },
+      "deviceScaleFactor": 2,
+      "scenarios": ["S2", "S5"],
+      "sourceArtifact": "production/capture-history-saved-shop-91de9-en-Details-reopens-at-320px-webkit/details-saved-320.png",
+      "sha256": "2e8246232cdf6a5640ed9378f171c1b6cc1618c52b22ce80b16ef4b368512d80",
+      "testTitle": "saved shopping history stays accessible when Details reopens at 320px"
+    },
+    {
+      "file": "shopping-suggestions-1440.png",
+      "routeTemplate": "/shopping/[listId]",
+      "uiPath": "Shopping \u2192 synthetic list \u2192 Add item \u2192 immediately reopen Details \u2192 type matching name",
+      "state": "one accessible suggestion popup after immediate reopen; no reload",
+      "project": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 844
+      },
+      "pixelSize": {
+        "width": 1440,
+        "height": 844
+      },
+      "deviceScaleFactor": 1,
+      "scenarios": ["S5"],
+      "sourceArtifact": "production/capture-history-saved-shop-a47fc-n-Details-reopens-at-1440px-chromium/details-suggestions-1440.png",
+      "sha256": "b81670384009a3f468bb3ccd7b2758e2a3a0925cf372138e8b9b3a7e072736a1",
+      "testTitle": "saved shopping history stays accessible when Details reopens at 1440px"
+    }
+  ],
+  "limits": [
+    "Browser emulation does not prove physical iOS keyboard behavior.",
+    "Shopping routeTemplate records the route shape, not a captured concrete list URL.",
+    "Focus and exactly-once behavior are asserted by the browser tests; screenshots provide visual context."
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "capturedAt": "2026-09-11",
+  "environment": "Local production build with synthetic fixtures",
+  "privacy": "Synthetic test identities and records only; no production data or uploaded bank statements.",
+  "scope": "Test synchronization corrections; application rendering and behavior unchanged.",
+  "limitations": [
+    "Screenshots show final UI states; request-delay proof and test assertions establish ordering.",
+    "Pointer tests do not establish physical iOS behavior."
+  ],
+  "screenshots": [
+    {
+      "file": "archived-store-history-1440-chromium.png",
+      "route": "/shopping/:listId",
+      "journey": "Shopping \u2192 Stores \u2192 Archive store \u2192 confirmation closes \u2192 list \u2192 Picked up; historical offer and purchase badges remain.",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "sha256": "a0cb83a35c30571f44af19e477ff8bf3d6e7dce5f6ef0c8fd462e8b6656f5cf6",
+      "source": "/tmp/heima-admin-verification/archive-barriers/final/stores-Store-search-offer--502cb--archived-history-at-1440px-chromium/archived-offer-history-preserved-1440.png"
+    },
+    {
+      "file": "private-sync-activity-chromium.png",
+      "route": "/settings/notifications",
+      "journey": "Work \u2192 add offline assignment \u2192 another session archives profile \u2192 confirmation closes \u2192 reconnect \u2192 Review sync \u2192 Notifications; activity uses generic text.",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "sha256": "ff075b16632438e14a5f5f1600f59354bded024a41d80c3551eeeec3cec6a478",
+      "source": "/tmp/heima-admin-verification/archive-barriers/final/sync-failure-a-real-reject-c7118-ivity-with-a-safe-area-link-chromium/private-sync-activity.png"
+    },
+    {
+      "file": "work-edit-after-undo-390-chromium.png",
+      "route": "/work",
+      "journey": "Work \u2192 swipe complete \u2192 Undo \u2192 wait until ready \u2192 swipe left \u2192 Edit this occurrence.",
+      "browser": "chromium",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "sha256": "ff54ba158a087b49c46679470967f859d6f1ebd7e377c4558af3d85c57df5dbb",
+      "source": "/tmp/heima-admin-verification/archive-barriers/swipe/swipe-actions-Work-swipe-U-e5ee4-preserves-its-one-successor-chromium/work-swipe-edit-390.png"
+    }
+  ]
+}
