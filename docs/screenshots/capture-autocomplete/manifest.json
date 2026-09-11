@@ -1,0 +1,105 @@
+[
+  {
+    "screenshot": "shopping-suggestions-1440-chromium.png",
+    "routeTemplate": "/shopping/[listId]",
+    "uiPath": "Shopping → owned list → Details",
+    "viewport": {
+      "width": 1440,
+      "height": 844
+    },
+    "browser": "chromium",
+    "state": "suggestions",
+    "testTitle": "saved shopping history stays accessible when Details reopens at 1440px",
+    "sourceArtifact": "capture-history-saved-shop-a47fc-n-Details-reopens-at-1440px-chromium/details-suggestions-1440.png",
+    "fixture": "Synthetic local household and private shopping list; no production data",
+    "observation": "Same newly created list throughout; immediate save and reopen without navigation or reload"
+  },
+  {
+    "screenshot": "shopping-suggestions-320-firefox.png",
+    "routeTemplate": "/shopping/[listId]",
+    "uiPath": "Shopping → owned list → Details",
+    "viewport": {
+      "width": 320,
+      "height": 844
+    },
+    "browser": "firefox",
+    "state": "suggestions",
+    "testTitle": "saved shopping history stays accessible when Details reopens at 320px",
+    "sourceArtifact": "capture-history-saved-shop-91de9-en-Details-reopens-at-320px-firefox/details-suggestions-320.png",
+    "fixture": "Synthetic local household and private shopping list; no production data",
+    "observation": "Same newly created list throughout; immediate save and reopen without navigation or reload"
+  },
+  {
+    "screenshot": "shopping-selected-320-firefox.png",
+    "routeTemplate": "/shopping/[listId]",
+    "uiPath": "Shopping → owned list → Details",
+    "viewport": {
+      "width": 320,
+      "height": 844
+    },
+    "browser": "firefox",
+    "state": "selected",
+    "testTitle": "saved shopping history stays accessible when Details reopens at 320px",
+    "sourceArtifact": "capture-history-saved-shop-91de9-en-Details-reopens-at-320px-firefox/details-selected-320.png",
+    "fixture": "Synthetic local household and private shopping list; no production data",
+    "observation": "Same newly created list throughout; immediate save and reopen without navigation or reload"
+  },
+  {
+    "screenshot": "shopping-suggestions-390-webkit.png",
+    "routeTemplate": "/shopping/[listId]",
+    "uiPath": "Shopping → owned list → Details",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "browser": "webkit",
+    "state": "suggestions",
+    "testTitle": "saved shopping history stays accessible when Details reopens at 390px",
+    "sourceArtifact": "capture-history-saved-shop-fa811-en-Details-reopens-at-390px-webkit/details-suggestions-390.png",
+    "fixture": "Synthetic local household and private shopping list; no production data",
+    "observation": "Same newly created list throughout; immediate save and reopen without navigation or reload"
+  },
+  {
+    "screenshot": "shopping-saved-390-webkit.png",
+    "routeTemplate": "/shopping/[listId]",
+    "uiPath": "Shopping → owned list → Details",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "browser": "webkit",
+    "state": "saved",
+    "testTitle": "saved shopping history stays accessible when Details reopens at 390px",
+    "sourceArtifact": "capture-history-saved-shop-fa811-en-Details-reopens-at-390px-webkit/details-saved-390.png",
+    "fixture": "Synthetic local household and private shopping list; no production data",
+    "observation": "Same newly created list throughout; immediate save and reopen without navigation or reload"
+  },
+  {
+    "screenshot": "home-suggestions-390-webkit.png",
+    "path": "/",
+    "uiPath": "Home → Quick add → Details",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "browser": "webkit",
+    "state": "suggestions after repeated transitions",
+    "testTitle": "Home and Work expose only the active draft suggestions through repeated Details transitions",
+    "sourceArtifact": "capture-history-Home-and-W-caa3e-epeated-Details-transitions-webkit/home-active-details-1.png",
+    "fixture": "Synthetic local household and private task; no production data"
+  },
+  {
+    "screenshot": "work-suggestions-1440-webkit.png",
+    "path": "/work",
+    "uiPath": "Work → Quick add → Details",
+    "viewport": {
+      "width": 1440,
+      "height": 844
+    },
+    "browser": "webkit",
+    "state": "suggestions after repeated transitions",
+    "testTitle": "Home and Work expose only the active draft suggestions through repeated Details transitions",
+    "sourceArtifact": "capture-history-Home-and-W-caa3e-epeated-Details-transitions-webkit/work-active-details-1.png",
+    "fixture": "Synthetic local household and private task; no production data"
+  }
+]
