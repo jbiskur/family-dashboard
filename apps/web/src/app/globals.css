@@ -1553,6 +1553,18 @@ main:focus {
   line-height: 1.1;
   letter-spacing: -1px;
 }
+.login-box h1 {
+  font-family: Georgia, serif;
+  font-size: clamp(30px, 5vw, 40px);
+  font-weight: 400;
+  line-height: 1.15;
+  letter-spacing: -0.7px;
+  overflow-wrap: anywhere;
+}
+.login-box .form-actions {
+  align-items: center;
+  flex-wrap: wrap;
+}
 .login-box > p:not(.eyebrow) {
   color: var(--muted-foreground);
   font-size: 13px;

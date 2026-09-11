@@ -1,8 +1,10 @@
 # Heima
 
-A private home for shopping, household work, and finances. Built for one owner and an invited spouse, with non-login profiles for shared responsibilities.
+A private home for shopping, household work, and finances. Built for one owner and an invited spouse, with non-login profiles for shared responsibilities and explicitly configured administrators.
 
 Heima uses the invite-only **Heima Family Dashboard** Usable application, encrypted Flowcore Pathways events, and PostgreSQL projections. [Architecture and standards](https://usable.dev/dashboard/workspaces/f37b9773-0e9f-4ccd-8e85-05c5971af264/fragments/7fcb6197-1be9-4c10-81fb-2fd780309467) describe the trust boundaries.
+
+An administrator needs both a Usable app invitation and an explicit full Usable UUID in the API's `APP_ADMIN_USER_IDS` configuration. This optional comma-separated list defaults to empty. Administrators use shared resources and their own personal resources; they cannot see another person's private details or financial totals, manage family access, or occupy the spouse slot. Removing an administrator from the configuration denies access when the updated API starts. Production assignments belong in deployment configuration. The [administrator access specification](https://usable.dev/dashboard/workspaces/f37b9773-0e9f-4ccd-8e85-05c5971af264/fragments/328e03a7-1367-4293-b8a0-e2bca66f8d24) records the role and privacy rules.
 
 ## Local verification
 
@@ -31,7 +33,7 @@ Open `http://localhost:3010` and continue through the isolated Usable-compatible
 
 Home connects quick capture and attention items to Shopping, Work and Finance. Shopping and Work support bounded offline access, durable queues and explicit conflict recovery. Finance stays online, keeps personal account details private, preserves exact amounts and requires zero-difference statement reconciliation before trusting imports.
 
-[Feature paths and screenshots](docs/screenshot-manifest.json) cover all 29 work units. [Verification](https://usable.dev/dashboard/workspaces/f37b9773-0e9f-4ccd-8e85-05c5971af264/fragments/96b98ea2-8fc5-44c8-8b2e-7a7a41baaf5a) distinguishes observed evidence from outstanding acceptance requirements. Live specifications and plan references are indexed in [the project map](docs/spec-index.json).
+[Feature paths and screenshots](docs/screenshot-manifest.json) cover the original 29 work units. [Verification](https://usable.dev/dashboard/workspaces/f37b9773-0e9f-4ccd-8e85-05c5971af264/fragments/96b98ea2-8fc5-44c8-8b2e-7a7a41baaf5a) distinguishes observed evidence from outstanding acceptance requirements. [The baseline project map](docs/spec-index.json) links the original specifications and plans; fetch their current Usable content before relying on that snapshot.
 
 ## Documentation
 

@@ -3,6 +3,7 @@ import {
   type AccessResponse,
   commandSchema,
   invitationRequestSchema,
+  type MemberRole,
   uuidSchema,
 } from "@heima/contracts";
 import { and, desc, eq, inArray, lte } from "drizzle-orm";
@@ -13,10 +14,14 @@ import { db } from "./db/client";
 import { bootstrapState, invitations, members } from "./db/schema";
 import { ApiFailure, denied } from "./errors";
 import { maintenanceNow } from "./maintenance-clock";
+import { memberEnabled } from "./member-access";
 import { emitAccess } from "./pathways";
 import { decryptPrivate, semanticId } from "./security";
 
-export type ApiVariables = { identity: Identity };
+export type ApiVariables = {
+  identity: Identity;
+  member: typeof members.$inferSelect;
+};
 export async function requireMember(identity: Identity) {
   const member = (
     await db
@@ -30,11 +35,7 @@ export async function requireMember(identity: Identity) {
       )
       .limit(1)
   )[0];
-  if (
-    !member ||
-    member.status !== "active" ||
-    member.subject !== identity.subject
-  )
+  if (!member || !memberEnabled(member) || member.subject !== identity.subject)
     throw denied();
   return member;
 }
@@ -111,8 +112,8 @@ export async function accessView(identity: Identity): Promise<AccessResponse> {
   }
   const clean = (m: typeof member) => ({
     userId: m.userId,
-    role: m.role as "owner" | "spouse",
-    status: m.status as "active" | "revoked",
+    role: m.role as MemberRole,
+    status: memberEnabled(m) ? ("active" as const) : ("revoked" as const),
   });
   return {
     household: { id: config.HOUSEHOLD_ID, name: "Our home" },
@@ -172,6 +173,28 @@ accessRoutes.post("/admit", async (c) => {
   )[0];
   if (existing?.status === "active") {
     await requireMember(identity);
+    return c.json(await accessView(identity));
+  }
+  if (config.APP_ADMIN_USER_IDS.includes(identity.userId)) {
+    // Configuration never promotes a family member or restores persisted revocation.
+    if (existing) throw denied();
+    const claim = (
+      await db
+        .select()
+        .from(bootstrapState)
+        .where(eq(bootstrapState.householdId, config.HOUSEHOLD_ID))
+        .limit(1)
+    )[0];
+    if (!claim) throw denied();
+    await emitAccess({
+      ...base(
+        identity,
+        semanticId(
+          `${config.HOUSEHOLD_ID}:admin:${identity.userId}:${identity.subject}`,
+        ),
+      ),
+      change: { kind: "admin-admitted", subject: identity.subject },
+    });
     return c.json(await accessView(identity));
   }
   if (

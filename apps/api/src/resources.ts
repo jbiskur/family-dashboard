@@ -133,14 +133,26 @@ const mutation = z
   .passthrough();
 export const resourceRoutes = new Hono<{ Variables: ApiVariables }>();
 resourceRoutes.use("*", async (c, next) => {
-  await requireMember(c.get("identity"));
+  c.set("member", await requireMember(c.get("identity")));
   await next();
 });
+function summaryResources(
+  c: Context<{ Variables: ApiVariables }>,
+  all: ResourceRow[],
+) {
+  return c.get("member").role === "admin"
+    ? all.filter((row) => canRead(row, c.get("identity").userId, all))
+    : all;
+}
 resourceRoutes.get("/finance/overview", async (c) =>
-  c.json(financeOverview(await loadResources(), c.req.query())),
+  c.json(
+    financeOverview(summaryResources(c, await loadResources()), c.req.query()),
+  ),
 );
 resourceRoutes.get("/finance/spending", async (c) =>
-  c.json(financeOverview(await loadResources(), c.req.query())),
+  c.json(
+    financeOverview(summaryResources(c, await loadResources()), c.req.query()),
+  ),
 );
 resourceRoutes.get("/home", async (c) => {
   const identity = c.get("identity");
@@ -338,7 +350,8 @@ for (const kind of resourceKinds) {
           a.createdAt.getTime() - b.createdAt.getTime()
         : b.createdAt.getTime() - a.createdAt.getTime(),
     );
-    return c.json({ items: rows.map((r) => present(r, all)) });
+    const summary = summaryResources(c, all);
+    return c.json({ items: rows.map((r) => present(r, summary)) });
   });
   resourceRoutes.get(`/${kind}/:id/history`, async (c) => {
     const all = await loadResources();
@@ -374,7 +387,7 @@ for (const kind of resourceKinds) {
       uuidSchema.parse(c.req.param("id")),
       c.get("identity").userId,
     );
-    return c.json(present(row, all));
+    return c.json(present(row, summaryResources(c, all)));
   });
   const handleMutation =
     (action: ResourceEvent["action"]) =>
@@ -412,7 +425,10 @@ for (const kind of resourceKinds) {
       });
       const latest = await loadResources();
       const row = visibleResource(latest, kind, id, identity.userId);
-      return c.json(present(row, latest), action === "create" ? 201 : 200);
+      return c.json(
+        present(row, summaryResources(c, latest)),
+        action === "create" ? 201 : 200,
+      );
     };
   resourceRoutes.post(`/${kind}`, handleMutation("create"));
   resourceRoutes.post(`/${kind}/:id`, handleMutation("update"));

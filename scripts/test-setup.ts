@@ -26,6 +26,8 @@ if (!(await file.exists())) {
     HEIMA_API_URL: "http://127.0.0.1:3211",
     PORT: "3211",
     APP_OWNER_USER_ID: "00000000-0000-4000-8000-000000000001",
+    APP_ADMIN_USER_IDS:
+      "00000000-0000-4000-8000-000000000004,00000000-0000-4000-8000-000000000005",
     HOUSEHOLD_ID: "00000000-0000-4000-8000-000000000010",
     FLOWCORE_WEBHOOK_BASE_URL: "http://127.0.0.1:3212",
     FLOWCORE_API_KEY: secret(),
@@ -44,6 +46,16 @@ if (!(await file.exists())) {
 for (const line of (await Bun.file(".env.test.local").text()).split("\n")) {
   const at = line.indexOf("=");
   if (at > 0) process.env[line.slice(0, at)] = line.slice(at + 1);
+}
+if (process.env.APP_ADMIN_USER_IDS === undefined) {
+  process.env.APP_ADMIN_USER_IDS =
+    "00000000-0000-4000-8000-000000000004,00000000-0000-4000-8000-000000000005";
+  await Bun.write(
+    ".env.test.local",
+    (await Bun.file(".env.test.local").text()) +
+      `\nAPP_ADMIN_USER_IDS=${process.env.APP_ADMIN_USER_IDS}\n`,
+  );
+  await chmod(".env.test.local", 0o600);
 }
 if (!process.env.VAPID_PRIVATE_KEY) {
   const vapid = createECDH("prime256v1");
@@ -145,7 +157,15 @@ const realm = {
       },
     ],
   })),
-  users: ["owner", "spouse", "outsider"].map((name, index) => ({
+  users: [
+    "owner",
+    "spouse",
+    "outsider",
+    "admin",
+    "admin2",
+    "guest",
+    "admin-alias",
+  ].map((name, index) => ({
     id: `00000000-0000-4000-8000-00000000000${index + 1}`,
     username: `${name}@heima.test`,
     email: `${name}@heima.test`,
@@ -155,9 +175,11 @@ const realm = {
       name === "owner" ? "Julius" : name === "spouse" ? "Anna" : "Guest",
     lastName: "Home",
     attributes: {
-      usable_user_id: [`00000000-0000-4000-8000-00000000000${index + 1}`],
+      usable_user_id: [
+        `00000000-0000-4000-8000-00000000000${name === "admin-alias" ? 4 : index + 1}`,
+      ],
     },
-    groups: index < 2 ? [installed] : [],
+    groups: name !== "outsider" ? [installed] : [],
     credentials: [
       {
         type: "password",
@@ -178,6 +200,16 @@ const response = await fetch(`${base}/admin/realms`, {
 if (!response.ok && response.status !== 409)
   throw new Error(`Realm provisioning failed: ${response.status}`);
 const adminHeaders = { authorization: `Bearer ${admin.access_token}` };
+// Existing realms are retained; provision newly added synthetic identities too.
+for (const user of realm.users.slice(3)) {
+  const added = await fetch(`${base}/admin/realms/heima-test/users`, {
+    method: "POST",
+    headers: { ...adminHeaders, "content-type": "application/json" },
+    body: JSON.stringify(user),
+  });
+  if (!added.ok && added.status !== 409)
+    throw new Error(`Local test identity provisioning failed: ${added.status}`);
+}
 // Declare only this fixture identity attribute: Admin REST tests can change the
 // spouse claim without changing mappers, signing tokens themselves, or owner data.
 const profileUrl = `${base}/admin/realms/heima-test/users/profile`;

@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { useCommand, useHeima } from "@/lib/client";
+import { memberLabel } from "@/lib/member-label";
 import { purgeOffline } from "@/lib/offline";
 import { EntityForm } from "../shared/form";
 import {
@@ -77,14 +78,14 @@ export function HouseholdSettings({
                       <strong>
                         {member.userId === data.member.userId
                           ? "You"
-                          : member.role === "owner"
-                            ? "Household owner"
-                            : "Your spouse"}
+                          : memberLabel(member)}
                       </strong>
                       <small>
                         {member.role === "owner"
                           ? "Owner · manages invitations"
-                          : "Spouse · household member"}
+                          : member.role === "admin"
+                            ? "Admin · shared household access"
+                            : "Spouse · household member"}
                       </small>
                     </span>
                     <Badge className="forest">Active</Badge>
@@ -186,8 +187,9 @@ export function HouseholdSettings({
                         </Button>
                       </div>
                     </div>
-                  ) : data.members.filter((m) => m.status === "active").length <
-                    2 ? (
+                  ) : data.members.filter(
+                      (m) => m.status === "active" && m.role !== "admin",
+                    ).length < 2 ? (
                     <EntityForm
                       fields={[
                         {

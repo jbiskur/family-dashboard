@@ -178,7 +178,7 @@ export function ShoppingPage() {
               options: [
                 {
                   value: "household",
-                  label: "Household · shared with your spouse",
+                  label: "Household · shared with household members",
                 },
                 { value: "personal", label: "Just me · only you" },
               ],
@@ -472,7 +472,7 @@ export function ShoppingDetailPage({ id }: { id: string }) {
             <p className="text-small muted">
               {list.visibility === "personal"
                 ? "A list just for you"
-                : "Both of you can lend a hand"}
+                : "Everyone in the household can help"}
             </p>
           </div>
           <span className="count" style={{ marginLeft: "auto" }}>
@@ -735,8 +735,8 @@ export function ShoppingDetailPage({ id }: { id: string }) {
       >
         <p className="confirm-copy">
           {list.visibility === "personal"
-            ? "Your spouse will be able to see and edit all current items and the full list history."
-            : "This list will belong to you. Your spouse will lose access to its items and history. Earlier contributions stay attributed to the people who made them."}
+            ? "Household members, including admins, will be able to see and edit all current items and the full list history."
+            : "This list will belong to you. Other household members will lose access to its items and history. Earlier contributions stay attributed to the people who made them."}
         </p>
         <div className="form-actions">
           <Button variant="ghost" onClick={() => setScope(false)}>

@@ -73,6 +73,28 @@ export async function projectAccess(event: FlowcoreEvent<AccessEvent>) {
           updatedAt: now,
         });
       }
+    } else if (change.kind === "admin-admitted") {
+      // The authenticated command checks configuration; replay uses historical facts.
+      if (actor) {
+        if (
+          actor.role !== "admin" ||
+          actor.status !== "active" ||
+          actor.subject !== change.subject
+        )
+          errorCode = "access-denied";
+      } else if (!active.some((m) => m.role === "owner")) {
+        errorCode = "access-denied";
+      } else {
+        await tx.insert(members).values({
+          householdId: p.householdId,
+          userId: p.actorId,
+          subject: change.subject,
+          role: "admin",
+          status: "active",
+          sourceEventId: event.eventId,
+          updatedAt: now,
+        });
+      }
     } else if (change.kind === "spouse-admitted") {
       const invite = (
         await tx
@@ -98,7 +120,7 @@ export async function projectAccess(event: FlowcoreEvent<AccessEvent>) {
             actor.status !== "revoked" ||
             actor.subject !== change.subject ||
             invite.requestedAt <= actor.updatedAt)) ||
-        active.length !== 1
+        active.filter((m) => m.role !== "admin").length !== 1
       )
         errorCode = "admission-conflict";
       else {

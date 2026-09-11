@@ -12,7 +12,7 @@ export const syncFailureSchema = z
 export const invitationRequestSchema = commandSchema.extend({
   email: z.string().trim().toLowerCase().email().max(254),
 });
-export type MemberRole = "owner" | "spouse";
+export type MemberRole = "owner" | "spouse" | "admin";
 export type AccessMember = {
   userId: string;
   role: MemberRole;
@@ -48,6 +48,7 @@ export const accessEventSchema = z.object({
   occurredAt: z.string().datetime(),
   change: z.discriminatedUnion("kind", [
     z.object({ kind: z.literal("owner-bootstrapped"), subject: uuidSchema }),
+    z.object({ kind: z.literal("admin-admitted"), subject: uuidSchema }),
     z.object({
       kind: z.literal("invitation-requested"),
       invitationId: uuidSchema,

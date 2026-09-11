@@ -17,6 +17,7 @@ import {
 import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { useCommand, useHeima } from "@/lib/client";
+import { memberLabel } from "@/lib/member-label";
 import { ActionNotice } from "../shared/action-notice";
 import { CaptureComposer } from "../shared/capture-composer";
 import { workAudience, workDetails, workTitle } from "../shared/capture-fields";
@@ -80,12 +81,7 @@ export function WorkPage() {
       .filter((m) => m.status === "active")
       .map((m) => ({
         value: m.userId,
-        label:
-          m.userId === access.member.userId
-            ? "Me"
-            : m.role === "owner"
-              ? "Household owner"
-              : "My spouse",
+        label: m.userId === access.member.userId ? "Me" : memberLabel(m),
       })),
     ...(profiles.data?.items ?? [])
       .filter((p) => !p.archived)
@@ -412,7 +408,7 @@ export function WorkPage() {
                       options: [
                         {
                           value: "household",
-                          label: "Household · we can both help",
+                          label: "Household · we can all help",
                         },
                         { value: "personal", label: "Just me · private" },
                       ],
@@ -740,8 +736,8 @@ export function WorkPage() {
           >
             <p className="confirm-copy">
               {selected.visibility === "personal"
-                ? "Your spouse will be able to see this task, its notes and history, and help make changes."
-                : "You become this task's owner. Any other assignee is cleared, your spouse loses access, and earlier contributions keep their attribution."}
+                ? "Household members, including admins, will be able to see this task, its notes and history, and help make changes."
+                : "You become this task's owner. Any other assignee is cleared, other household members lose access, and earlier contributions keep their attribution."}
             </p>
             <div className="form-actions">
               <Button variant="ghost" onClick={() => setScope(false)}>

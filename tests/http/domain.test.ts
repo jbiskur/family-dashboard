@@ -229,7 +229,9 @@ describe("Household public resource boundaries", () => {
     expect(work.assigneeId).toBeNull();
     expect((await request(`work/items/${work.id}`, spouse)).status).toBe(404);
     const members = await read("access");
-    expect(members.members).toHaveLength(2);
+    expect(
+      members.members.filter((m: { role: string }) => m.role !== "admin"),
+    ).toHaveLength(2);
   });
   test("account details stay private while exact household aggregates include private facts", async () => {
     const baseline = await read("finance/overview?month=2029-05");

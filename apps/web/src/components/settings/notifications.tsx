@@ -33,7 +33,7 @@ const choices = [
   {
     name: "shoppingChanges",
     label: "Household shopping",
-    hint: "Updates from your spouse's shared lists.",
+    hint: "Updates to shared household lists.",
   },
   {
     name: "workAssignment",
@@ -150,7 +150,7 @@ export function NotificationSettings() {
       <PageHeader
         eyebrow="ON YOUR TERMS"
         title="Notifications"
-        description="Choose what reaches you, and when. Your spouse's settings stay their own."
+        description="Choose what reaches you, and when. Everyone manages their own settings."
       />
       {notice && (
         <div className="notice" role="status">
