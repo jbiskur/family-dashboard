@@ -3,6 +3,59 @@ import AxeBuilder from "@axe-core/playwright";
 import { expect, type Page, test } from "@playwright/test";
 import { request, tokenFor } from "../fixtures/auth";
 
+type CaptureTimerWindow = Window & {
+  captureTimers?: {
+    pending: () => number;
+    flush: () => void;
+    restore: () => void;
+  };
+};
+
+// Control only browser scheduling; every save still executes on the real server.
+// Queue immediate callbacks in batches, without identifying application code or
+// calling focus. Preserve cancellation and restore native timers in finally.
+async function holdImmediateTimers(page: Page) {
+  await page.evaluate(() => {
+    const nativeSet = window.setTimeout.bind(window);
+    const nativeClear = window.clearTimeout.bind(window);
+    const queued = new Map<number, () => void>();
+    let nextId = -1;
+    const flush = () => {
+      for (const id of [...queued.keys()]) {
+        const callback = queued.get(id);
+        queued.delete(id);
+        callback?.();
+      }
+    };
+    window.setTimeout = ((
+      handler: TimerHandler,
+      delay?: number,
+      ...args: unknown[]
+    ) => {
+      if (!delay && typeof handler === "function") {
+        const id = nextId--;
+        queued.set(id, () => handler.apply(window, args));
+        return id;
+      }
+      return nativeSet(handler, delay, ...args);
+    }) as typeof window.setTimeout;
+    window.clearTimeout = (id) => {
+      if (id !== undefined && queued.delete(id)) return;
+      nativeClear(id);
+    };
+    (window as CaptureTimerWindow).captureTimers = {
+      pending: () => queued.size,
+      flush,
+      restore: () => {
+        window.setTimeout = nativeSet;
+        window.clearTimeout = nativeClear;
+        flush();
+        delete (window as CaptureTimerWindow).captureTimers;
+      },
+    };
+  });
+}
+
 const settings = Object.fromEntries(
   readFileSync(".env.test.local", "utf8")
     .split("\n")
@@ -186,83 +239,227 @@ test("capture stays reachable after long-list scrolling at narrow and desktop wi
 
 test.describe("capture response timing", () => {
   test.use({ serviceWorkers: "block" });
-  test("closing details during a save restores the next-entry field", async ({
-    page,
-  }, info) => {
-    await login(page);
-    await page.goto("/work");
-    // Keep dismissal in progress while the saved command response arrives.
-    await page.addStyleTag({
-      content: `
+  for (const timing of [
+    "during exit",
+    "after exit",
+    "queued close",
+    "reduced motion",
+  ] as const) {
+    test(`closing details during a save restores the next-entry field: ${timing}`, async ({
+      page,
+    }, info) => {
+      await login(page);
+      await page.emulateMedia({
+        reducedMotion: timing === "reduced motion" ? "reduce" : "no-preference",
+      });
+      await page.goto("/work");
+      const queueClose =
+        timing === "queued close" || timing === "reduced motion";
+      // Exercise success during a real exit animation and after unmount. The
+      // queued cases also model a busy event loop between close callbacks.
+      await page.addStyleTag({
+        content: `
         @keyframes capture-test-exit { from { opacity: 1 } to { opacity: 0 } }
         .capture-details[data-state="closed"] {
-          animation: capture-test-exit 250ms both;
+          animation: capture-test-exit ${timing === "during exit" ? 250 : 0}ms both;
         }
       `,
+      });
+      const capture = page.getByRole("region", {
+        name: "Quick add",
+        exact: true,
+      });
+      const input = capture.getByRole("combobox", {
+        name: "What needs doing?",
+        exact: true,
+      });
+      const trigger = capture.getByRole("button", {
+        name: "Details",
+        exact: true,
+      });
+      const title = `Prepare the picnic ${crypto.randomUUID()}`;
+      await input.fill(title);
+      await trigger.click();
+      const details = page.getByRole("dialog", {
+        name: "To-do details",
+        exact: true,
+      });
+      let captured = false;
+      let release = () => {};
+      const held = new Promise<void>((resolve) => {
+        release = resolve;
+      });
+      await page.route("**/work", async (route) => {
+        if (
+          route.request().method() !== "POST" ||
+          !route.request().postData()?.includes(title)
+        )
+          return route.continue();
+        const response = await route.fetch();
+        captured = true;
+        await held;
+        await route.fulfill({ response });
+      });
+      let timersHeld = false;
+      try {
+        await details
+          .getByRole("button", { name: "Add to-do", exact: true })
+          .click();
+        await expect.poll(() => captured).toBe(true);
+        await expect(
+          details.getByRole("button", { name: "Saving…", exact: true }),
+        ).toBeDisabled();
+        await screenshot(page, info.outputPath("capture-details-pending.png"));
+        if (queueClose) {
+          await holdImmediateTimers(page);
+          timersHeld = true;
+        }
+        await details
+          .getByRole("button", { name: "Close dialog", exact: true })
+          .click();
+        if (timing !== "during exit") {
+          await expect(page.locator(".capture-details")).toHaveCount(0);
+          if (queueClose) {
+            await expect
+              .poll(() =>
+                page.evaluate(
+                  () =>
+                    (window as CaptureTimerWindow).captureTimers?.pending() ??
+                    0,
+                ),
+              )
+              .toBeGreaterThan(0);
+            await page.evaluate(() =>
+              (window as CaptureTimerWindow).captureTimers?.flush(),
+            );
+          } else {
+            await page.evaluate(
+              () =>
+                new Promise<void>((resolve) =>
+                  requestAnimationFrame(() =>
+                    requestAnimationFrame(() => resolve()),
+                  ),
+                ),
+            );
+          }
+        }
+        release();
+        await expect(details).toBeHidden();
+        await expect(
+          capture.locator(".capture-feedback[role=status]"),
+        ).toContainText(`${title} added.`);
+        await expect(input).toHaveValue("");
+        if (queueClose)
+          await page.evaluate(() =>
+            (window as CaptureTimerWindow).captureTimers?.restore(),
+          );
+        // Assert after the queued close work has settled, so a transient focus
+        // followed by a late jump to Details cannot satisfy this regression.
+        await page.evaluate(
+          () =>
+            new Promise<void>((resolve) =>
+              requestAnimationFrame(() =>
+                requestAnimationFrame(() => resolve()),
+              ),
+            ),
+        );
+        await expect(input).toBeFocused();
+        const rows = (await (await request("work/items", owner)).json()).items;
+        expect(
+          rows.filter((item: { title: string }) => item.title === title),
+        ).toHaveLength(1);
+        await screenshot(
+          page,
+          info.outputPath("capture-dismissed-save-focus.png"),
+        );
+        await trigger.click();
+        await page.keyboard.press("Escape");
+        await expect(details).toBeHidden();
+        await expect(trigger).toBeFocused();
+        await screenshot(
+          page,
+          info.outputPath("capture-cancel-trigger-focus.png"),
+        );
+        if (queueClose) {
+          const nextDraft = `Make sandwiches ${crypto.randomUUID()}`;
+          await trigger.click();
+          await details
+            .getByRole("combobox", { name: "What needs doing?", exact: true })
+            .fill(nextDraft);
+          await details
+            .getByRole("combobox", { name: "Who can see it?", exact: true })
+            .selectOption("personal");
+          await details
+            .getByText("More details & options", { exact: true })
+            .click();
+          await details
+            .getByRole("textbox", { name: "A helpful note", exact: true })
+            .fill("Pack a reusable box");
+          await details
+            .getByRole("button", { name: "Cancel", exact: true })
+            .click();
+          await expect(details).toBeHidden();
+          await expect(trigger).toBeFocused();
+          await expect(input).toHaveValue(nextDraft);
+          await expect(
+            capture.getByRole("combobox", {
+              name: "Who can see it?",
+              exact: true,
+            }),
+          ).toHaveValue("personal");
+          await trigger.click();
+          await expect(
+            details.getByRole("combobox", {
+              name: "What needs doing?",
+              exact: true,
+            }),
+          ).toHaveValue(nextDraft);
+          await expect(
+            details.getByRole("combobox", {
+              name: "Who can see it?",
+              exact: true,
+            }),
+          ).toHaveValue("personal");
+          await details
+            .getByText("More details & options", { exact: true })
+            .click();
+          await expect(
+            details.getByRole("textbox", {
+              name: "A helpful note",
+              exact: true,
+            }),
+          ).toHaveValue("Pack a reusable box");
+          await details
+            .getByRole("textbox", { name: "A helpful note", exact: true })
+            .scrollIntoViewIfNeeded();
+          await screenshot(
+            page,
+            info.outputPath("capture-cancel-draft-restored.png"),
+          );
+          await details
+            .getByRole("button", { name: "Close dialog", exact: true })
+            .click();
+          await expect(details).toBeHidden();
+          await expect(trigger).toBeFocused();
+          const afterCancel = (
+            await (await request("work/items", owner)).json()
+          ).items;
+          expect(
+            afterCancel.filter(
+              (item: { title: string }) => item.title === nextDraft,
+            ),
+          ).toHaveLength(0);
+        }
+      } finally {
+        release();
+        if (timersHeld)
+          await page.evaluate(() =>
+            (window as CaptureTimerWindow).captureTimers?.restore(),
+          );
+        await page.unroute("**/work");
+      }
     });
-    const capture = page.getByRole("region", {
-      name: "Quick add",
-      exact: true,
-    });
-    const input = capture.getByRole("combobox", {
-      name: "What needs doing?",
-      exact: true,
-    });
-    const title = `Prepare the picnic ${Date.now()}`;
-    await input.fill(title);
-    await capture.getByRole("button", { name: "Details", exact: true }).click();
-    const details = page.getByRole("dialog", {
-      name: "To-do details",
-      exact: true,
-    });
-    let captured = false;
-    let release = () => {};
-    const held = new Promise<void>((resolve) => {
-      release = resolve;
-    });
-    await page.route("**/work", async (route) => {
-      if (
-        route.request().method() !== "POST" ||
-        !route.request().postData()?.includes(title)
-      )
-        return route.continue();
-      const response = await route.fetch();
-      captured = true;
-      await held;
-      await route.fulfill({ response });
-    });
-    try {
-      await details
-        .getByRole("button", { name: "Add to-do", exact: true })
-        .click();
-      await expect.poll(() => captured).toBe(true);
-      await details
-        .getByRole("button", { name: "Close dialog", exact: true })
-        .click();
-      release();
-      await expect(details).toBeHidden();
-      await expect(
-        capture.locator(".capture-feedback[role=status]"),
-      ).toContainText(`${title} added.`);
-      await expect(input).toHaveValue("");
-      await expect(input).toBeFocused();
-      await screenshot(
-        page,
-        info.outputPath("capture-dismissed-save-focus.png"),
-      );
-      await capture
-        .getByRole("button", { name: "Details", exact: true })
-        .click();
-      await page.keyboard.press("Escape");
-      await expect(details).toBeHidden();
-      await expect(
-        capture.getByRole("button", { name: "Details", exact: true }),
-      ).toBeFocused();
-    } finally {
-      release();
-      await page.unroute("**/work");
-    }
-  });
+  }
   test("pending capture preserves next-entry typing and suppresses duplicate submission", async ({
     page,
   }, info) => {
@@ -365,6 +562,7 @@ test("invalid capture stays editable and reports errors inside expanded details"
   await expect(
     details.getByRole("combobox", { name: "What needs doing?", exact: true }),
   ).toHaveValue(title);
+  await details.getByRole("alert").scrollIntoViewIfNeeded();
   await screenshot(page, info.outputPath("capture-server-validation.png"));
   await details
     .getByLabel("Due date (optional)", { exact: true })
