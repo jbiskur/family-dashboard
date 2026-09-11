@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.3.1](https://github.com/jbiskur/family-dashboard/compare/v0.3.0...v0.3.1) (2026-09-11)
+
+
+### Bug Fixes
+
+* admit explicitly configured invited administrators ([c0d1f27](https://github.com/jbiskur/family-dashboard/commit/c0d1f27f1b7790e9fb6404aeafa7b13b0c63a7e5))
+* admit explicitly configured invited administrators ([f899afe](https://github.com/jbiskur/family-dashboard/commit/f899afeadc7c966888b741c51058b181f9c464c6))
+* keep capture suggestions accessible in Details ([#5](https://github.com/jbiskur/family-dashboard/issues/5)) ([a064aa5](https://github.com/jbiskur/family-dashboard/commit/a064aa548123635c3b636ba69a6d00f79948636d))
+* preserve quick-add focus after pending save dismissal ([#6](https://github.com/jbiskur/family-dashboard/issues/6)) ([df54d9e](https://github.com/jbiskur/family-dashboard/commit/df54d9e749d32390446bc5140749c603c1b18110))
+
 ## [0.3.0](https://github.com/jbiskur/family-dashboard/compare/v0.2.2...v0.3.0) (2026-09-10)
 
 
