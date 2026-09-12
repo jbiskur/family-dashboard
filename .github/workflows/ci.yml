@@ -15,15 +15,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        include:
-          - project: chromium
-            browser: chromium
-          - project: firefox
-            browser: firefox
-          - project: webkit
-            browser: webkit
-          - project: mobile
-            browser: chromium
+        project: [chromium, firefox, webkit, mobile]
         shard: [1, 2, 3]
         shards: [3]
     runs-on: ubuntu-latest
@@ -44,7 +36,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.cache/ms-playwright
-          key: playwright-${{ runner.os }}-${{ matrix.browser }}-${{ hashFiles('bun.lock') }}
+          key: playwright-${{ runner.os }}-${{ matrix.project }}-${{ hashFiles('bun.lock') }}
       - run: bun install --frozen-lockfile
       - run: bun run lint
       - run: bun run typecheck
@@ -53,9 +45,9 @@ jobs:
       - name: Install project browser
         env:
           BROWSER_PROJECT: ${{ matrix.project }}
-          BROWSER_ENGINE: ${{ matrix.browser }}
         run: |
-          browser_engine="$BROWSER_ENGINE"
+          browser_engine="$BROWSER_PROJECT"
+          if [ "$browser_engine" = mobile ]; then browser_engine=chromium; fi
           # HTTP session-custody checks use Chromium on every runner.
           if [ "$browser_engine" = chromium ]; then
             bunx playwright install --with-deps chromium
