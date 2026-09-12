@@ -76,8 +76,9 @@ export function AgentConsent({
         </div>
       </div>
       <p className="field-hint">
-        This is a registered local client name, not proof of who is running it.
-        Continue only if you started this connection.
+        The callback destination above is the handoff back to your agent.
+        Continue only if you started this connection and recognize that
+        destination.
       </p>
       <form
         className="agent-consent-form"

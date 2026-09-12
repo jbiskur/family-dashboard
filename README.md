@@ -42,10 +42,10 @@ Heima exposes an OAuth-protected MCP endpoint at `/api/mcp`. Use the connection 
 Sign in with your invited Usable account, then open **Household settings → Agent access** (`/settings/household`). Copy the connection command there, or replace the example URL below with that deployment's endpoint:
 
 ```sh
-codex mcp add heima --url https://heima.example.com/api/mcp --oauth-client-id ae7d2f6d-5d9d-4d17-8bdf-1c4b0b62e984 --oauth-resource https://heima.example.com/api/mcp
+codex mcp add heima --url https://heima.example.com/api/mcp
 ```
 
-The initial `add` command starts OAuth automatically. Complete Usable sign-in and approve the connection in the browser. The URL and OAuth resource must identify the same `/api/mcp` endpoint; the public client ID is not a secret.
+The initial `add` command starts OAuth automatically. Some MCP hosts call an RFC 7591-shaped hook during discovery; Heima handles that request as a pre-registration lookup. The exact callback shape selects an existing public profile; no client, database row or secret is created. Complete Usable sign-in and approve the connection in the browser. The URL and OAuth resource must identify the same `/api/mcp` endpoint.
 
 Read access to Shopping and Work (`heima.read`) is the default. Agent access offers optional reauthorization for Shopping changes (`heima.shopping.write`), Work changes (`heima.work.write`) and permitted Finance reads (`heima.finance.read`). Each optional permission needs your approval. Agents retain your existing household and personal-data boundaries. Finance tools preserve exact amounts and cannot write transactions, import statements or change accounts.
 

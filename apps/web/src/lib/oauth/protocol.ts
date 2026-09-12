@@ -3,6 +3,7 @@ import { randomUUID } from "node:crypto";
 import OAuth2Server from "@node-oauth/oauth2-server";
 import { BackendError } from "../backend";
 import {
+  clientRedirectUris,
   issuer,
   mcpResource,
   parseScopes,
@@ -19,7 +20,7 @@ function clientModel(id: string) {
     ? {
         id: client.id,
         grants: ["authorization_code", "refresh_token"],
-        redirectUris: [client.callbackUri],
+        redirectUris: clientRedirectUris(client),
       }
     : false;
 }

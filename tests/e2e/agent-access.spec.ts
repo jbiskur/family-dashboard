@@ -48,6 +48,9 @@ test("agent access offers token-free setup inside Household settings", async ({
   await expect(
     panel.getByRole("button", { name: "Copy Codex setup", exact: true }),
   ).toBeVisible();
+  await expect(panel.locator(".agent-command code").first()).toHaveText(
+    "codex mcp add heima --url http://localhost:3010/api/mcp",
+  );
   // This suite can be rerun against a database that contains a prior test
   // connection. Reconcile those visible connections through the same UI before
   // capturing the empty state.
