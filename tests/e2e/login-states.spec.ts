@@ -176,7 +176,11 @@ test("access lifecycle states show safe next actions at 320px and desktop withou
               rect: element.getBoundingClientRect(),
               visible: element.getClientRects().length > 0,
             }))
-            .filter((item) => item.visible)
+            // Closed details can retain a zero-sized rect in Chromium.
+            .filter(
+              (item) =>
+                item.visible && (item.rect.width > 0 || item.rect.height > 0),
+            )
             .map((item) => ({
               name: item.name,
               width: item.rect.width,

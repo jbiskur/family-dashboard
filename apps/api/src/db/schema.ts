@@ -1,6 +1,7 @@
 import type { ImportBatchEvent, ImportTransferHeader } from "@heima/contracts";
 import {
   boolean,
+  index,
   integer,
   jsonb,
   pgTable,
@@ -78,6 +79,70 @@ export const authSessions = pgTable("auth_sessions", {
   expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
 });
+// Transactional OAuth infrastructure; these records never grant household roles.
+export const oauthRequests = pgTable(
+  "oauth_requests",
+  {
+    id: uuid("id").primaryKey(),
+    browserHash: text("browser_hash").notNull(),
+    sessionId: text("session_id"),
+    userId: uuid("user_id"),
+    clientId: uuid("client_id").notNull(),
+    redirectUri: text("redirect_uri").notNull(),
+    resource: text("resource").notNull(),
+    scopes: jsonb("scopes").$type<string[]>().notNull(),
+    state: text("state").notNull(),
+    challenge: text("challenge").notNull(),
+    status: text("status").notNull().default("pending"),
+    codeHash: text("code_hash").unique(),
+    codeExpiresAt: timestamp("code_expires_at", { withTimezone: true }),
+    codeConsumedAt: timestamp("code_consumed_at", { withTimezone: true }),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+    expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
+  },
+  (table) => [index("oauth_requests_expiry").on(table.expiresAt)],
+);
+export const oauthGrants = pgTable(
+  "oauth_grants",
+  {
+    id: uuid("id").primaryKey(),
+    requestId: uuid("request_id").notNull().unique(),
+    userId: uuid("user_id").notNull(),
+    sessionId: text("session_id").notNull(),
+    clientId: uuid("client_id").notNull(),
+    resource: text("resource").notNull(),
+    scopes: jsonb("scopes").$type<string[]>().notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+    expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
+    revokedAt: timestamp("revoked_at", { withTimezone: true }),
+  },
+  (table) => [index("oauth_grants_user").on(table.userId, table.createdAt)],
+);
+export const oauthTokens = pgTable(
+  "oauth_tokens",
+  {
+    id: uuid("id").primaryKey(),
+    grantId: uuid("grant_id").notNull(),
+    accessHash: text("access_hash").notNull().unique(),
+    refreshHash: text("refresh_hash").notNull().unique(),
+    scopes: jsonb("scopes").$type<string[]>().notNull(),
+    accessExpiresAt: timestamp("access_expires_at", {
+      withTimezone: true,
+    }).notNull(),
+    refreshExpiresAt: timestamp("refresh_expires_at", {
+      withTimezone: true,
+    }).notNull(),
+    refreshUsedAt: timestamp("refresh_used_at", { withTimezone: true }),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+  },
+  (table) => [index("oauth_tokens_grant").on(table.grantId)],
+);
 export const resources = pgTable("resources", {
   id: uuid("id").primaryKey(),
   householdId: uuid("household_id").notNull(),

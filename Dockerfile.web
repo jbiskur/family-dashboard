@@ -11,11 +11,13 @@ RUN bun install --frozen-lockfile
 FROM dependencies AS build
 COPY . .
 ENV NEXT_TELEMETRY_DISABLED=1
+RUN node scripts/collect-mcp-runtime-licenses.mjs /app/third-party-licenses
 RUN bun run --filter @heima/web build
 FROM node:24-bookworm-slim AS runtime
 WORKDIR /app
 ENV NODE_ENV=production PORT=3010 HOSTNAME=0.0.0.0 NEXT_TELEMETRY_DISABLED=1
 COPY --from=build --chown=node:node /app/LICENSE ./LICENSE
+COPY --from=build --chown=node:node /app/third-party-licenses ./third-party-licenses
 COPY --from=build --chown=node:node /app/apps/web/.next/standalone ./
 COPY --from=build --chown=node:node /app/apps/web/.next/static ./apps/web/.next/static
 COPY --from=build --chown=node:node /app/apps/web/public ./apps/web/public

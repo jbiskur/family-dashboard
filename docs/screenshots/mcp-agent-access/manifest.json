@@ -1,0 +1,70 @@
+{
+  "feature": "Connect agents through Usable OAuth",
+  "generated": "2026-09-12",
+  "source": "local production build, real PostgreSQL and local Keycloak with synthetic fixture data",
+  "publicSafe": true,
+  "checks": {
+    "productionBuild": "passed",
+    "oauthMigration": "passed: 13 assertions",
+    "mcpBrowserJourneys": "passed: 22 tests per Chromium, Firefox, WebKit and mobile",
+    "durability": "passed: restart, rollback, refresh retry, cap, revocation and expiry",
+    "webContainer": "passed: read-only root, OAuth metadata, MCP challenge and 12 notice hashes",
+    "installedCodex": "passed: automatic login, MCP context call, narrowed reauthorization and issuer rejection"
+  },
+  "screenshots": [
+    {
+      "file": "agent-access-empty-390.png",
+      "route": "/settings/household",
+      "viewport": "390x900",
+      "state": "Agent access setup and empty active-connection state",
+      "sha256": "f28664069e7ce3e7dd7424c84ef85fe33b738dbc12355ee10dec696e1f68409f"
+    },
+    {
+      "file": "agent-setup-expanded-390.png",
+      "route": "/settings/household",
+      "viewport": "390x900",
+      "state": "Expanded native-agent setup instructions",
+      "sha256": "50087197481cb1eeb8f7453872ecf4a70d87c5aeefe382aaeaa1b25ff8633070"
+    },
+    {
+      "file": "agent-consent-choices-390.png",
+      "route": "/oauth/consent",
+      "viewport": "390x1000",
+      "state": "Required read scope and optional permissions off by default",
+      "sha256": "3be4ba44311df9256be4851b056ba6b7b519a8b19b7650bed1a4b87af85bebab"
+    },
+    {
+      "file": "agent-connected.png",
+      "route": "/settings/household",
+      "viewport": "1440x900",
+      "state": "Connected Codex grant with selected permissions",
+      "sha256": "cdaa3840cb6dc994ff44297a52459c16fbd9c3b55797e51dc44956ad7826dad6"
+    },
+    {
+      "file": "mcp-shopping-reloaded.png",
+      "route": "/shopping/[listId]",
+      "viewport": "390x844",
+      "state": "Shopping item created through MCP and visible after reload",
+      "sha256": "8547ef5a4376d7c9e7034bf0183ea62966710b09cf690d1548d095b144b14d08"
+    },
+    {
+      "file": "mcp-work-reloaded.png",
+      "route": "/work",
+      "viewport": "390x844",
+      "state": "Work item created through MCP and visible after reload",
+      "sha256": "f4dd1c5edd68c96032b70b9e511fbbcc6f5517dd9baa5bc40d7e48a6ba3a7c56"
+    },
+    {
+      "file": "mcp-finance-exact-read.png",
+      "route": "/finance/transactions",
+      "viewport": "390x844",
+      "state": "Finance read path with exact-amount test data omitted from the screenshot viewport",
+      "sha256": "0e7c34951d92a4dcc2a6957414fb5a0631b3c0983e595456037a04863dfa5bbb"
+    }
+  ],
+  "limits": [
+    "Screenshots use synthetic local fixture data and contain no production statements or credentials.",
+    "The Claude Code command is documented but was not run because the binary is not installed.",
+    "WebKit and mobile are browser emulations; they are not physical iOS devices."
+  ]
+}

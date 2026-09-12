@@ -35,6 +35,24 @@ Home connects quick capture and attention items to Shopping, Work and Finance. S
 
 [Feature paths and screenshots](docs/screenshot-manifest.json) cover the original 29 work units. [Verification](https://usable.dev/dashboard/workspaces/f37b9773-0e9f-4ccd-8e85-05c5971af264/fragments/96b98ea2-8fc5-44c8-8b2e-7a7a41baaf5a) distinguishes observed evidence from outstanding acceptance requirements. [The baseline project map](docs/spec-index.json) links the original specifications and plans; fetch their current Usable content before relying on that snapshot.
 
+## Connect an agent
+
+Heima exposes an OAuth-protected MCP endpoint at `/api/mcp`. Use the connection details from your deployment.
+
+Sign in with your invited Usable account, then open **Household settings → Agent access** (`/settings/household`). Copy the connection command there, or replace the example URL below with that deployment's endpoint:
+
+```sh
+codex mcp add heima --url https://heima.example.com/api/mcp --oauth-client-id ae7d2f6d-5d9d-4d17-8bdf-1c4b0b62e984 --oauth-resource https://heima.example.com/api/mcp
+```
+
+The initial `add` command starts OAuth automatically. Complete Usable sign-in and approve the connection in the browser. The URL and OAuth resource must identify the same `/api/mcp` endpoint; the public client ID is not a secret.
+
+Read access to Shopping and Work (`heima.read`) is the default. Agent access offers optional reauthorization for Shopping changes (`heima.shopping.write`), Work changes (`heima.work.write`) and permitted Finance reads (`heima.finance.read`). Each optional permission needs your approval. Agents retain your existing household and personal-data boundaries. Finance tools preserve exact amounts and cannot write transactions, import statements or change accounts.
+
+Connections last up to eight hours and depend on the Heima session used to approve them. Signing out of that session ends its agent access. Revoke a connection in Agent access to deny its next request; reconnect there when it expires.
+
+The public [agent access evidence manifest](docs/screenshots/mcp-agent-access/manifest.json) lists the local browser paths, screenshot hashes and verification limits.
+
 ## Documentation
 
 Project documentation is stored and maintained in the private My Life workspace in Usable. Workspace access is required. Screenshots and machine-readable verification receipts remain in this repository.

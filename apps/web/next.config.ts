@@ -6,6 +6,22 @@ const config: NextConfig = {
   devIndicators: false,
   experimental: { serverActions: { bodySizeLimit: "15mb" } },
   logging: { incomingRequests: false, serverFunctions: false },
+  async rewrites() {
+    return [
+      {
+        source: "/.well-known/oauth-authorization-server",
+        destination: "/api/oauth/metadata",
+      },
+      {
+        source: "/.well-known/oauth-protected-resource",
+        destination: "/api/oauth/resource-metadata",
+      },
+      {
+        source: "/.well-known/oauth-protected-resource/api/mcp",
+        destination: "/api/oauth/resource-metadata",
+      },
+    ];
+  },
   async headers() {
     return [
       {
@@ -18,6 +34,13 @@ const config: NextConfig = {
             key: "Permissions-Policy",
             value: "camera=(), microphone=(), geolocation=(self)",
           },
+        ],
+      },
+      {
+        source: "/oauth/:path*",
+        headers: [
+          { key: "Cache-Control", value: "no-store" },
+          { key: "Referrer-Policy", value: "no-referrer" },
         ],
       },
     ];
