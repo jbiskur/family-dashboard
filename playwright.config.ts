@@ -2,7 +2,10 @@ import { defineConfig, devices } from "@playwright/test";
 export default defineConfig({
   testDir: "./tests/e2e",
   timeout: 60000,
-  fullyParallel: false,
+  // Shards run on isolated runners with one worker each. Keeping one worker
+  // preserves the stateful fixture contract while allowing Playwright to
+  // distribute individual tests from long files across CI shards.
+  fullyParallel: true,
   workers: 1,
   reporter: [["list"], ["html", { open: "never" }]],
   use: {
