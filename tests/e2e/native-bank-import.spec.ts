@@ -101,10 +101,9 @@ async function layout(page: Page, value: string) {
     .poll(
       () =>
         page.evaluate((nextValue) => {
-          const select = document.querySelector<HTMLSelectElement>(
-            "#field-layout",
-          );
-          if (!select || !select.isConnected) return false;
+          const select =
+            document.querySelector<HTMLSelectElement>("#field-layout");
+          if (!select?.isConnected) return false;
           const setter = Object.getOwnPropertyDescriptor(
             HTMLSelectElement.prototype,
             "value",
