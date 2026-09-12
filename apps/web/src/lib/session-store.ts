@@ -167,7 +167,10 @@ export async function destroyProviderSession(id: string) {
     refresh_token: tokens.refreshToken,
   });
   if (tokens.idToken) body.set("id_token_hint", tokens.idToken);
-  await fetch(`${env.USABLE_ISSUER}/protocol/openid-connect/logout`, {
+  // Local custody is already revoked above. Remote provider logout is best
+  // effort and must not hold the browser on the signed-in page when the
+  // provider is slow or unavailable.
+  void fetch(`${env.USABLE_ISSUER}/protocol/openid-connect/logout`, {
     method: "POST",
     signal: AbortSignal.timeout(10000),
     headers: { "content-type": "application/x-www-form-urlencoded" },
