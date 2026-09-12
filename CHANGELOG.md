@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.1](https://github.com/jbiskur/family-dashboard/compare/v0.4.0...v0.4.1) (2026-09-12)
+
+
+### Bug Fixes
+
+* **oauth:** auto-select approved MCP client profiles ([#9](https://github.com/jbiskur/family-dashboard/issues/9)) ([285080b](https://github.com/jbiskur/family-dashboard/commit/285080b9cd96cf9d9f7c0e4c038ba69d650e2b2d))
+
 ## [0.4.0](https://github.com/jbiskur/family-dashboard/compare/v0.3.1...v0.4.0) (2026-09-12)
 
 
