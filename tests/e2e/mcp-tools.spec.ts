@@ -161,7 +161,21 @@ async function shoppingList(
     .selectOption(visibility);
   await page.getByRole("button", { name: "Create list", exact: true }).click();
   await expect(page.getByRole("heading", { name, exact: true })).toBeVisible();
-  return new URL(page.url()).pathname.split("/").at(-1)!;
+  const id = new URL(page.url()).pathname.split("/").at(-1)!;
+  await expect
+    .poll(
+      async () =>
+        (
+          await page.request.get(`/api/backend/shopping/lists/${id}`, {
+            headers: {
+              "x-heima-actor-id": "00000000-0000-4000-8000-000000000001",
+            },
+          })
+        ).status(),
+      { timeout: 30_000 },
+    )
+    .toBe(200);
+  return id;
 }
 async function financeAccount(
   page: Page,
@@ -182,7 +196,21 @@ async function financeAccount(
     .click();
   await expect(page).toHaveURL(/\/finance\/accounts\/[0-9a-f-]{36}$/i);
   await expect(page.getByRole("heading", { name, exact: true })).toBeVisible();
-  return new URL(page.url()).pathname.split("/").at(-1)!;
+  const id = new URL(page.url()).pathname.split("/").at(-1)!;
+  await expect
+    .poll(
+      async () =>
+        (
+          await page.request.get(`/api/backend/finance/accounts/${id}`, {
+            headers: {
+              "x-heima-actor-id": "00000000-0000-4000-8000-000000000001",
+            },
+          })
+        ).status(),
+      { timeout: 30_000 },
+    )
+    .toBe(200);
+  return id;
 }
 async function financeFact(page: Page, accountId: string, description: string) {
   await page.goto(`/finance/transactions?accountId=${accountId}&new=true`);
@@ -300,7 +328,7 @@ test("MCP requires its own bearer, validates origin and advertises only consente
       },
     );
     expect(alias.status).toBe(401);
-    for (const protocol of ["2026-07-28", "2025-11-25"]) {
+    for (const protocol of ["2026-07-28", "2025-11-25", "2025-06-18"]) {
       const compatible = await connect(tokens.accessToken, protocol);
       expect((await compatible.listTools()).tools).toHaveLength(5);
       await compatible.close();

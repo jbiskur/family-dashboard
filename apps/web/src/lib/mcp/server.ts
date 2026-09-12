@@ -7,7 +7,11 @@ import type {
   ShoppingList,
   WorkItem,
 } from "@heima/contracts";
-import { type CallToolResult, McpServer } from "@modelcontextprotocol/server";
+import {
+  type CallToolResult,
+  McpServer,
+  SUPPORTED_PROTOCOL_VERSIONS,
+} from "@modelcontextprotocol/server";
 import type { z } from "zod-mcp";
 import { version } from "../../../../../package.json";
 import { BackendError } from "../backend";
@@ -29,6 +33,13 @@ export const toolScopes: Readonly<Record<string, readonly McpScope[]>> = {
   list_finance_accounts: ["heima.read", "heima.finance.read"],
   list_finance_transactions: ["heima.read", "heima.finance.read"],
 };
+// Keep the modern revision explicit while accepting every legacy revision
+// supported by the SDK. Hosts such as Usable Chat currently send 2025-06-18
+// on tools/list after the OAuth handshake.
+const supportedProtocolVersions = [
+  "2026-07-28",
+  ...SUPPORTED_PROTOCOL_VERSIONS,
+];
 const MAX_RESULT_BYTES = 1024 * 1024;
 function result(value: Record<string, unknown>): CallToolResult {
   const text = JSON.stringify(value);
@@ -111,7 +122,7 @@ function post<T>(
 export function createMcpServer(request: Request, initial: McpContext) {
   const server = new McpServer(
     { name: "Heima Family Dashboard", version },
-    { supportedProtocolVersions: ["2026-07-28", "2025-11-25"] },
+    { supportedProtocolVersions },
   );
   function register<I>(
     name: string,
