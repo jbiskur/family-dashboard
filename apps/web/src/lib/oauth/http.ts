@@ -112,10 +112,9 @@ export function authorizationMetadata() {
       grant_types_supported: ["authorization_code", "refresh_token"],
       token_endpoint_auth_methods_supported: ["none"],
       revocation_endpoint_auth_methods_supported: ["none"],
-      // Compatibility for MCP hosts such as Coder that auto-discover OAuth
-      // but do not yet support Client ID Metadata Documents. This endpoint
-      // deterministically selects a pre-registered public client; it never
-      // creates a client row or returns a secret.
+      // Compatibility for MCP hosts such as Usable Chat that auto-discover
+      // OAuth through RFC 7591. This endpoint deterministically selects a
+      // pre-registered public client; it never creates a client row or secret.
       registration_endpoint: `${issuer()}/api/oauth/register`,
       code_challenge_methods_supported: ["S256"],
       authorization_response_iss_parameter_supported: true,
@@ -204,7 +203,9 @@ export async function registrationRequest(request: Request) {
       !redirectUri ||
       redirectUri.length > 500 ||
       (data.token_endpoint_auth_method !== undefined &&
-        data.token_endpoint_auth_method !== "none") ||
+        !["none", "client_secret_post"].includes(
+          String(data.token_endpoint_auth_method),
+        )) ||
       (data.grant_types !== undefined &&
         (!Array.isArray(data.grant_types) ||
           data.grant_types.some(
@@ -221,6 +222,14 @@ export async function registrationRequest(request: Request) {
     );
     const matched = matches.length === 1 ? matches[0] : undefined;
     if (!matched) return registrationFailure();
+    // Usable Chat currently sends `client_secret_post` as a registration hint,
+    // even though its pre-registered profile is public and receives no secret.
+    // Do not broaden that compatibility exception to other profiles.
+    if (
+      data.token_endpoint_auth_method === "client_secret_post" &&
+      matched.name !== "Usable Chat"
+    )
+      return registrationFailure();
     if (limited("register"))
       return oauthFailure(
         429,

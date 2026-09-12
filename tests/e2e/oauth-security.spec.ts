@@ -15,7 +15,7 @@ import {
 test.use({ serviceWorkers: "block" });
 
 const clientId = "ae7d2f6d-5d9d-4d17-8bdf-1c4b0b62e984";
-const coderClientId = "4e4eaeff-2a9f-48d2-a111-78371a0589c6";
+const usableChatClientId = "40c9eee8-9eee-4742-9025-2ce398b78437";
 const resource = "http://localhost:3010/api/mcp";
 function authorization(overrides: Record<string, string> = {}) {
   return new URLSearchParams({
@@ -57,25 +57,26 @@ test("OAuth discovery describes bounded secretless delegated access", async ({
 test("OAuth discovery selects only configured public client profiles", async ({
   request,
 }) => {
-  const coderRedirect =
-    "https://coder.example.com/api/experimental/mcp/servers/" +
-    `${randomUUID()}/oauth2/callback`;
+  const usableChatRedirect =
+    "https://chat.usable.dev/api/mcp-servers/oauth/callback";
   const registration = {
-    client_name: "Coder",
-    redirect_uris: [coderRedirect],
-    token_endpoint_auth_method: "none",
+    client_name: "Usable Chat MCP",
+    redirect_uris: [usableChatRedirect],
+    token_endpoint_auth_method: "client_secret_post",
     grant_types: ["authorization_code", "refresh_token"],
     response_types: ["code"],
+    client_id_metadata_document:
+      "https://chat.usable.dev/api/mcp/oauth/client-metadata?profileId=example",
   };
   const first = await request.post("/api/oauth/register", {
     data: registration,
   });
   expect(first.status()).toBe(201);
   const selected = await first.json();
-  expect(selected.client_id).toBe(coderClientId);
-  expect(selected.client_name).toBe("Coder");
+  expect(selected.client_id).toBe(usableChatClientId);
+  expect(selected.client_name).toBe("Usable Chat");
   expect(selected.client_secret).toBeUndefined();
-  expect(selected.redirect_uris).toEqual([coderRedirect]);
+  expect(selected.redirect_uris).toEqual([usableChatRedirect]);
   expect(selected.token_endpoint_auth_method).toBe("none");
   const challenge = createHash("sha256")
     .update(randomBytes(32).toString("base64url"))
@@ -83,7 +84,7 @@ test("OAuth discovery selects only configured public client profiles", async ({
   const authorizationParams = new URLSearchParams({
     response_type: "code",
     client_id: selected.client_id,
-    redirect_uri: coderRedirect,
+    redirect_uri: usableChatRedirect,
     resource,
     scope: "heima.read",
     state: randomUUID(),
@@ -106,12 +107,12 @@ test("OAuth discovery selects only configured public client profiles", async ({
     data: { ...registration, client_name: "Unlisted MCP host" },
   });
   expect(renamed.status()).toBe(201);
-  expect((await renamed.json()).client_id).toBe(coderClientId);
+  expect((await renamed.json()).client_id).toBe(usableChatClientId);
   const unnamed = await request.post("/api/oauth/register", {
     data: { ...registration, client_name: undefined },
   });
   expect(unnamed.status()).toBe(201);
-  expect((await unnamed.json()).client_id).toBe(coderClientId);
+  expect((await unnamed.json()).client_id).toBe(usableChatClientId);
 
   const codex = await request.post("/api/oauth/register", {
     data: {
@@ -124,6 +125,14 @@ test("OAuth discovery selects only configured public client profiles", async ({
   const codexSelected = await codex.json();
   expect(codexSelected.client_id).toBe(clientId);
   expect(codexSelected.client_name).toBe("Codex");
+  const codexWithSecretHint = await request.post("/api/oauth/register", {
+    data: {
+      client_name: "Codex",
+      redirect_uris: ["http://127.0.0.1:52923/callback"],
+      token_endpoint_auth_method: "client_secret_post",
+    },
+  });
+  expect(codexWithSecretHint.status()).toBe(400);
 
   for (const invalid of [
     {
@@ -133,12 +142,12 @@ test("OAuth discovery selects only configured public client profiles", async ({
     {
       ...registration,
       redirect_uris: [
-        "https://coder.example.com/api/experimental/mcp/servers/not-a-uuid/oauth2/callback",
+        "https://chat.usable.dev/api/mcp-servers/oauth/callback?state=attacker",
       ],
     },
     {
       ...registration,
-      token_endpoint_auth_method: "client_secret_post",
+      token_endpoint_auth_method: "client_secret_basic",
     },
   ]) {
     const response = await request.post("/api/oauth/register", {
