@@ -65,6 +65,8 @@ jobs:
           exit 1
       - name: Bootstrap isolated test household
         run: bun scripts/test-bootstrap.ts
+      - name: Seed browser evidence household
+        run: bun scripts/screenshot-fixture.ts
       - name: Probe independent WebKit offline navigation
         if: matrix.project == 'webkit'
         run: node tests/manual/webkit-offline-control.mjs --report browser-capabilities/webkit-offline.json
@@ -104,6 +106,8 @@ jobs:
       - run: bun run typecheck
       - run: bun run build
       - run: bun run test:setup
+      - name: Install Chromium for HTTP notification coverage
+        run: bunx playwright install --with-deps chromium
       - name: Launch real local runtime
         run: |
           HEIMA_WEB_MODE=production bun scripts/test-runtime.ts > /tmp/heima-runtime.log 2>&1 &
