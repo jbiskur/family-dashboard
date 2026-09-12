@@ -74,7 +74,7 @@ jobs:
         env:
           BROWSER_PROJECT: ${{ matrix.project }}
           HEIMA_BROWSER_CAPABILITY_REPORT: ${{ github.workspace }}/browser-capabilities/webkit-offline.json
-        run: bunx playwright test --project="$BROWSER_PROJECT" --shard="${{ matrix.shard }}/${{ matrix.shards }}"
+        run: bunx playwright test --project="$BROWSER_PROJECT" --shard="${{ matrix.shard }}/${{ matrix.shards }}" --grep-invert="independent UX audit"
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -83,6 +83,71 @@ jobs:
             test-results/
             playwright-report/
             browser-capabilities/
+          retention-days: 14
+  # The UX audit takes full-page screenshots after service-worker and offline
+  # journeys. Run it on a clean runner so those browser-specific caches cannot
+  # make a screenshot hang at the end of a shard.
+  verify-audit:
+    name: audit (${{ matrix.project }})
+    strategy:
+      fail-fast: false
+      matrix:
+        project: [chromium, firefox, webkit, mobile]
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.10
+      - name: Cache Bun packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.bun/install/cache
+          key: bun-${{ runner.os }}-${{ hashFiles('bun.lock') }}
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ matrix.project }}-${{ hashFiles('bun.lock') }}
+      - run: bun install --frozen-lockfile
+      - run: bun run lint
+      - run: bun run typecheck
+      - run: bun run build
+      - run: bun run test:setup
+      - name: Install project browser
+        env:
+          BROWSER_PROJECT: ${{ matrix.project }}
+        run: |
+          browser_engine="$BROWSER_PROJECT"
+          if [ "$browser_engine" = mobile ]; then browser_engine=chromium; fi
+          if [ "$browser_engine" = chromium ]; then
+            bunx playwright install --with-deps chromium
+          else
+            bunx playwright install --with-deps chromium "$browser_engine"
+          fi
+      - name: Launch real local runtime
+        run: |
+          HEIMA_WEB_MODE=production bun scripts/test-runtime.ts > /tmp/heima-runtime.log 2>&1 &
+          for attempt in $(seq 1 90); do
+            if curl -fsS http://localhost:3010/ > /dev/null; then exit 0; fi
+            sleep 2
+          done
+          cat /tmp/heima-runtime.log
+          exit 1
+      - name: Bootstrap isolated test household
+        run: bun scripts/test-bootstrap.ts
+      - name: Run isolated UX audit
+        env:
+          BROWSER_PROJECT: ${{ matrix.project }}
+        run: bunx playwright test tests/e2e/ux-audit.spec.ts --project="$BROWSER_PROJECT" --grep="independent UX audit"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: heima-browser-evidence-${{ matrix.project }}-audit
+          path: |
+            test-results/
+            playwright-report/
           retention-days: 14
   # HTTP coverage is shared by all browser projects. Running it once keeps the
   # browser shards focused on journeys and removes a two-minute duplicate from
@@ -124,7 +189,7 @@ jobs:
   verify:
     name: verify (${{ matrix.project }})
     if: ${{ always() }}
-    needs: [verify-shard, http]
+    needs: [verify-shard, verify-audit, http]
     strategy:
       matrix:
         project: [chromium, firefox, webkit, mobile]
@@ -132,7 +197,7 @@ jobs:
     timeout-minutes: 2
     steps:
       - name: Require all browser shards
-        if: ${{ needs.verify-shard.result != 'success' || needs.http.result != 'success' }}
+        if: ${{ needs.verify-shard.result != 'success' || needs.verify-audit.result != 'success' || needs.http.result != 'success' }}
         run: exit 1
       - run: echo "All ${{ matrix.project }} shards passed"
   containers:
