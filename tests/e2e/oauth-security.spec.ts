@@ -15,7 +15,7 @@ import {
 test.use({ serviceWorkers: "block" });
 
 const clientId = "ae7d2f6d-5d9d-4d17-8bdf-1c4b0b62e984";
-const usableChatClientId = "mcp_oauth_client";
+const usableChatClientId = "40c9eee8-9eee-4742-9025-2ce398b78437";
 const resource = "http://localhost:3010/api/mcp";
 function authorization(overrides: Record<string, string> = {}) {
   return new URLSearchParams({
