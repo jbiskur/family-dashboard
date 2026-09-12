@@ -1,5 +1,22 @@
 # Changelog
 
+## [0.4.2](https://github.com/jbiskur/family-dashboard/compare/v0.4.1...v0.4.2) (2026-09-12)
+
+
+### Bug Fixes
+
+* **ci:** expand every browser shard ([45850d9](https://github.com/jbiskur/family-dashboard/commit/45850d973d6df1993ab479bb06930a46f8bc9308))
+* **ci:** isolate stateful browser suites ([98aeadb](https://github.com/jbiskur/family-dashboard/commit/98aeadbaad04af3870efa30da9473348542fb0db))
+* **ci:** isolate UX audits from browser shards ([2a38bc7](https://github.com/jbiskur/family-dashboard/commit/2a38bc7bb94d3070d52dbe9e3973e5b101bced97))
+* **ci:** seed browser data and install HTTP browser ([509f07a](https://github.com/jbiskur/family-dashboard/commit/509f07a894012a2c44400ac995072be1377f7a12))
+* **mcp:** accept standard legacy protocol versions ([a03e728](https://github.com/jbiskur/family-dashboard/commit/a03e7282c7164a34e2ce83ea467a70fb45ca36ca))
+* **mcp:** stabilize discovery and browser verification ([8075c90](https://github.com/jbiskur/family-dashboard/commit/8075c9091f907b082c751334496a5ea31ae890b4))
+
+
+### Performance Improvements
+
+* **ci:** shard browser verification under ten minutes ([243deb7](https://github.com/jbiskur/family-dashboard/commit/243deb734a0e8459d7fa696886ab9f629eb40210))
+
 ## [0.4.1](https://github.com/jbiskur/family-dashboard/compare/v0.4.0...v0.4.1) (2026-09-12)
 
 
