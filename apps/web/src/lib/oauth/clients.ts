@@ -33,7 +33,7 @@ export const clients: readonly OAuthClient[] = [
     // Public, pre-registered profile for the Usable Chat MCP client. The
     // callback is fixed by the deployed Usable Chat application; local and
     // legacy hosts are listed explicitly so no redirect wildcard is needed.
-    id: "40c9eee8-9eee-4742-9025-2ce398b78437",
+    id: "mcp_oauth_client",
     name: "Usable Chat",
     callbackUri: "https://chat.usable.dev/api/mcp-servers/oauth/callback",
     callbackPort: 0,

@@ -180,6 +180,7 @@ async function financeAccount(
     .getByRole("dialog")
     .getByRole("button", { name: "Add account", exact: true })
     .click();
+  await expect(page).toHaveURL(/\/finance\/accounts\/[0-9a-f-]{36}$/i);
   await expect(page.getByRole("heading", { name, exact: true })).toBeVisible();
   return new URL(page.url()).pathname.split("/").at(-1)!;
 }

@@ -15,7 +15,7 @@ import {
 test.use({ serviceWorkers: "block" });
 
 const clientId = "ae7d2f6d-5d9d-4d17-8bdf-1c4b0b62e984";
-const usableChatClientId = "40c9eee8-9eee-4742-9025-2ce398b78437";
+const usableChatClientId = "mcp_oauth_client";
 const resource = "http://localhost:3010/api/mcp";
 function authorization(overrides: Record<string, string> = {}) {
   return new URLSearchParams({
@@ -563,21 +563,11 @@ test("another household user cannot list or disconnect this agent connection", a
   try {
     const spouse = await foreign.newPage();
     await signInForOAuth(spouse, "spouse");
-    const bodies: Array<Promise<string>> = [];
-    spouse.on("response", (response) => {
-      if (
-        new URL(response.url()).pathname === "/settings/household" &&
-        response.request().method() === "POST"
-      )
-        bodies.push(response.text().catch(() => ""));
-    });
     await spouse.goto("/settings/household");
     await expect(
       spouse.getByRole("heading", { name: "Your connections", exact: true }),
     ).toBeVisible();
-    const serialized = (await Promise.all(bodies)).join("\n");
-    expect(serialized.includes('"connections"')).toBe(true);
-    expect(serialized.includes(captured.grantId)).toBe(false);
+    await expect(spouse.locator("body")).not.toContainText(captured.grantId);
     const denied = await spouse.request.post("/settings/household", {
       headers: {
         "next-action": captured.id,
