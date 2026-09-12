@@ -74,7 +74,7 @@ jobs:
         env:
           BROWSER_PROJECT: ${{ matrix.project }}
           HEIMA_BROWSER_CAPABILITY_REPORT: ${{ github.workspace }}/browser-capabilities/webkit-offline.json
-        run: bunx playwright test --project="$BROWSER_PROJECT" --shard="${{ matrix.shard }}/${{ matrix.shards }}" --grep-invert="independent UX audit"
+        run: bunx playwright test --project="$BROWSER_PROJECT" --shard="${{ matrix.shard }}/${{ matrix.shards }}" --grep-invert="independent UX audit|MCP|Reduced motion and 200-percent equivalent layout|Browser parses the installable named manifest|Heima installs and launches"
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -84,15 +84,62 @@ jobs:
             playwright-report/
             browser-capabilities/
           retention-days: 14
-  # The UX audit takes full-page screenshots after service-worker and offline
-  # journeys. Run it on a clean runner so those browser-specific caches cannot
-  # make a screenshot hang at the end of a shard.
-  verify-audit:
-    name: audit (${{ matrix.project }})
+  # Browser state-heavy suites run on clean runners. This avoids carrying
+  # service-worker, OAuth and reduced-motion state between unrelated journeys.
+  verify-special:
+    name: verify-special (${{ matrix.suite }}, ${{ matrix.project }})
     strategy:
       fail-fast: false
       matrix:
-        project: [chromium, firefox, webkit, mobile]
+        include:
+          - suite: audit
+            spec: ux-audit
+            grep: independent UX audit
+            project: chromium
+          - suite: audit
+            spec: ux-audit
+            grep: independent UX audit
+            project: firefox
+          - suite: audit
+            spec: ux-audit
+            grep: independent UX audit
+            project: webkit
+          - suite: audit
+            spec: ux-audit
+            grep: independent UX audit
+            project: mobile
+          - suite: mcp
+            spec: mcp-tools
+            grep: MCP
+            project: chromium
+          - suite: mcp
+            spec: mcp-tools
+            grep: MCP
+            project: firefox
+          - suite: mcp
+            spec: mcp-tools
+            grep: MCP
+            project: webkit
+          - suite: mcp
+            spec: mcp-tools
+            grep: MCP
+            project: mobile
+          - suite: shell
+            spec: shell
+            grep: .
+            project: chromium
+          - suite: shell
+            spec: shell
+            grep: .
+            project: firefox
+          - suite: shell
+            spec: shell
+            grep: .
+            project: webkit
+          - suite: shell
+            spec: shell
+            grep: .
+            project: mobile
     runs-on: ubuntu-latest
     timeout-minutes: 8
     steps:
@@ -137,14 +184,16 @@ jobs:
           exit 1
       - name: Bootstrap isolated test household
         run: bun scripts/test-bootstrap.ts
-      - name: Run isolated UX audit
+      - name: Run isolated browser suite
         env:
           BROWSER_PROJECT: ${{ matrix.project }}
-        run: bunx playwright test tests/e2e/ux-audit.spec.ts --project="$BROWSER_PROJECT" --grep="independent UX audit"
+          TEST_SPEC: tests/e2e/${{ matrix.spec }}.spec.ts
+          TEST_GREP: ${{ matrix.grep }}
+        run: bunx playwright test "$TEST_SPEC" --project="$BROWSER_PROJECT" --grep="$TEST_GREP"
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: heima-browser-evidence-${{ matrix.project }}-audit
+          name: heima-browser-evidence-${{ matrix.project }}-${{ matrix.suite }}
           path: |
             test-results/
             playwright-report/
@@ -189,7 +238,7 @@ jobs:
   verify:
     name: verify (${{ matrix.project }})
     if: ${{ always() }}
-    needs: [verify-shard, verify-audit, http]
+    needs: [verify-shard, verify-special, http]
     strategy:
       matrix:
         project: [chromium, firefox, webkit, mobile]
@@ -197,7 +246,7 @@ jobs:
     timeout-minutes: 2
     steps:
       - name: Require all browser shards
-        if: ${{ needs.verify-shard.result != 'success' || needs.verify-audit.result != 'success' || needs.http.result != 'success' }}
+        if: ${{ needs.verify-shard.result != 'success' || needs.verify-special.result != 'success' || needs.http.result != 'success' }}
         run: exit 1
       - run: echo "All ${{ matrix.project }} shards passed"
   containers:
