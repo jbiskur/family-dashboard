@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.0](https://github.com/jbiskur/family-dashboard/compare/v0.3.1...v0.4.0) (2026-09-12)
+
+
+### Features
+
+* add OAuth-protected MCP agent access ([#7](https://github.com/jbiskur/family-dashboard/issues/7)) ([135b4d9](https://github.com/jbiskur/family-dashboard/commit/135b4d97931accd6ffe1730beae839235c672048))
+
 ## [0.3.1](https://github.com/jbiskur/family-dashboard/compare/v0.3.0...v0.3.1) (2026-09-11)
 
 
