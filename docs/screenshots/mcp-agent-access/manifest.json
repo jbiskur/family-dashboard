@@ -17,14 +17,14 @@
       "route": "/settings/household",
       "viewport": "390x900",
       "state": "Agent access setup and empty active-connection state",
-      "sha256": "f28664069e7ce3e7dd7424c84ef85fe33b738dbc12355ee10dec696e1f68409f"
+      "sha256": "d7ba4d4d7be90f45170a2fc1b64230c48a75c2cfd2712d77301fb5d8891c5335"
     },
     {
       "file": "agent-setup-expanded-390.png",
       "route": "/settings/household",
       "viewport": "390x900",
-      "state": "Expanded native-agent setup instructions",
-      "sha256": "50087197481cb1eeb8f7453872ecf4a70d87c5aeefe382aaeaa1b25ff8633070"
+      "state": "Expanded automatic-discovery setup instructions (no client ID)",
+      "sha256": "7d197fac35d69cfd4223540cebc587ec05870c923753558faaf0e7cbda19d18f"
     },
     {
       "file": "agent-consent-choices-390.png",

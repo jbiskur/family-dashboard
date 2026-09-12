@@ -49,6 +49,10 @@ export function AgentSetup({ data }: { data: AgentAccessView }) {
         and permissions screen. Keep this Heima session signed in while the
         agent is connected.
       </p>
+      <p className="field-hint">
+        Compatible MCP hosts can discover Heima and select the matching public
+        client automatically; no client secret is needed.
+      </p>
       <div className="agent-endpoint">
         <span className="field-hint">MCP endpoint</span>
         <code>{data.endpoint}</code>
@@ -56,7 +60,7 @@ export function AgentSetup({ data }: { data: AgentAccessView }) {
       {codex && (
         <CopyCommand
           label="Copy Codex setup"
-          command={`codex mcp add heima --url ${data.endpoint} --oauth-client-id ${codex.id} --oauth-resource ${data.endpoint}`}
+          command={`codex mcp add heima --url ${data.endpoint}`}
         />
       )}
       <details>

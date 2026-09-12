@@ -2,6 +2,7 @@ import "server-only";
 import { randomUUID } from "node:crypto";
 import { cookies } from "next/headers";
 import {
+  clients,
   issuer,
   mcpResource,
   parseScopes,
@@ -111,6 +112,11 @@ export function authorizationMetadata() {
       grant_types_supported: ["authorization_code", "refresh_token"],
       token_endpoint_auth_methods_supported: ["none"],
       revocation_endpoint_auth_methods_supported: ["none"],
+      // Compatibility for MCP hosts such as Coder that auto-discover OAuth
+      // but do not yet support Client ID Metadata Documents. This endpoint
+      // deterministically selects a pre-registered public client; it never
+      // creates a client row or returns a secret.
+      registration_endpoint: `${issuer()}/api/oauth/register`,
       code_challenge_methods_supported: ["S256"],
       authorization_response_iss_parameter_supported: true,
       scopes_supported: scopes,
@@ -118,6 +124,130 @@ export function authorizationMetadata() {
     { headers: { "cache-control": "no-store" } },
   );
 }
+
+async function registrationBody(request: Request) {
+  if (
+    request.method !== "POST" ||
+    request.headers.get("authorization") ||
+    new URL(request.url).search ||
+    request.headers.get("content-type")?.split(";")[0]?.trim().toLowerCase() !==
+      "application/json"
+  )
+    throw new Error("INVALID_REGISTRATION");
+  const length = Number(request.headers.get("content-length") ?? 0);
+  if (length > 8192) throw new Error("INVALID_REGISTRATION");
+  const reader = request.body?.getReader();
+  if (!reader) throw new Error("INVALID_REGISTRATION");
+  const chunks: Uint8Array[] = [];
+  let size = 0;
+  let timedOut = false;
+  const deadline = setTimeout(() => {
+    timedOut = true;
+    void reader.cancel().catch(() => {});
+  }, 10_000);
+  try {
+    while (true) {
+      const { done, value } = await reader.read();
+      if (timedOut) throw new Error("INVALID_REGISTRATION");
+      if (done) break;
+      size += value.length;
+      if (size > 8192) {
+        await reader.cancel();
+        throw new Error("INVALID_REGISTRATION");
+      }
+      chunks.push(value);
+    }
+  } finally {
+    clearTimeout(deadline);
+    reader.releaseLock();
+  }
+  const bytes = new Uint8Array(size);
+  let offset = 0;
+  for (const chunk of chunks) {
+    bytes.set(chunk, offset);
+    offset += chunk.length;
+  }
+  let decoded: string;
+  try {
+    decoded = new TextDecoder("utf-8", { fatal: true }).decode(bytes);
+  } catch {
+    throw new Error("INVALID_REGISTRATION");
+  }
+  const value: unknown = JSON.parse(decoded);
+  if (!value || typeof value !== "object" || Array.isArray(value))
+    throw new Error("INVALID_REGISTRATION");
+  return value as Record<string, unknown>;
+}
+
+function registrationFailure() {
+  return oauthFailure(
+    400,
+    "invalid_client_metadata",
+    "This client or callback is not supported by Heima.",
+  );
+}
+
+export async function registrationRequest(request: Request) {
+  try {
+    const data = await registrationBody(request);
+    const clientName = data.client_name;
+    const redirects = data.redirect_uris;
+    const redirectUri =
+      Array.isArray(redirects) &&
+      redirects.length === 1 &&
+      typeof redirects[0] === "string"
+        ? redirects[0]
+        : "";
+    if (
+      (clientName !== undefined &&
+        (typeof clientName !== "string" || clientName.trim().length > 100)) ||
+      !redirectUri ||
+      redirectUri.length > 500 ||
+      (data.token_endpoint_auth_method !== undefined &&
+        data.token_endpoint_auth_method !== "none") ||
+      (data.grant_types !== undefined &&
+        (!Array.isArray(data.grant_types) ||
+          data.grant_types.some(
+            (grant) =>
+              !["authorization_code", "refresh_token"].includes(String(grant)),
+          ))) ||
+      (data.response_types !== undefined &&
+        (!Array.isArray(data.response_types) ||
+          data.response_types.some((type) => type !== "code")))
+    )
+      return registrationFailure();
+    const matches = clients.filter((client) =>
+      validRedirect(client.id, redirectUri),
+    );
+    const matched = matches.length === 1 ? matches[0] : undefined;
+    if (!matched) return registrationFailure();
+    if (limited("register"))
+      return oauthFailure(
+        429,
+        "temporarily_unavailable",
+        "Too many client discovery attempts. Try again in a minute.",
+      );
+    return Response.json(
+      {
+        client_id: matched.id,
+        client_name: matched.name,
+        client_id_issued_at: Math.floor(Date.now() / 1000),
+        client_secret_expires_at: 0,
+        token_endpoint_auth_method: "none",
+        grant_types: ["authorization_code", "refresh_token"],
+        response_types: ["code"],
+        redirect_uris: [redirectUri],
+      },
+      {
+        status: 201,
+        headers: { "cache-control": "no-store", pragma: "no-cache" },
+      },
+    );
+  } catch {
+    return registrationFailure();
+  }
+}
+
 export function protectedResourceMetadata() {
   return Response.json(
     {

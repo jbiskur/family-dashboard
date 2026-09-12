@@ -8,7 +8,14 @@ export const scopes: readonly McpScope[] = [
   "heima.work.write",
   "heima.finance.read",
 ];
-export const clients = [
+export type OAuthClient = {
+  id: string;
+  name: string;
+  callbackUri: string;
+  callbackPort: number;
+};
+
+export const clients: readonly OAuthClient[] = [
   {
     id: "ae7d2f6d-5d9d-4d17-8bdf-1c4b0b62e984",
     name: "Codex",
@@ -21,7 +28,40 @@ export const clients = [
     callbackUri: "http://localhost:43216/callback",
     callbackPort: 43216,
   },
-] as const;
+  {
+    // Public, pre-registered profile for Coder's per-server callback. Coder
+    // supplies a new callback path for each MCP configuration, so validation
+    // below applies the exact approved path shape instead of a URL wildcard.
+    id: "4e4eaeff-2a9f-48d2-a111-78371a0589c6",
+    name: "Coder",
+    callbackUri: "",
+    callbackPort: 0,
+  },
+];
+
+const coderCallbackPattern =
+  /^\/api\/(?:experimental\/)?mcp\/servers\/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\/oauth2\/callback$/i;
+
+export function validCoderRedirect(uri: string) {
+  try {
+    const parsed = new URL(uri);
+    const loopback = ["localhost", "127.0.0.1", "[::1]"].includes(
+      parsed.hostname,
+    );
+    return (
+      (parsed.protocol === "https:" ||
+        (parsed.protocol === "http:" && loopback)) &&
+      !parsed.username &&
+      !parsed.password &&
+      !parsed.search &&
+      !parsed.hash &&
+      coderCallbackPattern.test(parsed.pathname) &&
+      uri === parsed.href
+    );
+  } catch {
+    return false;
+  }
+}
 export function issuer() {
   const url = new URL(env.AUTH_URL);
   if (
@@ -45,6 +85,8 @@ export function registeredClient(id: string) {
 export function validRedirect(clientId: string, uri: string) {
   const client = registeredClient(clientId);
   if (!client || typeof uri !== "string" || uri.length > 500) return false;
+  if (!client.callbackUri)
+    return client.name === "Coder" && validCoderRedirect(uri);
   try {
     const actual = new URL(uri),
       expected = new URL(client.callbackUri);

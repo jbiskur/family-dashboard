@@ -15,6 +15,7 @@ import {
 test.use({ serviceWorkers: "block" });
 
 const clientId = "ae7d2f6d-5d9d-4d17-8bdf-1c4b0b62e984";
+const coderClientId = "4e4eaeff-2a9f-48d2-a111-78371a0589c6";
 const resource = "http://localhost:3010/api/mcp";
 function authorization(overrides: Record<string, string> = {}) {
   return new URLSearchParams({
@@ -41,7 +42,9 @@ test("OAuth discovery describes bounded secretless delegated access", async ({
   expect(metadata.authorization_response_iss_parameter_supported).toBe(true);
   expect(metadata.code_challenge_methods_supported).toEqual(["S256"]);
   expect(metadata.token_endpoint_auth_methods_supported).toEqual(["none"]);
-  expect(metadata.registration_endpoint).toBeUndefined();
+  expect(metadata.registration_endpoint).toBe(
+    "http://localhost:3010/api/oauth/register",
+  );
   for (const path of [
     "/.well-known/oauth-protected-resource",
     "/.well-known/oauth-protected-resource/api/mcp",
@@ -49,6 +52,100 @@ test("OAuth discovery describes bounded secretless delegated access", async ({
     const protectedResource = await request.get(path);
     expect(protectedResource.status()).toBe(200);
     expect((await protectedResource.json()).resource).toBe(resource);
+  }
+});
+test("OAuth discovery selects only configured public client profiles", async ({
+  request,
+}) => {
+  const coderRedirect =
+    "https://coder.example.com/api/experimental/mcp/servers/" +
+    `${randomUUID()}/oauth2/callback`;
+  const registration = {
+    client_name: "Coder",
+    redirect_uris: [coderRedirect],
+    token_endpoint_auth_method: "none",
+    grant_types: ["authorization_code", "refresh_token"],
+    response_types: ["code"],
+  };
+  const first = await request.post("/api/oauth/register", {
+    data: registration,
+  });
+  expect(first.status()).toBe(201);
+  const selected = await first.json();
+  expect(selected.client_id).toBe(coderClientId);
+  expect(selected.client_name).toBe("Coder");
+  expect(selected.client_secret).toBeUndefined();
+  expect(selected.redirect_uris).toEqual([coderRedirect]);
+  expect(selected.token_endpoint_auth_method).toBe("none");
+  const challenge = createHash("sha256")
+    .update(randomBytes(32).toString("base64url"))
+    .digest("base64url");
+  const authorizationParams = new URLSearchParams({
+    response_type: "code",
+    client_id: selected.client_id,
+    redirect_uri: coderRedirect,
+    resource,
+    scope: "heima.read",
+    state: randomUUID(),
+    code_challenge: challenge,
+    code_challenge_method: "S256",
+  });
+  const consent = await request.get(
+    `/api/oauth/authorize?${authorizationParams}`,
+    { maxRedirects: 0 },
+  );
+  expect(consent.status()).toBe(302);
+  expect(new URL(consent.headers().location ?? "").pathname).toBe(
+    "/oauth/consent",
+  );
+  const repeat = await request.post("/api/oauth/register", {
+    data: registration,
+  });
+  expect((await repeat.json()).client_id).toBe(selected.client_id);
+  const renamed = await request.post("/api/oauth/register", {
+    data: { ...registration, client_name: "Unlisted MCP host" },
+  });
+  expect(renamed.status()).toBe(201);
+  expect((await renamed.json()).client_id).toBe(coderClientId);
+  const unnamed = await request.post("/api/oauth/register", {
+    data: { ...registration, client_name: undefined },
+  });
+  expect(unnamed.status()).toBe(201);
+  expect((await unnamed.json()).client_id).toBe(coderClientId);
+
+  const codex = await request.post("/api/oauth/register", {
+    data: {
+      client_name: "Codex",
+      redirect_uris: ["http://127.0.0.1:52923/callback"],
+      token_endpoint_auth_method: "none",
+    },
+  });
+  expect(codex.status()).toBe(201);
+  const codexSelected = await codex.json();
+  expect(codexSelected.client_id).toBe(clientId);
+  expect(codexSelected.client_name).toBe("Codex");
+
+  for (const invalid of [
+    {
+      ...registration,
+      redirect_uris: ["https://attacker.invalid/callback"],
+    },
+    {
+      ...registration,
+      redirect_uris: [
+        "https://coder.example.com/api/experimental/mcp/servers/not-a-uuid/oauth2/callback",
+      ],
+    },
+    {
+      ...registration,
+      token_endpoint_auth_method: "client_secret_post",
+    },
+  ]) {
+    const response = await request.post("/api/oauth/register", {
+      data: invalid,
+    });
+    expect(response.status()).toBe(400);
+    expect((await response.json()).error).toBe("invalid_client_metadata");
   }
 });
 test("authorization rejects unsupported clients, redirects and PKCE before redirect", async ({
