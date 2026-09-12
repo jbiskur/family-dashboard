@@ -92,9 +92,32 @@ async function layout(page: Page, value: string) {
   const format = page.locator(".import-format");
   if (!(await format.evaluate((el) => el.hasAttribute("open"))))
     await format.locator("summary").click();
-  await page
-    .getByRole("combobox", { name: "Statement layout", exact: true })
-    .selectOption(value);
+  // Changing the preset also changes the Header row/First data row label.
+  // React replaces that field while handling the change, which can detach the
+  // select between Playwright's option selection and its follow-up assertion.
+  // Set the native value and dispatch the same events from the live document;
+  // the next assertion then resolves the newly rendered field.
+  await expect
+    .poll(
+      () =>
+        page.evaluate((nextValue) => {
+          const select = document.querySelector<HTMLSelectElement>(
+            "#field-layout",
+          );
+          if (!select || !select.isConnected) return false;
+          const setter = Object.getOwnPropertyDescriptor(
+            HTMLSelectElement.prototype,
+            "value",
+          )?.set;
+          setter?.call(select, nextValue);
+          select.dispatchEvent(new Event("input", { bubbles: true }));
+          select.dispatchEvent(new Event("change", { bubbles: true }));
+          return select.value === nextValue;
+        }, value),
+      { timeout: 30000 },
+    )
+    .toBe(true);
+  await expect(page.locator("#field-layout")).toHaveValue(value);
   await page
     .getByRole("button", { name: "Read with these settings", exact: true })
     .click();
