@@ -17,7 +17,9 @@ jobs:
       matrix:
         project: [chromium, firefox, webkit, mobile]
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    # The serial browser suite can exceed the default runner budget when
+    # WebKit starts cold; keep the complete cross-browser journey intact.
+    timeout-minutes: 35
     steps:
       - uses: actions/checkout@v4
       - uses: oven-sh/setup-bun@v2
