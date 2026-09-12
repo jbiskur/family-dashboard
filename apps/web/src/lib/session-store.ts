@@ -189,3 +189,16 @@ export async function providerSessionLease(
   );
   return expiresAt > Date.now() ? { expiresAt } : null;
 }
+
+// Operational session metadata only; never expose encrypted provider custody.
+export async function providerSessionMetadata(id: string) {
+  if (!z.string().uuid().safeParse(id).success) return null;
+  const [row] =
+    await sql()`select user_id, expires_at from auth_sessions where id=${id}`;
+  if (!row?.user_id || new Date(row.expires_at).getTime() <= Date.now())
+    return null;
+  return {
+    userId: String(row.user_id),
+    expiresAt: new Date(row.expires_at).getTime(),
+  };
+}

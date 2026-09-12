@@ -43,6 +43,13 @@
       "when": 1789108200000,
       "tag": "0005_admin_membership",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1789160400000,
+      "tag": "0006_oauth_agent_access",
+      "breakpoints": true
     }
   ]
 }

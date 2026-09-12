@@ -2552,3 +2552,233 @@ html[data-capture="true"][data-action-notice="true"] .page-content {
     40px
   );
 }
+
+.agent-consent-page {
+  min-height: 100dvh;
+  padding: 32px 20px 64px;
+  background: radial-gradient(
+    ellipse at top,
+    var(--teal-soft),
+    transparent 65%
+  );
+}
+.agent-consent-brand {
+  width: fit-content;
+  margin: 0 auto 28px;
+}
+.agent-consent-card {
+  max-width: 620px;
+  padding: clamp(22px, 5vw, 42px);
+  margin: auto;
+}
+.agent-consent-card > .button {
+  margin-top: 20px;
+}
+.agent-emblem {
+  width: 50px;
+  height: 50px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border-radius: 16px;
+  background: var(--teal-soft);
+  color: var(--teal);
+}
+.agent-consent-card > .agent-emblem {
+  margin-bottom: 20px;
+}
+.agent-client-summary,
+.agent-access-heading {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.agent-client-summary h1 {
+  font-size: clamp(28px, 4vw, 36px);
+}
+.agent-intro {
+  margin: 20px 0;
+}
+.agent-destination {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 14px;
+  background: var(--muted);
+  border-radius: 12px;
+  margin: 20px 0 10px;
+}
+.agent-destination code,
+.agent-endpoint code {
+  display: block;
+  overflow-wrap: anywhere;
+  font-size: 13px;
+  margin-top: 4px;
+}
+.agent-destination > div {
+  min-width: 0;
+}
+.agent-consent-form {
+  margin-top: 26px;
+}
+.agent-permissions {
+  border: 0;
+  padding: 0;
+  margin: 0;
+  min-width: 0;
+}
+.agent-permissions legend {
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+.agent-permission {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 16px;
+  margin-bottom: 10px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  cursor: pointer;
+  transition:
+    background 160ms,
+    border-color 160ms;
+}
+.agent-permission.is-selected {
+  background: var(--teal-soft);
+  border-color: var(--ring);
+}
+.agent-permission input {
+  accent-color: var(--primary);
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.agent-permission strong {
+  display: block;
+}
+.agent-permission strong small {
+  margin-left: 8px;
+  font-weight: 400;
+  font-size: 12px;
+}
+.agent-permission span > span {
+  display: block;
+  font-size: 13px;
+  margin-top: 4px;
+  color: var(--muted-foreground);
+}
+.agent-session-note {
+  display: flex;
+  gap: 10px;
+  font-size: 13px;
+  color: var(--muted-foreground);
+  margin: 20px 0;
+}
+.agent-access-heading {
+  margin-bottom: 24px;
+}
+.agent-access-heading p {
+  margin-top: 4px;
+  color: var(--muted-foreground);
+}
+.agent-access-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+  gap: 30px;
+}
+.agent-setup h3 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.agent-setup > p,
+.agent-setup details > p {
+  margin-top: 10px;
+  color: var(--muted-foreground);
+  font-size: 13px;
+}
+.agent-endpoint {
+  margin: 16px 0;
+  padding: 12px;
+  background: var(--teal-soft);
+  border-radius: 10px;
+}
+.agent-command {
+  margin: 14px 0;
+}
+.agent-command pre {
+  font-size: 12px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  padding: 15px;
+  background: var(--muted);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+.agent-command [role="status"] {
+  display: block;
+  margin-top: 5px;
+}
+.agent-setup details {
+  border-top: 1px solid var(--border);
+  padding-top: 16px;
+  margin-top: 16px;
+}
+.agent-setup summary {
+  cursor: pointer;
+  font-weight: 600;
+  min-height: 44px;
+}
+.agent-connections > p {
+  margin-top: 8px;
+}
+.agent-connection {
+  margin-top: 16px;
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+.agent-connection ul {
+  padding-left: 19px;
+  font-size: 13px;
+  margin: 12px 0;
+}
+.agent-connection .button {
+  margin-top: 12px;
+}
+@media (max-width: 850px) {
+  .agent-access-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+@media (max-width: 400px) {
+  .agent-consent-page {
+    padding: 22px 12px 40px;
+  }
+  .agent-client-summary {
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .agent-consent-card {
+    padding: 20px 16px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .agent-permission {
+    transition: none;
+  }
+}
+
+.agent-connection-history {
+  border-top: 1px solid var(--border);
+  margin-top: 18px;
+  padding-top: 16px;
+}
+.agent-connection-history summary {
+  cursor: pointer;
+  font-weight: 600;
+  min-height: 44px;
+}

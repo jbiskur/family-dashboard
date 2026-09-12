@@ -1,8 +1,17 @@
 import assert from "node:assert/strict";
 import { execFileSync, spawnSync } from "node:child_process";
-import { mkdirSync, writeFileSync } from "node:fs";
+import { createHash } from "node:crypto";
+import {
+  mkdirSync,
+  mkdtempSync,
+  readFileSync,
+  rmSync,
+  writeFileSync,
+} from "node:fs";
+import { request as httpRequest } from "node:http";
 import { createRequire } from "node:module";
-import { dirname } from "node:path";
+import { tmpdir } from "node:os";
+import { dirname, join } from "node:path";
 
 const requireWeb = createRequire(
   new URL("../apps/web/package.json", import.meta.url),
@@ -21,6 +30,24 @@ const report = {
   imageId: docker("image", "inspect", image, "--format", "{{.Id}}"),
   runs: [],
 };
+const publicOrigin = "http://localhost:3010";
+const noticeDirectory = mkdtempSync(join(tmpdir(), "heima-container-notices-"));
+let expectedNotices;
+try {
+  execFileSync(
+    process.execPath,
+    ["scripts/collect-mcp-runtime-licenses.mjs", noticeDirectory],
+    { encoding: "utf8", timeout: 30000 },
+  );
+  expectedNotices = JSON.parse(
+    readFileSync(join(noticeDirectory, "index.json"), "utf8"),
+  );
+} finally {
+  rmSync(noticeDirectory, { recursive: true, force: true });
+}
+const expectedLicenseHash = createHash("sha256")
+  .update(readFileSync("LICENSE"))
+  .digest("hex");
 const sleep = () => new Promise((resolve) => setTimeout(resolve, 250));
 async function fetchBytes(url, timeoutMs) {
   const controller = new AbortController();
@@ -79,6 +106,124 @@ async function probe(base) {
   };
 }
 
+// The container's canonical public Host is independent of its ephemeral local
+// Docker port. node:http preserves that Host header on the actual wire.
+async function oauthRequest(base, path, body) {
+  return new Promise((resolve, reject) => {
+    const request = httpRequest(
+      `${base}${path}`,
+      {
+        method: body ? "POST" : "GET",
+        headers: {
+          host: new URL(publicOrigin).host,
+          accept: "application/json, text/event-stream",
+          "content-type": "application/json",
+        },
+        timeout: 10000,
+      },
+      (response) => {
+        const chunks = [];
+        let size = 0;
+        response.on("data", (chunk) => {
+          size += chunk.length;
+          if (size > 65536)
+            response.destroy(new Error("OAuth smoke response too large"));
+          else chunks.push(chunk);
+        });
+        response.on("error", reject);
+        response.on("end", () => {
+          try {
+            resolve({
+              status: response.statusCode,
+              headers: response.headers,
+              body: JSON.parse(Buffer.concat(chunks).toString("utf8")),
+            });
+          } catch {
+            reject(new Error("OAuth smoke did not return JSON"));
+          }
+        });
+      },
+    );
+    request.on("error", reject);
+    request.on("timeout", () =>
+      request.destroy(new Error("OAuth smoke request timed out")),
+    );
+    request.end(body ? JSON.stringify(body) : undefined);
+  });
+}
+async function probeOAuth(base) {
+  const resource = `${publicOrigin}/api/mcp`;
+  const authorization = await oauthRequest(
+    base,
+    "/.well-known/oauth-authorization-server",
+  );
+  assert.equal(authorization.status, 200);
+  assert.equal(authorization.body.issuer, publicOrigin);
+  assert(authorization.body.code_challenge_methods_supported.includes("S256"));
+  assert(
+    authorization.body.token_endpoint_auth_methods_supported.includes("none"),
+  );
+  const metadata = await oauthRequest(
+    base,
+    "/.well-known/oauth-protected-resource/api/mcp",
+  );
+  assert.equal(metadata.status, 200);
+  assert.equal(metadata.body.resource, resource);
+  assert.deepEqual(metadata.body.authorization_servers, [publicOrigin]);
+  const denied = await oauthRequest(base, "/api/mcp", {
+    jsonrpc: "2.0",
+    id: 1,
+    method: "tools/list",
+  });
+  assert.equal(denied.status, 401);
+  assert.equal(denied.body.error, "invalid_token");
+  assert.equal(denied.headers["cache-control"], "no-store");
+  assert(
+    denied.headers["www-authenticate"].includes(
+      `resource_metadata="${publicOrigin}/.well-known/oauth-protected-resource/api/mcp"`,
+    ),
+  );
+  return {
+    authorizationMetadataStatus: authorization.status,
+    resourceMetadataStatus: metadata.status,
+    unauthenticatedMcpStatus: denied.status,
+    issuer: publicOrigin,
+    resource,
+  };
+}
+function probeNotices(name) {
+  const actual = JSON.parse(
+    docker(
+      "exec",
+      name,
+      "node",
+      "-e",
+      `
+    const fs = require('node:fs');
+    const crypto = require('node:crypto');
+    const index = JSON.parse(fs.readFileSync('/app/third-party-licenses/index.json', 'utf8'));
+    for (const pkg of index.packages) for (const file of pkg.files) {
+      const bytes = fs.readFileSync('/app/third-party-licenses/' + file.path);
+      if (crypto.createHash('sha256').update(bytes).digest('hex') !== file.sha256) throw new Error('Packaged notice hash mismatch');
+    }
+    console.log(JSON.stringify({ index, licenseHash: crypto.createHash('sha256').update(fs.readFileSync('/app/LICENSE')).digest('hex') }));
+  `,
+    ),
+  );
+  assert.deepEqual(actual.index, expectedNotices);
+  assert.equal(actual.licenseHash, expectedLicenseHash);
+  return {
+    path: "/app/third-party-licenses",
+    packageCount: actual.index.packages.length,
+    filesVerified: actual.index.packages.reduce(
+      (total, pkg) => total + pkg.files.length,
+      0,
+    ),
+    exactInstalledNotices: true,
+    rootLicenseUnchanged: true,
+  };
+}
+
 try {
   for (const phase of ["cold-and-warm", "fresh-tmpfs-replacement"]) {
     const name = `heima-image-cache-${process.pid}-${phase}`;
@@ -104,6 +249,8 @@ try {
         "no-new-privileges",
         "-p",
         "127.0.0.1::3010",
+        "-e",
+        `AUTH_URL=${publicOrigin}`,
         "-e",
         "AUTH_SECRET=local-cache-verification-secret-minimum-thirty-two",
         "-e",
@@ -142,6 +289,8 @@ try {
         run.requests.push({ request, ...(await probe(base)) });
         checkLogs(logs(name));
       }
+      run.oauth = await probeOAuth(base);
+      run.notices = probeNotices(name);
       // A real cache HIT ensures asynchronous cache writes completed. HTTP200
       // alone also occurs in the broken released image and is insufficient.
       for (let attempt = 0; ; attempt++) {
@@ -183,5 +332,7 @@ try {
 } finally {
   mkdirSync(dirname(reportPath), { recursive: true });
   writeFileSync(reportPath, `${JSON.stringify(report, null, 2)}\n`);
-  console.log(`Image cache ${report.result}; receipt: ${reportPath}`);
+  console.log(
+    `Web image verification ${report.result}; receipt: ${reportPath}`,
+  );
 }

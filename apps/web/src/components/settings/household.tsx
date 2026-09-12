@@ -10,6 +10,7 @@ import {
   Users,
 } from "lucide-react";
 import { useState } from "react";
+import { AgentAccessPanel } from "@/components/agents/access-panel";
 import { useCommand, useHeima } from "@/lib/client";
 import { memberLabel } from "@/lib/member-label";
 import { purgeOffline } from "@/lib/offline";
@@ -297,13 +298,15 @@ export function HouseholdSettings({
           </div>
         )
       )}
+      {data && <AgentAccessPanel />}
       <Card className="card-pad section-gap">
         <div className="row-between wrap">
           <div>
             <h3>Time to step away?</h3>
             <p className="field-hint">
               Signing out removes this device's saved household data and pending
-              offline commands.
+              offline commands. Agent connections linked to this session also
+              end.
             </p>
           </div>
           <form

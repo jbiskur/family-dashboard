@@ -13,11 +13,6 @@ export class BackendError extends Error {
   }
 }
 export async function backendFetch(path: string, init: RequestInit = {}) {
-  if (!/^\/v1\/[a-zA-Z0-9/_-]+(?:\?[^#\r\n]*)?$/.test(path))
-    throw new BackendError(400, "INVALID_PATH", "Invalid request.");
-  const target = new URL(path, env.HEIMA_API_URL);
-  if (target.origin !== new URL(env.HEIMA_API_URL).origin)
-    throw new BackendError(400, "INVALID_PATH", "Invalid request.");
   const session = await auth();
   if (!session?.sessionId)
     throw new BackendError(
@@ -25,7 +20,21 @@ export async function backendFetch(path: string, init: RequestInit = {}) {
       "SIGN_IN_REQUIRED",
       "Please sign in to continue.",
     );
-  const bearer = await sessionBearer(session.sessionId);
+  return backendFetchForSession(session.sessionId, path, init);
+}
+
+// Server-only entry for a session reference verified by the delegated OAuth guard.
+export async function backendFetchForSession(
+  sessionId: string,
+  path: string,
+  init: RequestInit = {},
+) {
+  if (!/^\/v1\/[a-zA-Z0-9/_-]+(?:\?[^#\r\n]*)?$/.test(path))
+    throw new BackendError(400, "INVALID_PATH", "Invalid request.");
+  const target = new URL(path, env.HEIMA_API_URL);
+  if (target.origin !== new URL(env.HEIMA_API_URL).origin)
+    throw new BackendError(400, "INVALID_PATH", "Invalid request.");
+  const bearer = await sessionBearer(sessionId);
   if (!bearer)
     throw new BackendError(
       401,
