@@ -300,7 +300,7 @@ test("MCP requires its own bearer, validates origin and advertises only consente
       },
     );
     expect(alias.status).toBe(401);
-    for (const protocol of ["2026-07-28", "2025-11-25"]) {
+    for (const protocol of ["2026-07-28", "2025-11-25", "2025-06-18"]) {
       const compatible = await connect(tokens.accessToken, protocol);
       expect((await compatible.listTools()).tools).toHaveLength(5);
       await compatible.close();
