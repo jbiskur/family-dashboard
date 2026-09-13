@@ -41,7 +41,8 @@ test("entry and Home keep their optimized illustration at mobile and desktop wid
         .toBeLessThanOrEqual(width + 1);
       await page.screenshot({
         path: info.outputPath(`image-${state}-${width}.png`),
-        fullPage: true,
+        fullPage: false,
+        animations: "disabled",
       });
     }
   };
