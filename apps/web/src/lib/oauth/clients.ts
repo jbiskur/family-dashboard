@@ -1,5 +1,6 @@
 import "server-only";
 import { env } from "../env";
+import { listWriteScopes, usableChatClientId } from "./scopes";
 import type { McpScope } from "./types";
 
 export const scopes: readonly McpScope[] = [
@@ -8,6 +9,7 @@ export const scopes: readonly McpScope[] = [
   "heima.work.write",
   "heima.finance.read",
 ];
+
 export type OAuthClient = {
   id: string;
   name: string;
@@ -33,7 +35,7 @@ export const clients: readonly OAuthClient[] = [
     // Public, pre-registered profile for the Usable Chat MCP client. The
     // callback is fixed by the deployed Usable Chat application; local and
     // legacy hosts are listed explicitly so no redirect wildcard is needed.
-    id: "40c9eee8-9eee-4742-9025-2ce398b78437",
+    id: usableChatClientId,
     name: "Usable Chat",
     callbackUri: "https://chat.usable.dev/api/mcp-servers/oauth/callback",
     callbackPort: 0,
@@ -106,4 +108,17 @@ export function parseScopes(value: string) {
   )
     throw new Error("INVALID_SCOPE");
   return requested as McpScope[];
+}
+
+export function consentScopes(clientId: string, requested: McpScope[]) {
+  // Usable Chat's pre-registered profile sends the safe read minimum. Its
+  // consent screen can offer the already-supported list-write pair explicitly;
+  // other clients keep OAuth's requested-scope semantics unchanged.
+  if (
+    clientId === usableChatClientId &&
+    requested.length === 1 &&
+    requested[0] === "heima.read"
+  )
+    return ["heima.read", ...listWriteScopes] as McpScope[];
+  return requested;
 }

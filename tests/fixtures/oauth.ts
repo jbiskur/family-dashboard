@@ -3,6 +3,9 @@ import { readFileSync } from "node:fs";
 import { expect, type Page } from "@playwright/test";
 
 export const oauthClientId = "ae7d2f6d-5d9d-4d17-8bdf-1c4b0b62e984";
+export const usableChatClientId = "40c9eee8-9eee-4742-9025-2ce398b78437";
+export const usableChatRedirectUri =
+  "https://chat.usable.dev/api/mcp-servers/oauth/callback";
 export const oauthResource = "http://localhost:3010/api/mcp";
 export const oauthScopes = [
   "heima.read",
@@ -51,14 +54,15 @@ export async function beginOAuth(
   page: Page,
   scopes: string[] = ["heima.read"],
   requestOrigin = "",
+  clientId = oauthClientId,
+  redirectUri = "http://127.0.0.1:43215/callback",
 ): Promise<OAuthFlow> {
   const verifier = randomBytes(32).toString("base64url");
   const state = randomUUID();
-  const redirectUri = "http://127.0.0.1:43215/callback";
   const resource = requestOrigin ? `${requestOrigin}/api/mcp` : oauthResource;
   const params = new URLSearchParams({
     response_type: "code",
-    client_id: oauthClientId,
+    client_id: clientId,
     redirect_uri: redirectUri,
     resource,
     scope: scopes.join(" "),
@@ -82,7 +86,7 @@ export async function beginOAuth(
     requestId,
     verifier,
     state,
-    clientId: oauthClientId,
+    clientId,
     redirectUri,
     resource,
     requestOrigin,
@@ -159,6 +163,10 @@ export async function approveOAuth(
   flow: OAuthFlow,
   scopes: string[] = ["heima.read"],
 ): Promise<OAuthTokens> {
+  const readWrite = page.getByRole("radio", { name: /Read & write/ });
+  if (scopes.includes("heima.shopping.write") && (await readWrite.count())) {
+    await readWrite.check();
+  }
   for (const scope of oauthScopes.slice(1)) {
     const field = page.locator(`input[name="scope"][value="${scope}"]`);
     if (await field.count()) await field.setChecked(scopes.includes(scope));
