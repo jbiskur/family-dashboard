@@ -61,7 +61,20 @@ test("opaque browser session is unusable after local and provider logout", async
   browser,
 }, info) => {
   await page.goto("/");
+  const providerAuth = page.waitForRequest((request) => {
+    try {
+      return new URL(request.url()).pathname.endsWith(
+        "/protocol/openid-connect/auth",
+      );
+    } catch {
+      return false;
+    }
+  });
   await page.getByRole("button", { name: "Continue with Usable" }).click();
+  const requestedScopes = new URL((await providerAuth).url()).searchParams
+    .get("scope")
+    ?.split(" ");
+  expect(requestedScopes).toContain("offline_access");
   await page.locator("#username").fill("owner@heima.test");
   await page.locator("#password").fill(settings.TEST_USER_PASSWORD!);
   await page.locator("#kc-login").click();
@@ -77,6 +90,12 @@ test("opaque browser session is unusable after local and provider logout", async
   expect(lease.headers()["cache-control"]).toBe("no-store");
   expect((await lease.json()).expiresAt).toBeGreaterThan(Date.now());
   const copiedCookies = await page.context().cookies();
+  const sessionCookie = copiedCookies.find(
+    (cookie) => cookie.name === "authjs.session-token",
+  );
+  expect(sessionCookie?.expires).toBeGreaterThan(
+    Date.now() / 1000 + 29 * 24 * 60 * 60,
+  );
   await page.goto("/settings/household");
   await page.getByRole("button", { name: "Sign out", exact: true }).click();
   await expect(

@@ -4,6 +4,7 @@ import { env } from "@/lib/env";
 import {
   createProviderSession,
   destroyProviderSession,
+  PROVIDER_SESSION_MAX_AGE_SECONDS,
   verifyProviderToken,
 } from "@/lib/session-store";
 
@@ -15,7 +16,11 @@ const provider: OAuthConfig<Record<string, unknown>> = {
   clientId: env.USABLE_CLIENT_ID,
   clientSecret: env.USABLE_CLIENT_SECRET,
   checks: ["pkce", "state", "nonce"],
-  authorization: { params: { scope: "openid profile email" } },
+  // Request an offline-capable provider refresh token. The token remains
+  // encrypted in the server-only session store; it is never sent to the UI.
+  authorization: {
+    params: { scope: "openid profile email offline_access" },
+  },
   profile(profile) {
     return {
       id: String(profile.sub),
@@ -28,7 +33,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
   secret: env.AUTH_SECRET,
   trustHost: true,
   providers: [provider],
-  session: { strategy: "jwt", maxAge: 8 * 60 * 60 },
+  session: { strategy: "jwt", maxAge: PROVIDER_SESSION_MAX_AGE_SECONDS },
   pages: { signIn: "/", error: "/auth/error" },
   callbacks: {
     async signIn({ account }) {

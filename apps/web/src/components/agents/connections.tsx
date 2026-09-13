@@ -59,8 +59,9 @@ export function AgentConnections({
     <div className="agent-connections">
       <h3>Your connections</h3>
       <p className="field-hint">
-        Only your agents appear here. Connections end on sign-out or within
-        eight hours. To reconnect, run the login command again.
+        Only your agents appear here. Connections end on sign-out or within 30
+        days. Heima renews access in the background while the connection is
+        valid. To reconnect after expiry, run the login command again.
       </p>
       {active.length ? (
         active.map(row)
