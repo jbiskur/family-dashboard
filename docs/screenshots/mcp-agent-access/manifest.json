@@ -1,6 +1,6 @@
 {
   "feature": "Connect agents through Usable OAuth",
-  "generated": "2026-09-12",
+  "generated": "2026-09-13",
   "source": "local production build, real PostgreSQL and local Keycloak with synthetic fixture data",
   "publicSafe": true,
   "checks": {
