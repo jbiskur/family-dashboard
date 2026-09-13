@@ -73,7 +73,10 @@ export function AgentConnections({
         />
       )}
       {previous.length > 0 && (
-        <details className="agent-connection-history">
+        <details
+          className="agent-connection-history"
+          open={active.length === 0}
+        >
           <summary>Previous connections ({previous.length})</summary>
           {previous.map(row)}
         </details>

@@ -1,6 +1,6 @@
 "use client";
 import { useQuery } from "@tanstack/react-query";
-import { Bot, Check, LoaderCircle, Unplug } from "lucide-react";
+import { Bot, Check, LoaderCircle, RefreshCw, Unplug } from "lucide-react";
 import { useRef, useState } from "react";
 import { loadAgentAccess } from "@/lib/agent-access-actions";
 import { revokeAgentConnection } from "@/lib/oauth/actions";
@@ -20,7 +20,12 @@ export function AgentAccessPanel() {
       if (!result.ok) throw new Error(result.message);
       return result.data;
     },
-    refetchInterval: 60000,
+    // OAuth approval happens in the agent host, so this page cannot receive
+    // an invalidation event from that browser. Keep the list fresh while the
+    // settings page is open and always recheck when returning to it.
+    refetchInterval: 5000,
+    refetchIntervalInBackground: true,
+    refetchOnMount: "always",
   });
   const [selected, setSelected] = useState<AgentConnection | null>(null);
   const [pending, setPending] = useState(false);
@@ -35,16 +40,29 @@ export function AgentAccessPanel() {
       className="section-gap"
     >
       <Card className="card-pad agent-access-card">
-        <div className="agent-access-heading">
-          <span className="agent-emblem">
-            <Bot size={25} />
-          </span>
-          <div>
-            <h2 id="agent-access-heading" ref={heading} tabIndex={-1}>
-              Agent access
-            </h2>
-            <p>Let an agent help with your household, on your terms.</p>
+        <div className="row-between wrap agent-access-toolbar">
+          <div className="agent-access-heading">
+            <span className="agent-emblem">
+              <Bot size={25} />
+            </span>
+            <div>
+              <h2 id="agent-access-heading" ref={heading} tabIndex={-1}>
+                Agent access
+              </h2>
+              <p>Let an agent help with your household, on your terms.</p>
+            </div>
           </div>
+          <Button
+            variant="ghost"
+            size="compact"
+            className="agent-access-refresh"
+            onClick={() => void query.refetch()}
+            disabled={query.isFetching}
+            aria-label="Refresh agent connections"
+          >
+            <RefreshCw size={15} className={query.isFetching ? "spin" : ""} />
+            {query.isFetching ? "Refreshing…" : "Refresh connections"}
+          </Button>
         </div>
         {notice && (
           <p className="notice" role="status">
