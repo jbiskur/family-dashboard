@@ -27,6 +27,13 @@
       "sha256": "7d197fac35d69cfd4223540cebc587ec05870c923753558faaf0e7cbda19d18f"
     },
     {
+      "file": "agent-setup-read-write-390.png",
+      "route": "/settings/household",
+      "viewport": "390x900",
+      "state": "Read-and-write access selected with generated two-step Codex setup",
+      "sha256": "2b91da238a8dd051de601d56e7c83f82af05e1e764923747177fb871bc296513"
+    },
+    {
       "file": "agent-consent-choices-390.png",
       "route": "/oauth/consent",
       "viewport": "390x1000",

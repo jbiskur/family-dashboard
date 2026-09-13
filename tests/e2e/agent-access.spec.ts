@@ -51,6 +51,47 @@ test("agent access offers token-free setup inside Household settings", async ({
   await expect(panel.locator(".agent-command code").first()).toHaveText(
     "codex mcp add heima --url http://localhost:3010/api/mcp",
   );
+  const accessChoice = panel.getByRole("radiogroup", {
+    name: "Access for this connection",
+  });
+  const readOnly = accessChoice.getByRole("radio", { name: /Read only/ });
+  const readWrite = accessChoice.getByRole("radio", {
+    name: /Read & write/,
+  });
+  const selectedLogin = panel.locator(
+    ".agent-selected-login .agent-command code",
+  );
+  for (const radio of [readOnly, readWrite]) {
+    const bounds = await radio.boundingBox();
+    expect(bounds?.width).toBeGreaterThanOrEqual(44);
+    expect(bounds?.height).toBeGreaterThanOrEqual(44);
+  }
+  await expect(readOnly).toBeChecked();
+  await expect(readWrite).not.toBeChecked();
+  await expect(selectedLogin).toContainText("--scopes heima.read");
+  await expect(selectedLogin).not.toContainText("heima.shopping.write");
+  await readWrite.check();
+  await expect(readWrite).toBeChecked();
+  await expect(selectedLogin).toContainText(
+    "--scopes heima.read,heima.shopping.write,heima.work.write",
+  );
+  await expect(selectedLogin).not.toContainText("heima.finance.read");
+  await page.setViewportSize({ width: 390, height: 900 });
+  await screenshotPanel(
+    page,
+    panel,
+    info.outputPath("agent-setup-read-write-390.png"),
+  );
+  await page.reload();
+  const resetChoice = page.getByRole("region", {
+    name: "Agent access",
+    exact: true,
+  });
+  await expect(
+    resetChoice
+      .getByRole("radiogroup", { name: "Access for this connection" })
+      .getByRole("radio", { name: /Read only/ }),
+  ).toBeChecked();
   // This suite can be rerun against a database that contains a prior test
   // connection. Reconcile those visible connections through the same UI before
   // capturing the empty state.
