@@ -41,6 +41,13 @@
       "sha256": "68f6a59d551d9cb6c5892b6b6fafc36f74aae7451f9710a291cfa55b67f2a6fa"
     },
     {
+      "file": "agent-connected-external-refresh.png",
+      "route": "/settings/household",
+      "viewport": "1280x720",
+      "state": "Connected grant discovered after approval in another agent host",
+      "sha256": "90b18a3abaf82e286a7a4146d8aa912e937d8831e8cacca60e2fd51f7bb40008"
+    },
+    {
       "file": "mcp-shopping-reloaded.png",
       "route": "/shopping/[listId]",
       "viewport": "390x844",
