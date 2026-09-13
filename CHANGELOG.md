@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.4](https://github.com/jbiskur/family-dashboard/compare/v0.4.3...v0.4.4) (2026-09-13)
+
+
+### Bug Fixes
+
+* add visible agent access level choice ([#15](https://github.com/jbiskur/family-dashboard/issues/15)) ([8004a19](https://github.com/jbiskur/family-dashboard/commit/8004a1929bd09f0a25d4dbd79aea8d912235e638))
+
 ## [0.4.3](https://github.com/jbiskur/family-dashboard/compare/v0.4.2...v0.4.3) (2026-09-13)
 
 
