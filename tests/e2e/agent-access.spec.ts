@@ -7,7 +7,10 @@ import {
   captureOAuthCallback,
   oauthClientId,
   oauthScopes,
+  redeemOAuth,
   signInForOAuth,
+  usableChatClientId,
+  usableChatRedirectUri,
 } from "../fixtures/oauth";
 
 const settings = Object.fromEntries(
@@ -392,5 +395,78 @@ test("consent network failure is recoverable and cancellation grants no code", a
     path: info.outputPath("agent-consent-cancelled.png"),
   });
   await page.goto("/settings/household");
+  await page.getByRole("button", { name: "Sign out", exact: true }).click();
+});
+
+test("a minimal read challenge exposes the access choice on the consent screen", async ({
+  page,
+}, info) => {
+  await signInForOAuth(page, "admin2");
+  let refreshToken = "";
+  try {
+    const flow = await beginOAuth(
+      page,
+      ["heima.read"],
+      "",
+      usableChatClientId,
+      usableChatRedirectUri,
+    );
+    await expect(
+      page.getByRole("heading", { name: "Let Usable Chat help?" }),
+    ).toBeVisible();
+    const access = page.getByRole("group", { name: "Choose access" });
+    const readOnly = access.getByRole("radio", { name: /Read only/ });
+    const readWrite = access.getByRole("radio", { name: /Read & write/ });
+    await expect(readOnly).toBeChecked();
+    await expect(readWrite).not.toBeChecked();
+    await expect(
+      access.getByText(
+        "Read only is the safe default. Read & write lets this agent add, edit and complete Shopping and Work items.",
+        { exact: true },
+      ),
+    ).toBeVisible();
+    for (const radio of [readOnly, readWrite]) {
+      const bounds = await radio.boundingBox();
+      expect(bounds?.width).toBeGreaterThanOrEqual(44);
+      expect(bounds?.height).toBeGreaterThanOrEqual(44);
+    }
+    await page.setViewportSize({ width: 390, height: 1000 });
+    await page.locator(".agent-consent-card").screenshot({
+      path: info.outputPath("agent-consent-access-level-390.png"),
+    });
+    await readWrite.check();
+    await expect(readWrite).toBeChecked();
+    const result = await captureOAuthCallback(page, flow);
+    expect(result.code).toBeTruthy();
+    const tokens = await redeemOAuth(page, flow, result.code ?? "");
+    expect(tokens.status()).toBe(200);
+    const body = await tokens.json();
+    refreshToken = body.refresh_token;
+    expect(body.scope.split(" ").sort()).toEqual([
+      "heima.read",
+      "heima.shopping.write",
+      "heima.work.write",
+    ]);
+  } finally {
+    if (refreshToken) {
+      await page.request.post("/api/oauth/revoke", {
+        form: { client_id: usableChatClientId, token: refreshToken },
+      });
+    }
+    await page.goto("/settings/household");
+    await page.getByRole("button", { name: "Sign out", exact: true }).click();
+  }
+});
+
+test("a minimal Codex challenge keeps the hosted-client write picker hidden", async ({
+  page,
+}) => {
+  await signInForOAuth(page, "admin2");
+  const flow = await beginOAuth(page);
+  await expect(page.getByRole("group", { name: "Choose access" })).toHaveCount(
+    0,
+  );
+  const result = await captureOAuthCallback(page, flow, "cancel");
+  expect(result.error).toBe("access_denied");
   await page.getByRole("button", { name: "Sign out", exact: true }).click();
 });

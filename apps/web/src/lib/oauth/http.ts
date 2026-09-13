@@ -3,6 +3,7 @@ import { randomUUID } from "node:crypto";
 import { cookies } from "next/headers";
 import {
   clients,
+  consentScopes,
   issuer,
   mcpResource,
   parseScopes,
@@ -293,7 +294,10 @@ export async function authorizeRequest(request: Request) {
       !/^[A-Za-z0-9_-]{43}$/.test(data.code_challenge ?? "")
     )
       throw new Error("INVALID_REQUEST");
-    const requestedScopes = parseScopes(data.scope ?? "heima.read");
+    const requestedScopes = consentScopes(
+      data.client_id,
+      parseScopes(data.scope ?? "heima.read"),
+    );
     if (limited(`authorize:${data.client_id}`))
       return oauthFailure(
         429,
