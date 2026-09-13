@@ -39,10 +39,15 @@ test("entry and Home keep their optimized illustration at mobile and desktop wid
       await expect
         .poll(() => page.evaluate(() => document.documentElement.scrollWidth))
         .toBeLessThanOrEqual(width + 1);
-      await page.screenshot({
-        path: info.outputPath(`image-${state}-${width}.png`),
-        fullPage: true,
-      });
+      // Linux WebKit can hang in its screenshot encoder for optimized Next
+      // images. Keep its image and layout assertions; other engines provide
+      // the visual evidence artifacts.
+      if (info.project.name !== "webkit")
+        await page.screenshot({
+          path: info.outputPath(`image-${state}-${width}.png`),
+          fullPage: false,
+          animations: "disabled",
+        });
     }
   };
   await inspect(
