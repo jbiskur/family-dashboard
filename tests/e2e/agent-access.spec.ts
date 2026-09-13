@@ -61,6 +61,11 @@ test("agent access offers token-free setup inside Household settings", async ({
   const selectedLogin = panel.locator(
     ".agent-selected-login .agent-command code",
   );
+  for (const radio of [readOnly, readWrite]) {
+    const bounds = await radio.boundingBox();
+    expect(bounds?.width).toBeGreaterThanOrEqual(44);
+    expect(bounds?.height).toBeGreaterThanOrEqual(44);
+  }
   await expect(readOnly).toBeChecked();
   await expect(readWrite).not.toBeChecked();
   await expect(selectedLogin).toContainText("--scopes heima.read");
