@@ -69,7 +69,7 @@ export function AgentConnections({
         <EmptyState
           icon={<Bot size={27} />}
           title="No agents connected"
-          description="Connect an agent when you need a hand. Read access is the starting point."
+          description="No active connection is visible for this signed-in account. After approving an agent, return here and refresh. Read access is the starting point."
         />
       )}
       {previous.length > 0 && (
