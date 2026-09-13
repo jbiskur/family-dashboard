@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.4.5](https://github.com/jbiskur/family-dashboard/compare/v0.4.4...v0.4.5) (2026-09-13)
+
+
+### Bug Fixes
+
+* expose access level on usable consent ([8cd7b11](https://github.com/jbiskur/family-dashboard/commit/8cd7b111298d4f9860fafb69540f059a24085221))
+* expose access level on Usable consent ([5b53edc](https://github.com/jbiskur/family-dashboard/commit/5b53edcdfb777849685f05986a9587e0c5047978))
+
 ## [0.4.4](https://github.com/jbiskur/family-dashboard/compare/v0.4.3...v0.4.4) (2026-09-13)
 
 
