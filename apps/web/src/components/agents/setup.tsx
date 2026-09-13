@@ -4,6 +4,13 @@ import { useState } from "react";
 import type { AgentAccessView } from "@/lib/oauth/types";
 import { Button } from "../ui/button";
 
+type AccessLevel = "read" | "write";
+
+const accessScopes: Record<AccessLevel, string[]> = {
+  read: ["heima.read"],
+  write: ["heima.read", "heima.shopping.write", "heima.work.write"],
+};
+
 function CopyCommand({ label, command }: { label: string; command: string }) {
   const [status, setStatus] = useState("");
   return (
@@ -36,8 +43,12 @@ function CopyCommand({ label, command }: { label: string; command: string }) {
 export function AgentSetup({ data }: { data: AgentAccessView }) {
   const codex = data.clients.find((client) => client.name === "Codex");
   const claude = data.clients.find((client) => client.name === "Claude Code");
+  const [accessLevel, setAccessLevel] = useState<AccessLevel>("read");
   const login = codex
     ? `codex -c 'mcp_servers.heima.oauth.callback_url="${codex.callbackUri}"' -c 'mcp_servers.heima.oauth.callback_port=${codex.callbackPort}' mcp login heima`
+    : "";
+  const selectedLogin = login
+    ? `${login} --scopes ${accessScopes[accessLevel].join(",")}`
     : "";
   return (
     <div className="agent-setup">
@@ -57,39 +68,84 @@ export function AgentSetup({ data }: { data: AgentAccessView }) {
         <span className="field-hint">MCP endpoint</span>
         <code>{data.endpoint}</code>
       </div>
+      <div
+        className="agent-access-choice"
+        role="radiogroup"
+        aria-labelledby="agent-access-title"
+      >
+        <p className="agent-access-title" id="agent-access-title">
+          Access for this connection
+        </p>
+        <p className="field-hint">
+          Pick the highest access this agent should request. You can still
+          narrow it on the consent screen.
+        </p>
+        <label
+          className={`agent-access-option ${accessLevel === "read" ? "is-selected" : ""}`}
+        >
+          <input
+            type="radio"
+            name="agent-access-level"
+            value="read"
+            checked={accessLevel === "read"}
+            onChange={() => setAccessLevel("read")}
+          />
+          <span>
+            <strong>Read only</strong>
+            <span>See your household context, shopping and Work items.</span>
+          </span>
+        </label>
+        <label
+          className={`agent-access-option ${accessLevel === "write" ? "is-selected" : ""}`}
+        >
+          <input
+            type="radio"
+            name="agent-access-level"
+            value="write"
+            checked={accessLevel === "write"}
+            onChange={() => setAccessLevel("write")}
+          />
+          <span>
+            <strong>Read &amp; write</strong>
+            <span>
+              Read plus add, edit and complete shopping and Work items.
+            </span>
+          </span>
+        </label>
+      </div>
       {codex && (
-        <CopyCommand
-          label="Copy Codex setup"
-          command={`codex mcp add heima --url ${data.endpoint}`}
-        />
+        <>
+          <p className="agent-setup-step">
+            <span className="agent-step-number">1</span>
+            <strong>Add Heima to Codex</strong>
+          </p>
+          <CopyCommand
+            label="Copy Codex setup"
+            command={`codex mcp add heima --url ${data.endpoint}`}
+          />
+          <div className="agent-selected-login">
+            <p className="agent-setup-step">
+              <span className="agent-step-number">2</span>
+              <strong>
+                {accessLevel === "read"
+                  ? "Connect with read-only access"
+                  : "Connect with read and write access"}
+              </strong>
+            </p>
+            <p className="field-hint">
+              Copy and run both commands, then finish the sign-in and consent
+              screens.
+            </p>
+            <CopyCommand
+              label="Copy selected connection"
+              command={selectedLogin}
+            />
+            <p className="field-hint">
+              Finance access is not included in either list access level.
+            </p>
+          </div>
+        </>
       )}
-      <details>
-        <summary>Reconnect with read access</summary>
-        <p>
-          When your connection ends, run this login again and approve a new
-          connection.
-        </p>
-        {codex && (
-          <CopyCommand
-            label="Copy reconnect login"
-            command={`${login} --scopes heima.read`}
-          />
-        )}
-      </details>
-      <details>
-        <summary>Allow editing or finance reads</summary>
-        <p>
-          Run this login to request extra permissions. Choose only the
-          permissions you want on the consent screen. Disconnect older
-          connections below if you no longer need them.
-        </p>
-        {codex && (
-          <CopyCommand
-            label="Copy optional permissions login"
-            command={`${login} --scopes heima.read,heima.shopping.write,heima.work.write,heima.finance.read`}
-          />
-        )}
-      </details>
       {claude && (
         <details>
           <summary>Claude Code setup</summary>
