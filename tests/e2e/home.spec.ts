@@ -20,10 +20,21 @@ test("entry and Home keep their optimized illustration at mobile and desktop wid
       await page.setViewportSize({ width, height: 900 });
       const illustration = page.getByRole("img", { name: alt, exact: true });
       await expect(illustration).toBeVisible();
-      // Linux WebKit can leave decode() pending for optimized Next images
-      // even after the image has loaded. `complete` plus intrinsic dimensions
-      // verifies the same contract without waiting on that buggy promise.
-      await expect(illustration).toHaveJSProperty("complete", true);
+      // Browser image promises are unreliable here: WebKit can leave
+      // decode() pending, while Chromium can report `complete` before lazy
+      // loading has populated currentSrc. Poll the observable loaded state.
+      await expect
+        .poll(
+          () =>
+            illustration.evaluate(
+              (element: HTMLImageElement) =>
+                element.currentSrc.includes("/_next/image?") &&
+                element.naturalWidth > 0 &&
+                element.naturalHeight > 0,
+            ),
+          { timeout: 30_000 },
+        )
+        .toBe(true);
       const image = await illustration.evaluate(
         (element: HTMLImageElement) => ({
           src: element.currentSrc,
