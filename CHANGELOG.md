@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.3](https://github.com/jbiskur/family-dashboard/compare/v0.4.2...v0.4.3) (2026-09-13)
+
+
+### Bug Fixes
+
+* keep offline OAuth sessions alive ([#13](https://github.com/jbiskur/family-dashboard/issues/13)) ([a08ef4e](https://github.com/jbiskur/family-dashboard/commit/a08ef4ee55944f78eda7697372212d4ae6331663))
+
 ## [0.4.2](https://github.com/jbiskur/family-dashboard/compare/v0.4.1...v0.4.2) (2026-09-12)
 
 
