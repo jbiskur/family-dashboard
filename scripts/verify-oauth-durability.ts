@@ -24,6 +24,7 @@ for (const line of readFileSync(".env.test.local", "utf8").split("\n")) {
   if (at > 0) process.env[line.slice(0, at)] = line.slice(at + 1);
 }
 const schema = `heima_oauthproof_${Date.now()}`;
+const PROVIDER_SESSION_MAX_AGE_MS = 30 * 24 * 60 * 60 * 1000;
 const reserve = createServer();
 reserve.listen(0, "127.0.0.1");
 await once(reserve, "listening");
@@ -336,7 +337,7 @@ try {
   ).toBe(405);
   receipt.revocationSurvivesRestart = true;
 
-  await start(8 * 60 * 60 * 1000 + 60_000);
+  await start(PROVIDER_SESSION_MAX_AGE_MS + 60_000);
   expect(
     (
       await page.request.get(`${origin}/api/mcp`, {
@@ -346,7 +347,7 @@ try {
   ).toBe(401);
   expect((await refresh(winner.refresh_token)).status()).toBe(400);
   receipt.absoluteSessionExpiry = {
-    advancedClockSeconds: 28860,
+    advancedClockSeconds: Math.floor(PROVIDER_SESSION_MAX_AGE_MS / 1000) + 60,
     accessStatus: 401,
     refreshStatus: 400,
   };

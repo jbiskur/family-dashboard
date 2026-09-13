@@ -2680,6 +2680,16 @@ html[data-capture="true"][data-action-notice="true"] .page-content {
 .agent-access-heading {
   margin-bottom: 24px;
 }
+.agent-access-toolbar {
+  align-items: flex-start;
+  margin-bottom: 24px;
+}
+.agent-access-toolbar .agent-access-heading {
+  margin-bottom: 0;
+}
+.agent-access-refresh {
+  margin-top: 2px;
+}
 .agent-access-heading p {
   margin-top: 4px;
   color: var(--muted-foreground);

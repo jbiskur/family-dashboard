@@ -124,6 +124,59 @@ test("agent access offers token-free setup inside Household settings", async ({
   );
 });
 
+test("household connection list notices approval in another agent host", async ({
+  browser,
+  page,
+}, info) => {
+  test.setTimeout(120_000);
+  await signInForOAuth(page, "admin2");
+  await page.goto("/settings/household");
+  const panel = page.getByRole("region", {
+    name: "Agent access",
+    exact: true,
+  });
+  await expect(panel).toBeVisible();
+  const active = () =>
+    panel
+      .locator(".agent-connection")
+      .filter({ has: page.getByText("Connected", { exact: true }) });
+  while (await active().count()) {
+    await active()
+      .first()
+      .getByRole("button", { name: /Disconnect/ })
+      .click();
+    await page
+      .getByRole("dialog")
+      .getByRole("button", { name: "Disconnect agent", exact: true })
+      .click();
+  }
+  const agentContext = await browser.newContext({
+    baseURL: "http://localhost:3010",
+  });
+  try {
+    const agent = await agentContext.newPage();
+    await signInForOAuth(agent, "admin2");
+    const flow = await beginOAuth(agent, ["heima.read"]);
+    const tokens = await approveOAuth(agent, flow);
+    await expect(active()).toHaveCount(1, { timeout: 15_000 });
+    await screenshotPanel(
+      page,
+      panel,
+      info.outputPath("agent-connected-external-refresh-390.png"),
+    );
+    const revoked = await agent.request.post("/api/oauth/revoke", {
+      form: { client_id: oauthClientId, token: tokens.refreshToken },
+    });
+    expect(revoked.status()).toBe(200);
+    await expect(active()).toHaveCount(0, { timeout: 15_000 });
+    await expect(panel.getByText(/Previous connections \(\d+\)/)).toBeVisible();
+  } finally {
+    await agentContext.close();
+    await page.goto("/settings/household");
+    await page.getByRole("button", { name: "Sign out", exact: true }).click();
+  }
+});
+
 test("an expired consent request provides a safe reconnect path", async ({
   page,
 }, info) => {

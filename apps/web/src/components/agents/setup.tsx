@@ -46,8 +46,8 @@ export function AgentSetup({ data }: { data: AgentAccessView }) {
       </h3>
       <p>
         Run the setup command in your terminal, then finish the Usable sign-in
-        and permissions screen. Keep this Heima session signed in while the
-        agent is connected.
+        and permissions screen. Heima keeps the provider refresh token encrypted
+        on the server and renews access while the connection is valid.
       </p>
       <p className="field-hint">
         Compatible MCP hosts can discover Heima and select the matching public

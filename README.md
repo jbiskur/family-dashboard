@@ -49,7 +49,7 @@ The initial `add` command starts OAuth automatically. Some MCP hosts call an RFC
 
 Read access to Shopping and Work (`heima.read`) is the default. Agent access offers optional reauthorization for Shopping changes (`heima.shopping.write`), Work changes (`heima.work.write`) and permitted Finance reads (`heima.finance.read`). Each optional permission needs your approval. Agents retain your existing household and personal-data boundaries. Finance tools preserve exact amounts and cannot write transactions, import statements or change accounts.
 
-Connections last up to eight hours and depend on the Heima session used to approve them. Signing out of that session ends its agent access. Revoke a connection in Agent access to deny its next request; reconnect there when it expires.
+Connections last up to 30 days and depend on the Heima session used to approve them. Heima keeps the provider refresh token encrypted on the server and rotates it when access tokens expire; neither provider nor MCP refresh tokens are exposed to browser code. Signing out of that session ends its agent access. Revoke a connection in Agent access to deny its next request; reconnect there when it expires.
 
 The public [agent access evidence manifest](docs/screenshots/mcp-agent-access/manifest.json) lists the local browser paths, screenshot hashes and verification limits.
 
