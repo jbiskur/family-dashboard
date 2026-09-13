@@ -45,8 +45,8 @@ jobs:
       fail-fast: false
       matrix:
         project: [chromium, firefox, webkit, mobile]
-        shard: [1, 2, 3]
-        shards: [3]
+        shard: [1, 2, 3, 4]
+        shards: [4]
     needs: prepare
     runs-on: ubuntu-latest
     # Keep each serial shard below the ten-minute feedback target while
