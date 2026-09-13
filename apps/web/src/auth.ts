@@ -37,7 +37,10 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
   pages: { signIn: "/", error: "/auth/error" },
   callbacks: {
     async signIn({ account }) {
-      if (!account?.access_token) return false;
+      // A long-lived Heima session requires the provider's offline refresh
+      // grant. Never create a session that will silently die with the first
+      // short-lived access token.
+      if (!account?.access_token || !account.refresh_token) return false;
       try {
         await verifyProviderToken(account.access_token);
         return true;
