@@ -42,6 +42,9 @@ export async function signInForOAuth(
   await page.locator("#password").fill(password);
   await page.locator("#kc-login").click();
   await expect(page).toHaveURL(`${origin}/`, { timeout: 30_000 });
+  // WebKit can report the redirect URL before the final document navigation
+  // has settled; callers often navigate straight to the feature under test.
+  await page.waitForLoadState("load");
 }
 
 export async function beginOAuth(

@@ -130,7 +130,6 @@ test("household connection list notices approval in another agent host", async (
 }, info) => {
   test.setTimeout(120_000);
   await signInForOAuth(page, "admin2");
-  await page.waitForLoadState("load");
   await page.goto("/settings/household");
   const panel = page.getByRole("region", {
     name: "Agent access",
@@ -157,7 +156,6 @@ test("household connection list notices approval in another agent host", async (
   try {
     const agent = await agentContext.newPage();
     await signInForOAuth(agent, "admin2");
-    await agent.waitForLoadState("load");
     const flow = await beginOAuth(agent, ["heima.read"]);
     const tokens = await approveOAuth(agent, flow);
     await expect(active()).toHaveCount(1, { timeout: 15_000 });
