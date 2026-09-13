@@ -17,6 +17,11 @@ type ProviderTokens = {
   idToken?: string;
   expiresAt: number;
 };
+// Keep the browser session and its delegated MCP grants alive long enough for
+// an offline-capable Usable refresh token to do its job. The provider remains
+// authoritative: a revoked or expired refresh token still ends the session.
+export const PROVIDER_SESSION_MAX_AGE_SECONDS = 30 * 24 * 60 * 60;
+const PROVIDER_SESSION_MAX_AGE_MS = PROVIDER_SESSION_MAX_AGE_SECONDS * 1000;
 let connection: ReturnType<typeof postgres> | undefined;
 function sql() {
   connection ??= postgres(env.DATABASE_URL, {
@@ -85,7 +90,7 @@ export async function verifyProviderToken(accessToken: string) {
 export async function createProviderSession(tokens: ProviderTokens) {
   const identity = await verifyProviderToken(tokens.accessToken);
   const id = randomUUID();
-  await sql()`insert into auth_sessions (id, user_id, encrypted_tokens, expires_at) values (${id}, ${identity.userId}, ${encrypt(tokens)}, ${new Date(Date.now() + 8 * 60 * 60 * 1000)})`;
+  await sql()`insert into auth_sessions (id, user_id, encrypted_tokens, expires_at) values (${id}, ${identity.userId}, ${encrypt(tokens)}, ${new Date(Date.now() + PROVIDER_SESSION_MAX_AGE_MS)})`;
   return { id, ...identity };
 }
 export async function sessionBearer(id: string): Promise<string | null> {

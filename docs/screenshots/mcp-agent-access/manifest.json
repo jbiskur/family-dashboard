@@ -1,6 +1,6 @@
 {
   "feature": "Connect agents through Usable OAuth",
-  "generated": "2026-09-12",
+  "generated": "2026-09-13",
   "source": "local production build, real PostgreSQL and local Keycloak with synthetic fixture data",
   "publicSafe": true,
   "checks": {
@@ -37,8 +37,15 @@
       "file": "agent-connected.png",
       "route": "/settings/household",
       "viewport": "1440x900",
-      "state": "Connected Codex grant with selected permissions",
-      "sha256": "cdaa3840cb6dc994ff44297a52459c16fbd9c3b55797e51dc44956ad7826dad6"
+      "state": "Connected Codex grant with selected permissions and live refresh control",
+      "sha256": "68f6a59d551d9cb6c5892b6b6fafc36f74aae7451f9710a291cfa55b67f2a6fa"
+    },
+    {
+      "file": "agent-connected-external-refresh.png",
+      "route": "/settings/household",
+      "viewport": "1280x720",
+      "state": "Connected grant discovered after approval in another agent host",
+      "sha256": "90b18a3abaf82e286a7a4146d8aa912e937d8831e8cacca60e2fd51f7bb40008"
     },
     {
       "file": "mcp-shopping-reloaded.png",

@@ -59,8 +59,9 @@ export function AgentConnections({
     <div className="agent-connections">
       <h3>Your connections</h3>
       <p className="field-hint">
-        Only your agents appear here. Connections end on sign-out or within
-        eight hours. To reconnect, run the login command again.
+        Only your agents appear here. Connections end on sign-out or within 30
+        days. Heima renews access in the background while the connection is
+        valid. To reconnect after expiry, run the login command again.
       </p>
       {active.length ? (
         active.map(row)
@@ -68,11 +69,14 @@ export function AgentConnections({
         <EmptyState
           icon={<Bot size={27} />}
           title="No agents connected"
-          description="Connect an agent when you need a hand. Read access is the starting point."
+          description="No active connection is visible for this signed-in account. After approving an agent, return here and refresh. Read access is the starting point."
         />
       )}
       {previous.length > 0 && (
-        <details className="agent-connection-history">
+        <details
+          className="agent-connection-history"
+          open={active.length === 0}
+        >
           <summary>Previous connections ({previous.length})</summary>
           {previous.map(row)}
         </details>

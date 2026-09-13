@@ -4,7 +4,7 @@ if (process.env.DATABASE_SCHEMA?.startsWith("heima_oauthproof_")) {
   if (
     !Number.isSafeInteger(offset) ||
     offset < 0 ||
-    offset > 9 * 60 * 60 * 1000
+    offset > 31 * 24 * 60 * 60 * 1000
   )
     throw new Error("Invalid isolated OAuth verification clock");
   const realNow = Date.now.bind(Date);

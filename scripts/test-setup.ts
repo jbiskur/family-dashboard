@@ -210,6 +210,44 @@ for (const user of realm.users.slice(3)) {
   if (!added.ok && added.status !== 409)
     throw new Error(`Local test identity provisioning failed: ${added.status}`);
 }
+const offlineRoleResponse = await fetch(
+  `${base}/admin/realms/heima-test/roles/offline_access`,
+  { headers: adminHeaders },
+);
+if (!offlineRoleResponse.ok)
+  throw new Error("Local offline_access role could not be read");
+const offlineRole = await offlineRoleResponse.json();
+for (const fixtureUser of realm.users) {
+  const usersResponse = await fetch(
+    `${base}/admin/realms/heima-test/users?username=${encodeURIComponent(fixtureUser.username)}`,
+    { headers: adminHeaders },
+  );
+  if (!usersResponse.ok)
+    throw new Error("Local test identity could not be looked up");
+  const user = (await usersResponse.json()).find(
+    (entry: { username?: string }) => entry.username === fixtureUser.username,
+  );
+  if (!user?.id) continue;
+  const rolesResponse = await fetch(
+    `${base}/admin/realms/heima-test/users/${user.id}/role-mappings/realm`,
+    { headers: adminHeaders },
+  );
+  if (!rolesResponse.ok)
+    throw new Error("Local test identity roles could not be read");
+  const roles = await rolesResponse.json();
+  if (roles.some((role: { name?: string }) => role.name === "offline_access"))
+    continue;
+  const assigned = await fetch(
+    `${base}/admin/realms/heima-test/users/${user.id}/role-mappings/realm`,
+    {
+      method: "POST",
+      headers: { ...adminHeaders, "content-type": "application/json" },
+      body: JSON.stringify([offlineRole]),
+    },
+  );
+  if (!assigned.ok)
+    throw new Error("Local offline_access role could not be assigned");
+}
 // Declare only this fixture identity attribute: Admin REST tests can change the
 // spouse claim without changing mappers, signing tokens themselves, or owner data.
 const profileUrl = `${base}/admin/realms/heima-test/users/profile`;
