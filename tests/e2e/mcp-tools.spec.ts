@@ -161,6 +161,11 @@ async function shoppingList(
     .selectOption(visibility);
   await page.getByRole("button", { name: "Create list", exact: true }).click();
   await expect(page.getByRole("heading", { name, exact: true })).toBeVisible();
+  // The new heading can render before the browser commits the detail URL.
+  // Wait for that route before extracting an ID for the backend request.
+  await expect(page).toHaveURL(
+    /\/shopping\/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/,
+  );
   const id = new URL(page.url()).pathname.split("/").at(-1)!;
   await expect
     .poll(

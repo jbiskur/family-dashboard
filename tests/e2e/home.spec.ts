@@ -35,28 +35,28 @@ test("entry and Home keep their optimized illustration at mobile and desktop wid
           .toBeLessThanOrEqual(width + 1);
         continue;
       }
-      // Browser image promises are unreliable here: WebKit can leave
-      // decode() pending, while Chromium can report `complete` before lazy
-      // loading has populated currentSrc. Poll the observable loaded state.
+      // Keep the exact state that passes the readiness check. A later read
+      // can catch currentSrc empty while responsive image selection changes.
+      let image = { src: "", width: 0, height: 0 };
       await expect
         .poll(
-          () =>
-            illustration.evaluate(
-              (element: HTMLImageElement) =>
-                element.currentSrc.includes("/_next/image?") &&
-                element.naturalWidth > 0 &&
-                element.naturalHeight > 0,
-            ),
+          async () => {
+            image = await illustration.evaluate(
+              (element: HTMLImageElement) => ({
+                src: element.currentSrc,
+                width: element.naturalWidth,
+                height: element.naturalHeight,
+              }),
+            );
+            return (
+              image.src.includes("/_next/image?") &&
+              image.width > 0 &&
+              image.height > 0
+            );
+          },
           { timeout: 30_000 },
         )
         .toBe(true);
-      const image = await illustration.evaluate(
-        (element: HTMLImageElement) => ({
-          src: element.currentSrc,
-          width: element.naturalWidth,
-          height: element.naturalHeight,
-        }),
-      );
       expect(image.src).toContain("/_next/image?");
       expect(image.width).toBeGreaterThan(0);
       expect(image.height).toBeGreaterThan(0);
