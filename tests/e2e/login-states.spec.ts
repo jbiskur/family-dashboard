@@ -352,7 +352,13 @@ test("access lifecycle states show safe next actions at 320px and desktop withou
             .waitForResponse(
               (response) =>
                 response.request().method() === "POST" &&
-                Boolean(response.request().headers()["next-action"]),
+                Boolean(response.request().headers()["next-action"]) &&
+                Boolean(
+                  response
+                    .request()
+                    .postData()
+                    ?.includes("/v1/access/invitations"),
+                ),
             )
             .then(async (response) => ({
               body: await response.text(),
@@ -364,7 +370,8 @@ test("access lifecycle states show safe next actions at 320px and desktop withou
       await secondOwner.route("**/settings/household", async (route) => {
         if (
           route.request().method() !== "POST" ||
-          !route.request().headers()["next-action"]
+          !route.request().headers()["next-action"] ||
+          !route.request().postData()?.includes("/v1/access/invitations")
         ) {
           await route.continue();
           return;
