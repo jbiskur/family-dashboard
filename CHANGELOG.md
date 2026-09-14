@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.6](https://github.com/jbiskur/family-dashboard/compare/v0.4.5...v0.4.6) (2026-09-14)
+
+
+### Performance Improvements
+
+* **ci:** share production build across test jobs ([#19](https://github.com/jbiskur/family-dashboard/issues/19)) ([76683ae](https://github.com/jbiskur/family-dashboard/commit/76683ae05be9e84b14e4278e98bf40e89ab6134c))
+
 ## [0.4.5](https://github.com/jbiskur/family-dashboard/compare/v0.4.4...v0.4.5) (2026-09-13)
 
 
